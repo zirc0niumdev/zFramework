@@ -1,18 +1,19 @@
--- --------------------------------------------------------
--- Hôte :                        127.0.0.1
--- Version du serveur:           10.5.7-MariaDB - mariadb.org binary distribution
--- SE du serveur:                Win64
--- HeidiSQL Version:             11.0.0.5919
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
--- Les données exportées n'étaient pas sélectionnées.
-
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+CREATE TABLE `players` (
+	`license` VARCHAR(50) NOT NULL COLLATE 'utf8_general_ci',
+	`discord` VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`ip` VARCHAR(25) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`model` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`job` VARCHAR(15) NOT NULL DEFAULT 'unemployed' COLLATE 'utf8_general_ci',
+	`job_rank` INT(1) NOT NULL DEFAULT '0',
+	`location` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`level` INT(1) NOT NULL DEFAULT '0',
+	`rank` INT(11) NOT NULL DEFAULT '1',
+	`group` INT(11) NOT NULL DEFAULT '1',
+	`dead` TINYINT(1) NOT NULL DEFAULT '0',
+	`skin` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`identity` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	PRIMARY KEY (`license`) USING BTREE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
