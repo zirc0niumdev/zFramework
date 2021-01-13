@@ -1,4 +1,4 @@
-import Vector3 from "../../shared/class/vector3";
+import Vector3 from "../../shared/class/CVector3";
 
 export default class CPlayer {
     constructor(data) {
@@ -158,20 +158,21 @@ export default class CPlayer {
     //Get Job and Job Rank
 
     // Functions
-    clientEvent(eventName, ...args) {
-        if (this._serverId && this._serverId > 0)
-            emitNet(eventName, this._serverId, ...args);
+    clientEvent = (eventName, ...args) => {
+        if (!this._serverId || this._serverId <= 0) return;
+        
+        emitNet(eventName, this._serverId, ...args);
     }
 
-    getLocation() {
+    getLocation = () => {
         return new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
     }
 
-    setLocation(location) {
+    setLocation = (location) => {
         SetEntityCoords(this._pedId, location.x, location.y, location.z);
     }
 
-    canSave() {
+    canSave = () => {
         return this._initialized;
     }
 
@@ -181,10 +182,10 @@ export default class CPlayer {
 
     notify = (text) => this.clientEvent("Client.Notify", text || "~r~empty notification - error code:first param was empty.");
     
-    async savePlayer() {
+    savePlayer = async () => {
         if (!this.canSave()) return;
 
-		let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._licenseId];
+        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
             await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {

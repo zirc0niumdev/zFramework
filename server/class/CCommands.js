@@ -4,15 +4,7 @@ export default class CCommands {
 		this._group 	 = group;
 		this._suggestion = suggestion;
 
-		if (!this._suggestion.arguments) this._suggestion.arguments = {};
-		if (!this._suggestion.help) this._suggestion.help = '';
-		emitNet('chat:addSuggestion', -1, `/${name}`, this._suggestion.help, this._suggestion.arguments);
-
-		RegisterCommand(name, (source, args) => {
-			cb(zFramework.Players[source] || null, args, source)
-		}, true);
-
-		ExecuteCommand(`add_ace group.${group} command.${name} allow`);
+		this.register(cb);
 	}
 
 	//Getters
@@ -26,5 +18,17 @@ export default class CCommands {
 
     get suggestion() {
         return this._suggestion;
-    }
+	}
+	
+	register = (cb) => {
+		if (!this._suggestion.arguments) this._suggestion.arguments = {};
+		if (!this._suggestion.help) this._suggestion.help = '';
+		emitNet('chat:addSuggestion', -1, `/${this._name}`, this._suggestion.help, this._suggestion.arguments);
+
+		RegisterCommand(name, (source, args) => {
+			cb(zFramework.Players[source] || null, args, source)
+		}, true);
+
+		ExecuteCommand(`add_ace group.${this._group} command.${this._name} allow`);
+	}
 };

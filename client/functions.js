@@ -1,6 +1,6 @@
 serverEvent = (eventName, ...args) => emitNet(eventName, ...args);
 
-zFramework.Functions.KeyboardInput = function(TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) {
+zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
 	const timeout = 0;
 	AddTextEntry('FMMC_KEY_TIP8', TextEntry);
 	
@@ -44,7 +44,7 @@ zFramework.Functions.KeyboardInput = function(TextEntry = "Montant", DefaultText
 	});
 }
 
-zFramework.Functions.RequestModel = function(model) {
+zFramework.Functions.RequestModel = (model) => {
 	model = GetHashKey(model);
 	return new Promise(resolve => {
 		if (!IsModelInCdimage(model) || !IsModelValid(model)) resolve(false);
@@ -61,7 +61,7 @@ zFramework.Functions.RequestModel = function(model) {
 	});
 };
 
-zFramework.Functions.RepairVehicle = function() {
+zFramework.Functions.RepairVehicle = () => {
 	const vehicle = GetVehiclePedIsUsing(zFramework.LocalPlayer.pedId);
 	if (!vehicle) return;
 
@@ -72,7 +72,7 @@ zFramework.Functions.RepairVehicle = function() {
 
 onNet('Client.RepairVehicle', zFramework.Functions.RepairVehicle);
 
-zFramework.Functions.Notify = function(message, color) {
+zFramework.Functions.Notify = (message, color) => {
 	if (color) ThefeedNextPostBackgroundColor(color);
 	SetNotificationTextEntry("jamyfafi");
 	AddTextComponentString(message);
@@ -82,7 +82,7 @@ zFramework.Functions.Notify = function(message, color) {
 
 onNet('Client.Notify', zFramework.Functions.Notify);
 
-zFramework.Functions.DiscordInit = function() {
+zFramework.Functions.DiscordInit = () => {
 	SetDiscordAppId("682814905166069850");
 	SetDiscordRichPresenceAsset("512");
 	SetDiscordRichPresenceAssetText("SantosRP");

@@ -1,4 +1,4 @@
-import Vector3 from "../../shared/class/vector3";
+import Vector3 from "../../shared/class/CVector3";
 
 export default class CLocalPlayer {
     constructor(data) {
@@ -18,7 +18,6 @@ export default class CLocalPlayer {
         this._freeze         = false;
         this._blockInput     = false;
         this._initialized    = false; // Has Spawned
-        //this._ready          = false; // Is Ready To Play
 
         this.spawnPlayer();
     }
@@ -139,16 +138,6 @@ export default class CLocalPlayer {
             this.onInitialized();
     }
 
-    // /**
-    // * @param {boolean} toggle
-    // */
-    // set ready(toggle) {
-    //     this._ready = toggle;
-
-    //     if (this._ready)
-    //         this.onReady();
-    // }
-
     //Set Job and Job Rank
 
     //Getters
@@ -216,14 +205,10 @@ export default class CLocalPlayer {
         return this._initialized;
     }
 
-    // get ready() {
-    //     return this._ready;
-    // }
-
     //Get Job and Job Rank
 
     //Functions
-    async spawnPlayer() {
+    spawnPlayer = async () => {
         await Delay(2500);
         exports.spawnmanager.spawnPlayer({
             x: this._spawnLocation.x,
@@ -234,7 +219,7 @@ export default class CLocalPlayer {
         });
     }
 
-    async setPlayerModel(model) {
+    setPlayerModel = async (model) => {
         await zFramework.Functions.RequestModel(model).then((hasLoaded) => {
             if (hasLoaded) {
                 SetPlayerModel(this._id, GetHashKey(model));
@@ -245,7 +230,7 @@ export default class CLocalPlayer {
         });
     }
 
-    onInitialized() {
+    onInitialized = () => {
         this.applyDefaultOutfit();
 
         if (!this._identity && !this._skin) {
@@ -261,12 +246,12 @@ export default class CLocalPlayer {
     }
 
     // Is Ready To Play
-    onReady() {
+    onReady = () => {
         // Start HUD
 	    zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
 
-    applyDefaultOutfit() {
+    applyDefaultOutfit = () => {
         SetPedDefaultComponentVariation(this._pedId);
         SetPedComponentVariation(this._pedId, 3, 15, 0, 2);
         SetPedComponentVariation(this._pedId, 8, 15, 0, 2);
@@ -282,7 +267,7 @@ export default class CLocalPlayer {
         }
     }
 
-    loadSkin() {
+    loadSkin = () => {
         // Features
         for (const feature in (this._skin.features)) SetPedFaceFeature(this._pedId, parseInt(feature), parseFloat(this._skin.features[feature]));
 
@@ -303,11 +288,11 @@ export default class CLocalPlayer {
         SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
     }
 
-    getLocation() {
+    getLocation = () => {
         return new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
     }
 
-    tick() {
+    tick = () => {
         setTick(() => {
             let enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
@@ -334,7 +319,7 @@ export default class CLocalPlayer {
         });
     }
 
-    utils() {
+    utils = () => {
         const SCENARIO_TYPES = ["WORLD_VEHICLE_MILITARY_PLANES_SMALL", "WORLD_VEHICLE_MILITARY_PLANES_BIG"];
 	    const SCENARIO_GROUPS = [2017590552, 2141866469, 1409640232, "ng_planes"];
 	    const SUPPRESSED_MODELS = ["BLIMP", "SHAMAL", "LUXOR", "LUXOR2", "JET", "LAZER", "TITAN", "BARRACKS", "BARRACKS2", "CRUSADER", "RHINO", "AIRTUG", "RIPLEY", "MIXER", "FIRETRUK", "duster", "frogger", "maverick", "buzzard", "buzzard2", "polmav", "tanker", "tanker2"];
