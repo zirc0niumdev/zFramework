@@ -23,7 +23,7 @@ on("onPlayerSpawn", () => {
 	for (let i = 1; i <= 15; i++) EnableDispatchService(i, false);
     
 	zFramework.Functions.DiscordInit(); // Change this to a module
-	zFramework.Modules.InitializeModules();
+	zFramework.Modules.Initialize();
 	
 	serverEvent("Server.onPlayerSpawned");
 });

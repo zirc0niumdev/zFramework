@@ -3,9 +3,9 @@ import CPlayer from './class/CPlayer.js';
 zFramework.Functions.onReady = function() {
 	if (zFramework.Initialized) return;
 
-	console.log("\x1b[33m[zFramework] \x1b[32mzFramework is ready!\x1b[37m");
-	zFramework.Modules.InitializeModules();
+	zFramework.Modules.Initialize();
 	zFramework.Initialized = true;
+	console.log("\x1b[33m[zFramework] \x1b[32mzFramework is ready!\x1b[37m");
 }
 
 on("playerConnecting", async(_, __, deferrals) => {
