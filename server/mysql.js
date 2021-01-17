@@ -1,10 +1,12 @@
 import { createConnection } from 'mysql';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const con = createConnection({
-	host: "localhost",
-	user: "root",
-	password: "XsQ[Fe!&!}ft.7x6",
-	database: "zframework"
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_DATABASE
 });
 
 con.connect(async function(err) {
@@ -21,6 +23,7 @@ zFramework.DB.Query = (q, args) => {
 				console.error(err.stack);
 				return reject(err);
 			}
+			
 			resolve(result);
 		});
 	});

@@ -164,17 +164,11 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
-    getLocation = () => {
-        return new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
-    }
+    getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
-    setLocation = (location) => {
-        SetEntityCoords(this._pedId, location.x, location.y, location.z);
-    }
+    setLocation = (location) => SetEntityCoords(this._pedId, location.x, location.y, location.z);
 
-    canSave = () => {
-        return this._initialized;
-    }
+    canSave = () => this._initialized;
 
     kick = (reason) => DropPlayer(this._serverId, reason || null);
 

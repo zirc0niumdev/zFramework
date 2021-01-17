@@ -8,6 +8,7 @@
     "build": "webpack --mode production --config client.config.js"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.1"
   },
