@@ -9,4 +9,10 @@ This project was used to be a custom Framework for **SantosRP**
 You need node.JS (npm)
 `npm install` to install modules
 `npm run build` to compile files
-Configure database in .env
+Create a .env file with this content (change this with your db settings.)
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=XsQ[Fe!&!}ft.7x6
+DB_DATABASE=zframework
+```
