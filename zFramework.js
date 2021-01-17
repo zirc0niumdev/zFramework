@@ -8,7 +8,7 @@ zFramework.Modules.List = {
 
 if (IsDuplicityVersion()) {
 	SetMapName('Los Santos');
-	SetGameType('zirconium-Framework');
+	SetGameType('zFramework');
 
 	zFramework.DB = {};
 	zFramework.Players = {};
