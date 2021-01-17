@@ -182,13 +182,13 @@ export default class CPlayer {
         let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
-        } else {
-            await zFramework.DB.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ? WHERE license = ?', playerData).then(() => {
-                console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
-            });
         }
+
+        return await zFramework.DB.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ? WHERE license = ?', playerData).then(() => {
+            console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
+        });
     }
 }
