@@ -6,13 +6,10 @@ This project is unfinished and the code was only used to be for prototyping. I w
 This project was used to be a custom Framework for **SantosRP**
 
 ## How to use
-You need node.JS (npm)
-
-`npm install` to install modules
-
-`npm run build` to compile files
-
-Create a .env file with this content (change this with your db settings.)
+- You need node.JS (npm)
+- `npm install` to install modules
+- `npm run build` to compile files
+- Create a .env file with this content (change this with your db settings.)
 ```
 DB_HOST=localhost
 DB_USER=root
