@@ -33,7 +33,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {Array<JSON>} data
+    * @param {Object} data
     */
     set skin(data) {
         this._skin = data;
@@ -43,7 +43,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {Array<JSON>} data
+    * @param {Object} data
     */
     set identity(data) {
         this._identity = data;

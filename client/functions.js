@@ -82,7 +82,7 @@ zFramework.Functions.Notify = (message, color) => {
 
 onNet('Client.Notify', zFramework.Functions.Notify);
 
-zFramework.Functions.DiscordInit = () => {
+zFramework.Functions.DiscordInit = function() {
 	SetDiscordAppId("682814905166069850");
 	SetDiscordRichPresenceAsset("512");
 	SetDiscordRichPresenceAssetText("SantosRP");

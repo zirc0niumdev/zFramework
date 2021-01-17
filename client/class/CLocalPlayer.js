@@ -39,14 +39,14 @@ export default class CLocalPlayer {
     }
 
     /**
-    * @param {Array<JSON>} data
+    * @param {Object} data
     */
     set skin(data) {
         this._skin = data;
     }
 
     /**
-    * @param {Array<JSON>} data
+    * @param {Object} data
     */
     set identity(data) {
         this._identity = data;

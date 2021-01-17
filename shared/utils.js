@@ -1,6 +1,6 @@
 Delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-UpdateVar = (varName, varValue) => (zFramework.LocalPlayer[varName] = varValue);
+UpdateVar = (varName, varValue) => zFramework.LocalPlayer[varName] = varValue;
 
 Capitalize = (s) => typeof s !== "string" ? "" : s.charAt(0).toUpperCase() + s.slice(1);
 
