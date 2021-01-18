@@ -75,13 +75,15 @@ new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     zFramework.Modules.Weather.Time.Minute = Number(args[1]);
 
     emitNet('Client.SetWeather', -1, null, zFramework.Modules.Weather.Time);
-    //player.notify(`~g~Vous~w~ avez set le temps à ${args[0], args[1]} !`);
+    player.notify(`~g~Vous~w~ avez set le temps à ${args[0]} ${args[1]} !`);
 }, {help: "haha"});
 
 new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     if (!args[0]) return;
-    if (zFramework.Modules.Weather.List.find(element => element.name != args[0])) return;
+    
+    const weatherFound = zFramework.Modules.Weather.List.find(element => element.name == args[0]);
+    if (!weatherFound) return;
 
-    emitNet('Client.SetWeather', -1, args[0]);
-    player.notify(`~g~Vous~w~ avez set la météo sur ${args[0]} !`);
+    emitNet('Client.SetWeather', -1, weatherFound.name, null);
+    player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
 }, {help: "haha"});
