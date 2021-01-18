@@ -1,8 +1,8 @@
 {
   "name": "zframework",
   "version": "1.0.0",
-  "description": "A Roleplay framework for FiveM written in NodeJS",
-  "author": "zirconium",
+  "description": "A Roleplay framework for FiveM written in node.JS",
+  "author": "zirconiium",
   "private": true,
   "scripts": {
     "build": "webpack --mode production --config client.config.js"

@@ -1,6 +1,6 @@
 import { createConnection } from 'mysql';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: path.join(GetResourcePath(GetCurrentResourceName()), './.env') });
 
 const con = createConnection({
 	host: process.env.DB_HOST,
