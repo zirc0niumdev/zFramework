@@ -2,16 +2,16 @@ zFramework.Modules.Weather.Initialize = function() {
     this.Initialized = true;
 }
 
-onNet("Client.SetWeather", function(weatherName, time) {
+onNet("Client.SetWeather", function(weather, time) {
     if (!zFramework.Modules.Weather.Initialized) return;
 
-    if (weatherName) {
+    if (weather) {
         ClearWeatherTypePersist();
         ClearOverrideWeather();
-        SetWeatherTypeOverTime(weatherName, 200.0);
-        SetWeatherTypePersist(weatherName);
+        SetWeatherTypeOverTime(weather, 200.0);
+        SetWeatherTypePersist(weather);
         
-        zFramework.Modules.Weather.Current = weatherName;
+        zFramework.Modules.Weather.Current = weather;
     }
 
     if (time) {            

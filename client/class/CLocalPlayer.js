@@ -294,7 +294,7 @@ export default class CLocalPlayer {
 
     tick = () => {
         setTick(() => {
-            let enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
+            const enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
                 let modelEntering = GetEntityModel(enteringVeh);
                 if (!IsEntityAMissionEntity(enteringVeh) && !GetVehicleDoorsLockedForPlayer(enteringVeh, this._Id) &&

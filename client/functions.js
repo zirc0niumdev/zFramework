@@ -21,9 +21,8 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 					clearInterval(timer);
 
 					let result = GetOnscreenKeyboardResult();
-					if (result) {
+					if (result)
 						result = result.trim();
-					}
 
 					if (!result || result.length === 0) {
 						reject("empty");

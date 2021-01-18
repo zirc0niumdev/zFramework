@@ -1,5 +1,6 @@
 zFramework.Modules.Weather = {};
 zFramework.Modules.Weather.Initialized = false;
+zFramework.Modules.Weather.Freezed = false;
 
 zFramework.Modules.Weather.List = [
 	{ name: "THUNDER", luck: 0.98 },
