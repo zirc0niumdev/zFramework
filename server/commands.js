@@ -81,7 +81,7 @@ new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args, source) => {
 new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     if (!args[0]) return;
     
-    const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name.equals(args[0]));
+    const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name === args[0]);
     if (!weatherFound) return;
 
     emitNet('Client.SetWeather', -1, weatherFound.name, null);
