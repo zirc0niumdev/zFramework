@@ -43,7 +43,7 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 	});
 }
 
-zFramework.Functions.RequestModel = (model) => {
+zFramework.Functions.RequestModel = model => {
 	model = GetHashKey(model);
 	return new Promise(resolve => {
 		if (!IsModelInCdimage(model) || !IsModelValid(model)) resolve(false);
@@ -80,14 +80,3 @@ zFramework.Functions.Notify = (message, color) => {
 };
 
 onNet('Client.Notify', zFramework.Functions.Notify);
-
-zFramework.Functions.DiscordInit = function() {
-	SetDiscordAppId("682814905166069850");
-	SetDiscordRichPresenceAsset("512");
-	SetDiscordRichPresenceAssetText("SantosRP");
-	SetDiscordRichPresenceAssetSmall("discord_512");
-	SetDiscordRichPresenceAssetSmallText("discord.santosrp.fr");
-	this.SetRichPresence("test");
-};
-
-zFramework.Functions.SetRichPresence = (status) => SetRichPresence(status);

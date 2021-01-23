@@ -2,7 +2,7 @@ zFramework.Modules.Weather.Initialize = function() {
     this.Initialized = true;
 }
 
-onNet("Client.SetWeather", function(weather, time) {
+onNet("Client.SetWeather", (weather, time) => {
     if (!zFramework.Modules.Weather.Initialized) return;
 
     if (weather) {

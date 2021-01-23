@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'zirconium'
+author 'zirconiium'
 version '1.0.0'
 
 client_scripts {
@@ -11,7 +11,7 @@ client_scripts {
 }
 
 server_scripts {
-	'config.js',
+	'config.js', -- need to ditch that shit
 	'zFramework.js',
 	'dist/shared/*.js',
 	'dist/server/*.js'

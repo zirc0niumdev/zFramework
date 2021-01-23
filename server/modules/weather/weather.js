@@ -1,11 +1,8 @@
-zFramework.Modules.Weather.PickWeather = function(data) {
+zFramework.Modules.Weather.PickWeather = data => {
     const winner = Number(Math.random().toFixed(2));
-
     for (let i=0; i < data.length; i++) {
         const threshold = parseFloat(data[i].luck);
-        
-        if (threshold <= winner)
-            return data[i].name;
+        if (threshold <= winner) return data[i].name;
     }
 }
 
@@ -36,7 +33,7 @@ zFramework.Modules.Weather.Initialize = function() {
     this.Initialized = true;
 }
 
-onNet("Server.onPlayerSpawned", function() {
+onNet("Server.onPlayerSpawned", () => {
     if (!zFramework.Modules.Weather.Initialized) return;
 	const player = zFramework.Players[global.source];
     if (!player) return;
