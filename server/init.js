@@ -15,9 +15,10 @@ on("playerConnecting", async (_, __, deferrals) => {
 	console.log(`${GetPlayerName(playerId)} joined!`);
 
 	deferrals.defer();
-	await Delay(500);
+	await Delay(0);
+	deferrals.update();
 	if (!zFramework.Initialized) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-server-starting");
-	if (!GetPlayerEndpoint(player)) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-finding-endpoint");
+	if (!GetPlayerEndpoint(playerId)) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-finding-endpoint");
 
 	// Ban Check
 	// Whitelist Module Check
