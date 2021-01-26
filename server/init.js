@@ -20,8 +20,20 @@ on("playerConnecting", async (_, __, deferrals) => {
 	if (!zFramework.Initialized) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-server-starting");
 	if (!GetPlayerEndpoint(playerId)) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-finding-endpoint");
 
-	// Ban Check
-	// Whitelist Module Check
+	let discordIdentifier = null;
+	for (let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
+		const identifier = GetPlayerIdentifier(playerId, i);
+		if (identifier.includes('discord:')) discordIdentifier = identifier;
+	}
+
+	if (discordIdentifier) {
+		try {
+			await zFramework.Modules.Whitelist.CheckUser(discordIdentifier.replace('discord:', ''));
+		} catch (err) {
+			deferrals.done("Vous n'êtes pas *Whitelist*.");
+		}
+	}
+	else return deferrals.done("Vous devez lier votre compte Discord à FiveM.");
 	
 	deferrals.done();
 });
@@ -30,15 +42,12 @@ onNet('Server.GeneratePlayer', async () => {
 	const playerId = global.source;
 	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
-	// Move that to Connection Event
 	let identifiers = { license: null, discord: null };
-    for(let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
+    for (let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
         const identifier = GetPlayerIdentifier(playerId, i);
 		if (identifier.includes('license:')) identifiers.license = identifier;
 		if (identifier.includes('discord:')) identifiers.discord = identifier;
     }
-
-	if (!identifiers.discord) return DropPlayer(playerId, "Vous devez lier votre compte Discord à FiveM.");
 
 	await zFramework.DB.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {
 		// Can simplify that
@@ -94,7 +103,7 @@ onNet("chatMessage", (_, __, message) => {
 	const commands = GetRegisteredCommands();
 	for (const index in commands) {
 		const cmdname = commands[index]['name'];
-		  
+		
 		if (message.slice('/') != cmdname) {
 			emitNet('chat:addMessage', -1, { args: [ "Commande Invalide."] });
 			CancelEvent();

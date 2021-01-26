@@ -4,8 +4,9 @@ zFramework.Functions = {};
 zFramework.Modules = {};
 zFramework.Modules.List = {
 	Weather: true,
-	Discord: true
-};
+	Discord: true,
+	Whitelist: true
+}
 
 if (IsDuplicityVersion()) {
 	SetMapName('Los Santos');

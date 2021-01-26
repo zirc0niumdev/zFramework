@@ -89,3 +89,7 @@ new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) =>
     emitNet('Client.SetWeather', -1, weatherFound.name, null);
     player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
 }, {help: "haha"});
+
+new CCommands("test", zFramework.Groups.DEV, (player, args, source) => {
+    zFramework.Modules.Whitelist.CheckUser("aaa");
+}, {help: "haha"});
