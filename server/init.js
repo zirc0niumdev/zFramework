@@ -15,8 +15,8 @@ on("playerConnecting", async (_, __, deferrals) => {
 	console.log(`${GetPlayerName(playerId)} joined!`);
 
 	deferrals.defer();
-	await Delay(0);
-	deferrals.update();
+	await Delay(500);
+
 	if (!zFramework.Initialized) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-server-starting");
 	if (!GetPlayerEndpoint(playerId)) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-finding-endpoint");
 
@@ -28,7 +28,7 @@ on("playerConnecting", async (_, __, deferrals) => {
 
 onNet('Server.GeneratePlayer', async () => {
 	const playerId = global.source;
-	if (await zFramework.Functions.GetPlayerFromId(playerId)) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
+	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
 	// Move that to Connection Event
 	let identifiers = { license: null, discord: null };
@@ -75,6 +75,9 @@ onNet("Server.onPlayerSpawned", async () => {
 
 	player.initialized = true;
 	player.clientEvent('Client.UpdateVar', "initialized", player.initialized);
+
+	// try move that to client side
+	for (const command in zFramework.Commands) player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 });
 
 on("playerDropped", async reason => {

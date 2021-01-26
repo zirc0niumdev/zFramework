@@ -1,6 +1,6 @@
 import CCommands from './class/CCommands.js';
 
-new CCommands("car", zFramework.Groups.ADMIN, (player, args) => {
+new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     const car = args[0];
     if (!car) return;
 

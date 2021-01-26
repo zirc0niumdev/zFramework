@@ -39,8 +39,8 @@ zFramework.Jobs.GetJobFromId = id => {
 	});
 }
 
-zFramework.Jobs.GetJobNameFromId = id => {
-    const job = this.GetJobFromId(id);
+zFramework.Jobs.GetJobNameFromId = async id => {
+    const job = await this.GetJobFromId(id);
 
     return job.name;
 }

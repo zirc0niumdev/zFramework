@@ -6,9 +6,9 @@ export default class CCommands {
 	
 		if (!this._suggestion.arguments) this._suggestion.arguments = {};
 		if (!this._suggestion.help) this._suggestion.help = '';
-		emitNet('chat:addSuggestion', -1, `/${this._name}`, this._suggestion.help, this._suggestion.arguments); // not good method.
 
 		RegisterCommand(this._name, async (source, args) => {
+			zFramework.Commands[this._name] = this._suggestion;
 			next(await zFramework.Functions.GetPlayerFromId(source), args, source);
 		}, true);
 

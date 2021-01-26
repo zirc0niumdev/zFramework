@@ -12,6 +12,7 @@ if (IsDuplicityVersion()) {
 	SetGameType('zFramework');
 
 	zFramework.DB = {};
+	zFramework.Commands = {};
 	zFramework.Players = {};
 } else {
 	zFramework.LocalPlayer = null;

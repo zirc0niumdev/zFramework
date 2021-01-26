@@ -94,22 +94,21 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} jobId
+    * @param {number} id
     */
-    set job(jobId) {
-        const job = zFramework.Jobs[jobId];
-        if (!job) return;
-        console.log(job);
+    set job(id) {
+        const job = zFramework.Jobs.GetJobFromId(id);
+        
         this._job = job;
 
         this.clientEvent('Client.UpdateVar', "job", this._job);
     }
 
     /**
-    * @param {number} rankId
+    * @param {number} id
     */
-    set jobRank(rankId) {
-        this._jobRank = rankId;
+    set jobRank(id) {
+        this._jobRank = id;
 
         this.clientEvent('Client.UpdateVar', "jobrank", this._jobRank);
     }

@@ -138,10 +138,10 @@ export default class CLocalPlayer {
     }
 
     /**
-    * @param {number} rankId
+    * @param {number} id
     */
-    set jobRank(rankId) {
-        this._jobRank = rankId;
+    set jobRank(id) {
+        this._jobRank = id;
     }
 
     /**
