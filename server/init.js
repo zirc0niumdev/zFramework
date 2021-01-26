@@ -32,8 +32,9 @@ on("playerConnecting", async(_, __, deferrals) => {
 	deferrals.done();
 });
 
-onNet('Server.GeneratePlayer', async() => {
+onNet('Server.GeneratePlayer', async () => {
 	const player = global.source;
+	
 	if (zFramework.Players[player]) return DropPlayer(player, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
 	let identifiers = { license: null, discord: null };
@@ -49,18 +50,32 @@ onNet('Server.GeneratePlayer', async() => {
 
 	if (!identifiers.discord) return DropPlayer(player, "Vous devez lier votre compte Discord à FiveM.");
 
-	await zFramework.DB.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(async res => {
+	await zFramework.DB.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {
 		// Can simplify that
 		let tempPlayerData = null;
-		
-		tempPlayerData = {serverId: player, pedId: GetPlayerPed(player), playerName: GetPlayerName(player), spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})), playerModel: "mp_m_freemode_01", licenseId: identifiers.license, discordId: identifiers.discord, dead: false, playerLevel: 0, playerGroup: zFramework.Groups.PLAYER, playerRank: zFramework.Ranks.CITIZEN, firstSpawn: true, playerIdentity: null, playerSkin: null};
-
-		if (res[0] || res[0].license) {
-			tempPlayerData = {serverId: player, pedId: GetPlayerPed(player), playerName: GetPlayerName(player), spawnLocation: JSON.parse(res[0].location), playerModel: res[0].model, licenseId: res[0].license, discordId: res[0].discord, dead: res[0].dead, playerLevel: res[0].level, playerGroup: res[0].group, playerRank: res[0].rank, playerSkin: JSON.parse(res[0].skin), playerIdentity: JSON.parse(res[0].identity)};
-		}
-
+			
+		tempPlayerData = { serverId: player, pedId: GetPlayerPed(player), playerName: GetPlayerName(player), spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})), playerModel: "mp_m_freemode_01", licenseId: identifiers.license, discordId: identifiers.discord, dead: false, playerLevel: 0, playerGroup: zFramework.Groups.PLAYER, playerRank: zFramework.Ranks.CITIZEN, firstSpawn: true, playerIdentity: null, playerSkin: null} ;
+	
+		if (res[0]) tempPlayerData = {
+			serverId: player,
+			pedId: GetPlayerPed(player),
+			playerName: GetPlayerName(player),
+			spawnLocation: JSON.parse(res[0].location),
+			playerModel: res[0].model,
+			playerGroup: res[0].group,
+			playerLevel: res[0].level,
+			playerRank: res[0].rank,
+			playerJob: zFramework.Jobs[res[0].job],
+			playerJobRank: res[0].job_rank,
+			licenseId: res[0].license,
+			discordId: res[0].discord,
+			dead: res[0].dead,
+			playerSkin: JSON.parse(res[0].skin),
+			playerIdentity: JSON.parse(res[0].identity)
+		};
+	
 		if (!tempPlayerData) return DropPlayer(player, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-initializing-data");
-
+	
 		zFramework.Players[player] = new CPlayer(tempPlayerData);
 	});
 });

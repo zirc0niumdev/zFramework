@@ -7,20 +7,24 @@ export default class CPlayer {
         this._name           = data.playerName;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
+        this._group          = data.playerGroup;
+        this._level          = data.playerLevel;
+        this._rank           = data.playerRank;
+        this._job            = data.playerJob;
+        this._jobRank        = data.playerJobRank;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._licenseId      = data.licenseId;
         this._discordId      = data.discordId;
         this._dead           = data.dead;
-        this._level          = data.playerLevel;
-        this._group          = data.playerGroup;
-        this._rank           = data.playerRank;
         this._firstSpawn     = data.firstSpawn || false;
         this._initialized    = false;
 
         ExecuteCommand(`add_principal identifier.${this._licenseId} group.${this._group}`);
         
         this.clientEvent('Client.CreatePlayer', data);
+
+        console.log(`${this._name} spawned!`);
     }
 
     /**
@@ -90,13 +94,32 @@ export default class CPlayer {
     }
 
     /**
+    * @param {number} jobId
+    */
+    set job(jobId) {
+        const job = zFramework.Jobs[jobId];
+        if (!job) return;
+        console.log(job);
+        this._job = job;
+
+        this.clientEvent('Client.UpdateVar', "job", this._job);
+    }
+
+    /**
+    * @param {number} rankId
+    */
+    set jobRank(rankId) {
+        this._jobRank = rankId;
+
+        this.clientEvent('Client.UpdateVar', "jobrank", this._jobRank);
+    }
+
+    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
         this._initialized = toggle;
     }
-
-    //Set Job and Job Rank
 
     //Getters
     get serverId() {
@@ -151,11 +174,17 @@ export default class CPlayer {
         return this._group;
     }
 
+    get job() {
+        return this._job;
+    }
+    
+    get jobRank() {
+        return this._jobRank;
+    }
+
     get initialized() {
         return this._initialized;
     }
-
-    //Get Job and Job Rank
 
     // Functions
     clientEvent = (eventName, ...args) => {
@@ -179,10 +208,10 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._licenseId];
+        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, Object.keys(this._job)[0], this._jobRank, this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }

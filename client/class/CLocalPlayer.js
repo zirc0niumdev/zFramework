@@ -7,17 +7,19 @@ export default class CLocalPlayer {
         this._pedId          = PlayerPedId();
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
+        this._group          = data.playerGroup;
+        this._level          = data.playerLevel;
+        this._rank           = data.playerRank;
+        this._job            = data.playerJob;
+        this._jobRank        = data.playerJobRank;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._dead           = data.dead;
-        this._level          = data.playerLevel;
-        this._group          = data.playerGroup;
-        this._rank           = data.playerRank;
         this._invincible     = false;
         this._invisible      = false;
         this._freeze         = false;
         this._blockInput     = false;
-        this._initialized    = false; // Has Spawned
+        this._initialized    = false;
 
         this.spawnPlayer();
     }
@@ -129,16 +131,27 @@ export default class CLocalPlayer {
     }
 
     /**
+    * @param {Object} job
+    */
+    set job(job) {
+        this._job = job;
+    }
+
+    /**
+    * @param {number} rankId
+    */
+    set jobRank(rankId) {
+        this._jobRank = rankId;
+    }
+
+    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
         this._initialized = toggle;
 
-        if (this._initialized)
-            this.onInitialized();
+        if (this._initialized) this.onInitialized();
     }
-
-    //Set Job and Job Rank
 
     //Getters
     get playerId() {
@@ -201,15 +214,21 @@ export default class CLocalPlayer {
         return this._blockInput;
     }
 
+    get job() {
+        return this._job;
+    }
+    
+    get jobRank() {
+        return this._jobRank;
+    }
+
     get initialized() {
         return this._initialized;
     }
 
-    //Get Job and Job Rank
-
     //Functions
     spawnPlayer = async () => {
-        await Delay(2500);
+        //await Delay(2500);
         exports.spawnmanager.spawnPlayer({
             x: this._spawnLocation.x,
             y: this._spawnLocation.y,
@@ -296,14 +315,12 @@ export default class CLocalPlayer {
         setTick(() => {
             const enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
-                let modelEntering = GetEntityModel(enteringVeh);
+                const modelEntering = GetEntityModel(enteringVeh);
                 if (!IsEntityAMissionEntity(enteringVeh) && !GetVehicleDoorsLockedForPlayer(enteringVeh, this._Id) &&
                     (IsThisModelACar(modelEntering) || IsThisModelABike(modelEntering) || IsThisModelAHeli(modelEntering) || IsThisModelAPlane(modelEntering)) && !IsThisModelABicycle(modelEntering)) {
-                        let pedInSeatCount = GetPedInVehicleSeat(enteringVeh, -1);
-                        if (pedInSeatCount && !IsPedAPlayer(pedInSeatCount))
-                            ClearPedTasks(this._pedId);
-                        else if (pedInSeatCount == 0)
-                            SetVehicleDoorsLockedForPlayer(enteringVeh, this._Id, true);
+                        const pedInSeatCount = GetPedInVehicleSeat(enteringVeh, -1);
+                        if (pedInSeatCount && !IsPedAPlayer(pedInSeatCount)) ClearPedTasks(this._pedId);
+                        else if (pedInSeatCount == 0) SetVehicleDoorsLockedForPlayer(enteringVeh, this._Id, true);
                     }
             }
     

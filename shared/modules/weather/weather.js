@@ -14,4 +14,4 @@ zFramework.Modules.Weather.List = [
 ];
 
 zFramework.Modules.Weather.Current = zFramework.Modules.Weather.List[7].name;
-zFramework.Modules.Weather.Time = {Hour: 8, Minute: 0};
+zFramework.Modules.Weather.Time = { Hour: 8, Minute: 0 };

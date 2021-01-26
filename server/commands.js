@@ -36,30 +36,40 @@ new CCommands("bring", zFramework.Groups.ADMIN, (player, args, source) => {
 
 new CCommands("setgroup", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     const target = zFramework.Players[args[0]];
-    if (!target || args[0] == source) return;
+    if (!target) return;
     if (args[1] && args[1] > zFramework.Groups.SUPERADMIN || args[1] < zFramework.Groups.PLAYER) return;
 
     target.group = parseInt(args[1]);
 
     target.notify(`~g~Vous~w~ avez été ajouté au groupe ${args[1]} !`);
-    if (player)
-        player.notify(`~g~${target.name}~w~ à été ajouté au groupe ${args[1]} !`);
-    else
-        console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
+    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au groupe ${args[1]} !`);
+    else console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
 }, {help: "haha"});
 
 new CCommands("setrank", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     const target = zFramework.Players[args[0]];
-    if (!target || args[0] == source) return;
-    if (args[1] && args[1] > zFramework.Groups.VIIP || args[1] < zFramework.Groups.CITIZEN) return;
+    if (!target) return;
+    if (args[1] && args[1] > zFramework.Groups.SUPERVIP || args[1] < zFramework.Groups.CITIZEN) return;
     
     target.rank = parseInt(args[1]);
 
     target.notify(`~g~Vous~w~ avez été ajouté au rank ${args[1]} !`);
-    if (player)
-        player.notify(`~g~${target.name}~w~ à été ajouté au rank ${args[1]} !`);
-    else
-        console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
+    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au rank ${args[1]} !`);
+    else console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
+}, { help: "haha" });
+
+new CCommands("setjob", zFramework.Groups.SUPERADMIN, (player, args, source) => {
+    const target = zFramework.Players[args[0]];
+    if (!target) return;
+
+    target.job = parseInt(args[1]);
+    
+    const jobName = zFramework.Jobs[args[1]].name;
+    if (jobName) return;
+
+    target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
+    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
+    else console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
 new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args, source) => {

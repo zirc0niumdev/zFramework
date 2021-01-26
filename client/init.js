@@ -1,12 +1,12 @@
 import CLocalPlayer from './class/CLocalPlayer.js';
 
 const waitingForPlayer = setTick(() => {
-	if (NetworkIsPlayerActive(PlayerId())) {
+	if (NetworkIsPlayerActive(PlayerId())){
 		serverEvent('Server.GeneratePlayer');
 		clearTick(waitingForPlayer);
 	}
 });
-
+ 
 on("onPlayerSpawn", () => {
 	UpdateVar("pedId", PlayerPedId());
 

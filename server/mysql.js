@@ -9,7 +9,7 @@ const con = createConnection({
 	database: process.env.DB_DATABASE
 });
 
-con.connect(async function(err) {
+con.connect(err => {
 	if (err) return console.error(err);
   
 	console.log("\x1b[33m[zFramework MySQL] \x1b[32mConnected to Database!\x1b[37m");
@@ -19,12 +19,9 @@ con.connect(async function(err) {
 zFramework.DB.Query = (q, args) => {
 	return new Promise((resolve, reject) => {
 		con.query(q, args, function(err, result) {
-			if (err) {
-				console.error(err.stack);
-				return reject(err);
-			}
+			if (err) return reject(err);
 			
-			resolve(result);
+			return resolve(result);
 		});
 	});
 }
