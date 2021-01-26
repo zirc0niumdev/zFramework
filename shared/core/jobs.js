@@ -30,4 +30,17 @@ const livreur = {
 
 zFramework.Jobs[Object.keys(livreur)[0]] = livreur[3];
 
-//zFramework.SecondJobs = {}
+zFramework.Jobs.GetJobFromId = id => {
+	return new Promise((resolve, reject) => {
+        const job = zFramework.Jobs[id];
+		if (!job) reject(console.error("can't get job with id: " + id));
+		
+		resolve(job);
+	});
+}
+
+zFramework.Jobs.GetJobNameFromId = id => {
+    const job = this.GetJobFromId(id);
+
+    return job.name;
+}

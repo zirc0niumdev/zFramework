@@ -8,8 +8,8 @@ export default class CCommands {
 		if (!this._suggestion.help) this._suggestion.help = '';
 		emitNet('chat:addSuggestion', -1, `/${this._name}`, this._suggestion.help, this._suggestion.arguments); // not good method.
 
-		RegisterCommand(this._name, (source, args) => {
-			next(zFramework.Players[source] || null, args, source);
+		RegisterCommand(this._name, async (source, args) => {
+			next(await zFramework.Functions.GetPlayerFromId(source), args, source);
 		}, true);
 
 		ExecuteCommand(`add_ace group.${this._group} command.${this._name} allow`);

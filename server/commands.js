@@ -8,15 +8,13 @@ new CCommands("car", zFramework.Groups.ADMIN, (player, args) => {
     SetPedIntoVehicle(player.pedId, veh, -1);
 
     player.notify(`~g~${car}~w~ spawn !`);
-}, {help: "haha", arguments: {name: "vehicle name", help: "hahad"}});
+}, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } });
 
-new CCommands("fixcar", zFramework.Groups.ADMIN, (player, args) => {
-    player.clientEvent("Client.RepairVehicle");
-}, {help: "haha"});
+new CCommands("fixcar", zFramework.Groups.ADMIN, (player, args) => player.clientEvent("Client.RepairVehicle"), { help: "haha" });
 
-new CCommands("goto", zFramework.Groups.ADMIN, (player, args, source) => {
-    const target = zFramework.Players[args[0]];
-    if (!target || args[0] == source) return;
+new CCommands("goto", zFramework.Groups.ADMIN, async (player, args, source) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
+    if (args[0] == source) return;
 
     player.setLocation(target.getLocation());
 
@@ -24,9 +22,9 @@ new CCommands("goto", zFramework.Groups.ADMIN, (player, args, source) => {
     target.notify(`~g~${player.name}~w~ s'est téléporté à vous !`);
 }, {help: "haha"});
 
-new CCommands("bring", zFramework.Groups.ADMIN, (player, args, source) => {
-    const target = zFramework.Players[args[0]];
-    if (!target || args[0] == source) return;
+new CCommands("bring", zFramework.Groups.ADMIN, async (player, args, source) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
+    if (args[0] == source) return;
 
     target.setLocation(player.getLocation());
 
@@ -34,9 +32,8 @@ new CCommands("bring", zFramework.Groups.ADMIN, (player, args, source) => {
     target.notify(`~g~${player.name}~w~ vous à téléporté !`);
 }, {help: "haha"});
 
-new CCommands("setgroup", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    const target = zFramework.Players[args[0]];
-    if (!target) return;
+new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
     if (args[1] && args[1] > zFramework.Groups.SUPERADMIN || args[1] < zFramework.Groups.PLAYER) return;
 
     target.group = parseInt(args[1]);
@@ -46,9 +43,8 @@ new CCommands("setgroup", zFramework.Groups.SUPERADMIN, (player, args, source) =
     else console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
 }, {help: "haha"});
 
-new CCommands("setrank", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    const target = zFramework.Players[args[0]];
-    if (!target) return;
+new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
     if (args[1] && args[1] > zFramework.Groups.SUPERVIP || args[1] < zFramework.Groups.CITIZEN) return;
     
     target.rank = parseInt(args[1]);
@@ -58,20 +54,18 @@ new CCommands("setrank", zFramework.Groups.SUPERADMIN, (player, args, source) =>
     else console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
 }, { help: "haha" });
 
-new CCommands("setjob", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    const target = zFramework.Players[args[0]];
-    if (!target) return;
+new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
 
     target.job = parseInt(args[1]);
     
-    const jobName = zFramework.Jobs[args[1]].name;
-    if (jobName) return;
-
+    const jobName = zFramework.Jobs.GetJobNameFromId(args[1]);
     target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
     else console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
+// Move this to Weather Module
 new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args, source) => {
     zFramework.Modules.Weather.Freezed = !zFramework.Modules.Weather.Freezed;
     player.notify(`~g~Vous~w~ avez ${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"} le temps !`);
@@ -89,8 +83,6 @@ new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args, source) => {
 }, {help: "haha"});
 
 new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    if (!args[0]) return;
-    
     const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name === args[0]);
     if (!weatherFound) return;
 

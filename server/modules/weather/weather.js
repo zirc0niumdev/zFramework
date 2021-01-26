@@ -33,10 +33,9 @@ zFramework.Modules.Weather.Initialize = function() {
     this.Initialized = true;
 }
 
-onNet("Server.onPlayerSpawned", () => {
+onNet("Server.onPlayerSpawned", async () => {
     if (!zFramework.Modules.Weather.Initialized) return;
-	const player = zFramework.Players[global.source];
-    if (!player) return;
+	const player = await zFramework.Functions.GetPlayerFromId(source);
 
 	// Sync Weather
 	player.clientEvent('Client.SetWeather', zFramework.Modules.Weather.Current, zFramework.Modules.Weather.Time);

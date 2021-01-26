@@ -19,9 +19,9 @@ con.connect(err => {
 zFramework.DB.Query = (q, args) => {
 	return new Promise((resolve, reject) => {
 		con.query(q, args, function(err, result) {
-			if (err) return reject(err);
+			if (err) reject(err);
 			
-			return resolve(result);
+			resolve(result);
 		});
 	});
 }

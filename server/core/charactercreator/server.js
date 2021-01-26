@@ -1,6 +1,5 @@
-onNet("Server.ChangeGender", function(genderIndex) {
-	const player = zFramework.Players[global.source];
-    if (!player) return;
+onNet("Server.ChangeGender", async genderIndex => {
+	const player = await zFramework.Functions.GetPlayerFromId(source);
 
     let genderSkin = "mp_m_freemode_01";
     if (genderIndex == 1) genderSkin = "mp_f_freemode_01";
@@ -8,9 +7,9 @@ onNet("Server.ChangeGender", function(genderIndex) {
     player.model = genderSkin;
 });
 
-onNet("Server.SaveCharacter", function(data) {
-	const player = zFramework.Players[global.source];
-    if (!player || player.firstSpawn || player.identity && player.skin) return;
+onNet("Server.SaveCharacter", async data => {
+	const player = await zFramework.Functions.GetPlayerFromId(source);
+    if (player.firstSpawn || player.identity && player.skin) return;
 
     player.identity = data[0];
     player.skin = data[1];

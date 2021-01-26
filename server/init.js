@@ -1,6 +1,6 @@
 import CPlayer from './class/CPlayer.js';
 
-zFramework.Functions.onReady = function() {
+zFramework.Functions.onReady = () => {
 	if (zFramework.Initialized) return;
 
 	zFramework.Modules.Initialize();
@@ -8,58 +8,47 @@ zFramework.Functions.onReady = function() {
 	console.log("\x1b[33m[zFramework] \x1b[32mzFramework is ready!\x1b[37m");
 }
 
-on("playerConnecting", async(_, __, deferrals) => {
-	const player = global.source;
+// Simplify that
+on("playerConnecting", async (_, __, deferrals) => {
+	const playerId = global.source;
 
-	console.log(`${GetPlayerName(player)} joined!`);
+	console.log(`${GetPlayerName(playerId)} joined!`);
 
 	deferrals.defer();
-	await Delay(500);
-	deferrals.update("Vérification...");
 	await Delay(500);
 	if (!zFramework.Initialized) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-server-starting");
 	if (!GetPlayerEndpoint(player)) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-finding-endpoint");
 
-	// VPN Check
-	//let geo = geoip.lookup(GetPlayerEndpoint(player));
-	//if (!geo) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-geo-module-null");
-	//if (geo.country != "FR" && geo.country != "BE" && geo.country != "CA" && geo.country != "CH") return deferrals.done("Tu as un VPN ? Bye.");
-
 	// Ban Check
-
 	// Whitelist Module Check
 	
 	deferrals.done();
 });
 
 onNet('Server.GeneratePlayer', async () => {
-	const player = global.source;
-	
-	if (zFramework.Players[player]) return DropPlayer(player, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
+	const playerId = global.source;
+	if (await zFramework.Functions.GetPlayerFromId(playerId)) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
+	// Move that to Connection Event
 	let identifiers = { license: null, discord: null };
-    for(let i = 0; i < GetNumPlayerIdentifiers(player); i++) {
-        const identifier = GetPlayerIdentifier(player, i);
-
-		if (identifier.includes('license:'))
-			identifiers.license = identifier;
-			
-		if (identifier.includes('discord:')) 
-			identifiers.discord = identifier;
+    for(let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
+        const identifier = GetPlayerIdentifier(playerId, i);
+		if (identifier.includes('license:')) identifiers.license = identifier;
+		if (identifier.includes('discord:')) identifiers.discord = identifier;
     }
 
-	if (!identifiers.discord) return DropPlayer(player, "Vous devez lier votre compte Discord à FiveM.");
+	if (!identifiers.discord) return DropPlayer(playerId, "Vous devez lier votre compte Discord à FiveM.");
 
 	await zFramework.DB.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {
 		// Can simplify that
 		let tempPlayerData = null;
 			
-		tempPlayerData = { serverId: player, pedId: GetPlayerPed(player), playerName: GetPlayerName(player), spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})), playerModel: "mp_m_freemode_01", licenseId: identifiers.license, discordId: identifiers.discord, dead: false, playerLevel: 0, playerGroup: zFramework.Groups.PLAYER, playerRank: zFramework.Ranks.CITIZEN, firstSpawn: true, playerIdentity: null, playerSkin: null} ;
+		tempPlayerData = { serverId: playerId, pedId: GetPlayerPed(playerId), playerName: GetPlayerName(playerId), spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})), playerModel: "mp_m_freemode_01", licenseId: identifiers.license, discordId: identifiers.discord, dead: false, playerLevel: 0, playerGroup: zFramework.Groups.PLAYER, playerRank: zFramework.Ranks.CITIZEN, firstSpawn: true, playerIdentity: null, playerSkin: null} ;
 	
 		if (res[0]) tempPlayerData = {
-			serverId: player,
-			pedId: GetPlayerPed(player),
-			playerName: GetPlayerName(player),
+			serverId: playerId,
+			pedId: GetPlayerPed(playerId),
+			playerName: GetPlayerName(playerId),
 			spawnLocation: JSON.parse(res[0].location),
 			playerModel: res[0].model,
 			playerGroup: res[0].group,
@@ -74,30 +63,27 @@ onNet('Server.GeneratePlayer', async () => {
 			playerIdentity: JSON.parse(res[0].identity)
 		};
 	
-		if (!tempPlayerData) return DropPlayer(player, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-initializing-data");
+		if (!tempPlayerData) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-initializing-data");
 	
-		zFramework.Players[player] = new CPlayer(tempPlayerData);
+		zFramework.Players[playerId] = new CPlayer(tempPlayerData);
 	});
 });
 
-onNet("Server.onPlayerSpawned", () => {
-	const player = zFramework.Players[global.source];
-	if (!player) return;
+onNet("Server.onPlayerSpawned", async () => {
+	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 
 	player.initialized = true;
 	player.clientEvent('Client.UpdateVar', "initialized", player.initialized);
 });
 
-on("playerDropped", (reason) => {
-	const player = zFramework.Players[global.source];
-	if (!player) return;
+on("playerDropped", async reason => {
+	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`${player.name} disconnected - ${reason}`);
 
-	player.savePlayer().then(() => {
-		zFramework.Players[player.serverId] = null;
-	});
+	player.savePlayer().then(() => zFramework.Players[player.serverId] = null);
 });
 
+// Simplify that
 onNet("chatMessage", (_, __, message) => {
 	if (!message.includes('/')) return CancelEvent();
 
