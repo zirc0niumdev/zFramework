@@ -65,31 +65,5 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args, sourc
     else console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
-// Move this to Weather Module
-new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    zFramework.Modules.Weather.Freezed = !zFramework.Modules.Weather.Freezed;
-    player.notify(`~g~Vous~w~ avez ${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"} le temps !`);
-}, {help: "haha"});
-
-new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    if (args[0] && args[0] > 23 || args[0] < 0) return;
-    if (args[1] && args[1] > 59 || args[1] < 0) return;
-
-    zFramework.Modules.Weather.Time.Hour = Number(args[0]);
-    zFramework.Modules.Weather.Time.Minute = Number(args[1]);
-
-    emitNet('Client.SetWeather', -1, null, zFramework.Modules.Weather.Time);
-    player.notify(`~g~Vous~w~ avez set le temps à ${args[0]} ${args[1]} !`);
-}, {help: "haha"});
-
-new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) => {
-    const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name === args[0]);
-    if (!weatherFound) return;
-
-    emitNet('Client.SetWeather', -1, weatherFound.name, null);
-    player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
-}, {help: "haha"});
-
 new CCommands("test", zFramework.Groups.DEV, (player, args, source) => {
-    zFramework.Modules.Whitelist.CheckUser("aaa");
 }, {help: "haha"});
