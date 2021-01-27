@@ -51,29 +51,45 @@ onNet('Server.GeneratePlayer', async () => {
 
 	await zFramework.DB.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {
 		// Can simplify that
-		let tempPlayerData = null;
+		// let tempPlayerData = null;
 			
-		tempPlayerData = { serverId: playerId, pedId: GetPlayerPed(playerId), playerName: GetPlayerName(playerId), spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})), playerModel: "mp_m_freemode_01", licenseId: identifiers.license, discordId: identifiers.discord, dead: false, playerLevel: 0, playerGroup: zFramework.Groups.PLAYER, playerRank: zFramework.Ranks.CITIZEN, firstSpawn: true, playerIdentity: null, playerSkin: null} ;
+		// tempPlayerData = {
+		// 	serverId: playerId,
+		// 	pedId: GetPlayerPed(playerId),
+		// 	playerName: GetPlayerName(playerId),
+		// 	spawnLocation: JSON.parse(JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})),
+		// 	playerModel: "mp_m_freemode_01",
+		// 	playerGroup: zFramework.Groups.PLAYER,
+		// 	playerLevel: 0,
+		// 	playerRank: zFramework.Ranks.CITIZEN,
+		// 	licenseId: identifiers.license,
+		// 	discordId: identifiers.discord,
+		// 	dead: false,
+		// 	firstSpawn: true,
+		// 	playerSkin: null,
+		// 	playerIdentity: null
+		// }
 	
-		if (res[0]) tempPlayerData = {
+		const tempPlayerData = {
 			serverId: playerId,
 			pedId: GetPlayerPed(playerId),
 			playerName: GetPlayerName(playerId),
-			spawnLocation: JSON.parse(res[0].location),
-			playerModel: res[0].model,
-			playerGroup: res[0].group,
-			playerLevel: res[0].level,
-			playerRank: res[0].rank,
-			playerJob: zFramework.Jobs[res[0].job],
-			playerJobRank: res[0].job_rank,
-			licenseId: res[0].license,
-			discordId: res[0].discord,
-			dead: res[0].dead,
-			playerSkin: JSON.parse(res[0].skin),
-			playerIdentity: JSON.parse(res[0].identity)
-		};
+			spawnLocation: JSON.parse(res[0].location || JSON.stringify({x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0})),
+			playerModel: res[0].model || "mp_m_freemode_01",
+			playerGroup: res[0].group || zFramework.Groups.PLAYER,
+			playerLevel: res[0].level || 0,
+			playerRank: res[0].rank || zFramework.Ranks.CITIZEN,
+			playerJob: zFramework.Jobs[res[0].job || 1],
+			playerJobRank: res[0].job_rank || 0,
+			licenseId: res[0].license || identifiers.license,
+			discordId: res[0].discord || identifiers.discord,
+			dead: res[0].dead || false,
+			firstSpawn: res[0] ? false : true,
+			playerSkin: JSON.parse(res[0].skin) || null,
+			playerIdentity: JSON.parse(res[0].identity) || null
+		}
 	
-		if (!tempPlayerData) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-initializing-data");
+		// if (!tempPlayerData) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-initializing-data");
 	
 		zFramework.Players[playerId] = new CPlayer(tempPlayerData);
 	});

@@ -1,3 +1,5 @@
+import CCommands from '../../class/CCommands';
+
 zFramework.Modules.Weather.PickWeather = data => {
     const winner = Number(Math.random().toFixed(2));
     for (let i=0; i < data.length; i++) {
@@ -30,7 +32,7 @@ zFramework.Modules.Weather.Initialize = function() {
         emitNet('Client.SetWeather', -1, weatherFound.name, null);
         player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
     }, {help: "haha"});
-    
+
     // Time of Day
     const timeChangeInterval = setInterval(() => {
         if (this.Freezed == false) return;
