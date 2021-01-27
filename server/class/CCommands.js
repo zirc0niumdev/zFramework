@@ -9,7 +9,7 @@ export default class CCommands {
 
 		RegisterCommand(this._name, async (source, args) => {
 			zFramework.Commands[this._name] = this._suggestion;
-			next(await zFramework.Functions.GetPlayerFromId(source), args, source);
+			next(source > 0 ? await zFramework.Functions.GetPlayerFromId(source) : null, args, source);
 		}, true);
 
 		ExecuteCommand(`add_ace group.${this._group} command.${this._name} allow`);
