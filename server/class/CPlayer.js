@@ -192,9 +192,7 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
-    getIdentifiers = (minimal) => {
-        zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
-    };
+    getIdentifiers = (minimal) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 

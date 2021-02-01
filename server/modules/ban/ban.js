@@ -26,6 +26,7 @@ zFramework.Modules.Ban.OnInitialize = function() {
 zFramework.Modules.Ban.CheckUser = async function(id, identifiers) {
     if (!this.Initialized) return;
     
+    // might not work as intented.
     return new Promise((resolve, reject) => {
         this.Users.some(bans => {
             const bannedIdentifiers = JSON.parse(bans.identifiers);
@@ -44,7 +45,7 @@ zFramework.Modules.Ban.CheckUser = async function(id, identifiers) {
             });
         });
                 
-        resolve(id);
+        resolve();
     });
 }
 
