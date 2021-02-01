@@ -25,7 +25,7 @@ zFramework.Modules.Whitelist.CheckUser = async function(id) {
 zFramework.Modules.Whitelist.Refresh = async function() {
     if (!this.Initialized) return;
     
-    await zFramework.DB.Query('SELECT * FROM whitelist').then(res => {
+    await zFramework.Database.Query('SELECT * FROM whitelist').then(res => {
         for (let i = 0; i < res.length; i++) this.Users[i] = res[i].discord;
     });
 }

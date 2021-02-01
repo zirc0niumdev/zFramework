@@ -16,10 +16,10 @@ con.connect(err => {
 	zFramework.Functions.onReady();
 });
 
-zFramework.DB.Query = (q, args) => {
+zFramework.Database.Query = (q, args) => {
 	return new Promise((resolve, reject) => {
 		con.query(q, args, function(err, result) {
-			if (err) reject(err);
+			if (err) reject(`${err.code}: ${err.sqlMessage}`);
 			
 			resolve(result);
 		});

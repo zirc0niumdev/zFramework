@@ -192,15 +192,22 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
+    getIdentifiers = (minimal = false) => {
+        let identifiers = minimal ? [] : {};
+        for (let i = 0; i < GetNumPlayerIdentifiers(this._serverId); i++) identifiers[i] = GetPlayerIdentifier(this._serverId, i);
+        
+        return identifiers;
+    }
+
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
     setLocation = (location) => SetEntityCoords(this._pedId, location.x, location.y, location.z);
 
     canSave = () => this._initialized;
 
-    kick = (reason) => DropPlayer(this._serverId, reason || null);
+    kick = (reason) => DropPlayer(this._serverId, reason || "Aucune raison spécifiée");
 
-    //ban = (args...) => ...
+    ban = (time, reason) => ExecuteCommand(`banadd ${this._serverId} ${time} ${reason}`);
 
     notify = (text) => this.clientEvent("Client.Notify", text || "~r~empty notification - error code:first param was empty.");
     
@@ -210,12 +217,12 @@ export default class CPlayer {
         let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, Object.keys(this._job)[0], this._jobRank, this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.DB.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
 
-        return await zFramework.DB.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ? WHERE license = ?', playerData).then(() => {
+        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ? WHERE license = ?', playerData).then(() => {
             console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
         });
     }
