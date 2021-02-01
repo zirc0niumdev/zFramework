@@ -35,31 +35,21 @@ on("playerConnecting", async (_, __, deferrals) => {
 	if (zFramework.Modules.List.Ban && zFramework.Modules.Ban.Initialized) {
 		try {
 			deferrals.update('Vérification banlist...');
-			await zFramework.Modules.Ban.CheckUser(identifiers);
+			await zFramework.Modules.Ban.CheckUser(playerId, identifiers);
 		} catch(err) {
 			deferrals.done(err);
 		}
 	}
 
-	// // Whitelist verification
-	// let discordIdentifier = null;
-	// for (let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
-	// 	const identifier = GetPlayerIdentifier(playerId, i);
-	// 	if (identifier.includes('discord:')) discordIdentifier = identifier;
-	// }
-
-	// if (zFramework.Modules.List.Whitelist && zFramework.Modules.Whitelist.Initialized) {
-	// 	if (discordIdentifier) {
-	// 		try {
-	// 			deferrals.update('Vérification whitelist...');
-	// 			await zFramework.Modules.Whitelist.CheckUser(discordIdentifier.replace('discord:', ''));
-	// 		} catch(err) {
-	// 			console.log(err);
-	// 			//deferrals.done("Vous n'êtes pas whitelist.");
-	// 		}
-	// 	}
-	// 	else return deferrals.done("Vous devez lier votre compte Discord à FiveM.");
-	// }
+	// Whitelist verification
+	if (zFramework.Modules.List.Whitelist && zFramework.Modules.Whitelist.Initialized) {
+		try {
+			deferrals.update('Vérification whitelist...');
+			await zFramework.Modules.Whitelist.CheckUser(identifiers.discord.replace('discord:', ''));
+		} catch(err) {
+			deferrals.done(err);
+		}
+	}
 	
 	deferrals.done();
 });
@@ -68,13 +58,7 @@ onNet('Server.GeneratePlayer', async () => {
 	const playerId = global.source;
 	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
-	let identifiers = { license: null, discord: null };
-    for (let i = 0; i < GetNumPlayerIdentifiers(playerId); i++) {
-        const identifier = GetPlayerIdentifier(playerId, i);
-		if (identifier.includes('license:')) identifiers.license = identifier;
-		if (identifier.includes('discord:')) identifiers.discord = identifier;
-    }
-
+	const identifiers = zFramework.Functions.GetIdentifiersFromId(playerId);
 	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {	
 		const tempPlayerData = {
 			serverId: playerId,

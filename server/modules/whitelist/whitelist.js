@@ -16,7 +16,7 @@ zFramework.Modules.Whitelist.CheckUser = async function(id) {
     
 	return new Promise((resolve, reject) => {
         const foundUser = this.Users.find(userId => userId === id);
-		if (!foundUser) reject();
+		if (!foundUser) reject("Vous n'êtes pas Whitelist");
 		
 		resolve(foundUser);
 	});

@@ -23,17 +23,28 @@ zFramework.Modules.Ban.OnInitialize = function() {
     this.Refresh();
 }
 
-zFramework.Modules.Ban.CheckUser = async function(identifiers) {
+zFramework.Modules.Ban.CheckUser = async function(id, identifiers) {
     if (!this.Initialized) return;
     
     return new Promise((resolve, reject) => {
         this.Users.some(bans => {
-            bans.identifiers.some(identifier => {
-            
+            const bannedIdentifiers = JSON.parse(bans.identifiers);
+            bannedIdentifiers.some(bannedIdentifier => {
+                if (bannedIdentifier.includes(identifiers.discord) && bannedIdentifier.includes(identifiers.license)
+                && bannedIdentifier.includes(identifiers.steam) && bannedIdentifier.includes(identifiers.ip)
+                && bannedIdentifier.includes(identifiers.license2) && bannedIdentifier.includes(identifiers.xbox)) {
+                    reject(bans.reason);
+                } else if (bannedIdentifier.includes(identifiers.discord) || bannedIdentifier.includes(identifiers.license)
+                || bannedIdentifier.includes(identifiers.steam) || bannedIdentifier.includes(identifiers.ip)
+                || bannedIdentifier.includes(identifiers.license2) || bannedIdentifier.includes(identifiers.xbox)) {
+                    // Bypass ban protection, can be improved.
+                    //ExecuteCommand(`banadd ${id} -1 Essaye de bypass le ban`); Need to be fixed
+                    reject(bans.reason);
+                }
             });
         });
-		
-        resolve(foundUser);
+                
+        resolve(id);
     });
 }
 

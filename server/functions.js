@@ -9,15 +9,21 @@ zFramework.Functions.GetPlayerFromId = id => {
 	});
 }
 
+zFramework.Functions.GetIdentifiersFromId = (id, minimal = false) => {
+	const identifiers = global.getPlayerIdentifiers(id);
+	if (minimal) return identifiers;
+        
+	let identifiersObj = {};
+	for (const identifier of identifiers) identifiersObj[identifier.split(':')[0]] = identifier;
+
+	return identifiersObj;
+}
+
 zFramework.Functions.CheckIdentifiers = id => {
 	return new Promise((resolve, reject) => {
-		let identifiers = [];
-        for (let i = 0; i < GetNumPlayerIdentifiers(id); i++) identifiers[i] = GetPlayerIdentifier(id, i);
-
-		const discordidentifier = identifiers.some(identifier => identifier.includes('discord'));
-		if (!discordidentifier) reject("Connectez votre compte discord à FiveM pour jouer sur SantosRP.");
-		const steamidentifier = identifiers.some(identifier => identifier.includes('steam'));
-		if (!steamidentifier) reject("Lancez steam pour jouer sur SantosRP.");
+		const identifiers = zFramework.Functions.GetIdentifiersFromId(id);
+		if (!identifiers.discord) reject("Connectez votre compte discord à FiveM pour jouer sur SantosRP.");
+		if (!identifiers.steam) reject("Lancez steam pour jouer sur SantosRP.");
 		
 		resolve(identifiers);
 	});
