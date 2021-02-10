@@ -192,7 +192,7 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
-    getIdentifiers = (minimal) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
+    getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
@@ -200,11 +200,11 @@ export default class CPlayer {
 
     canSave = () => this._initialized;
 
-    kick = (reason) => DropPlayer(this._serverId, reason || "Aucune raison spécifiée");
+    kick = (reason = "Aucune raison spécifiée") => DropPlayer(this._serverId, reason);
 
     ban = (time, reason) => ExecuteCommand(`banadd ${this._serverId} ${time} ${reason}`);
 
-    notify = (text) => this.clientEvent("Client.Notify", text || "~r~empty notification - error code:first param was empty.");
+    notify = (text) => this.clientEvent("Client.Notify", text);
     
     savePlayer = async () => {
         if (!this.canSave()) return;

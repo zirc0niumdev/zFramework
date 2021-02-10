@@ -12,9 +12,10 @@ zFramework.Functions.onReady = () => {
 on("playerConnecting", async (_, __, deferrals) => {
 	const playerId = global.source;
 
-	console.log(`${GetPlayerName(playerId)} joined!`);
+	console.log(`[${global.source}] ${GetPlayerName(playerId)} joined!`);
 
 	deferrals.defer();
+	
 	await Delay(500);
 
 	if (!zFramework.Initialized) return deferrals.done("Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-server-starting");
@@ -35,7 +36,7 @@ on("playerConnecting", async (_, __, deferrals) => {
 	if (zFramework.Modules.List.Ban && zFramework.Modules.Ban.Initialized) {
 		try {
 			deferrals.update('Vérification banlist...');
-			await zFramework.Modules.Ban.CheckUser(playerId, identifiers);
+			await zFramework.Modules.Ban.CheckUser(identifiers);
 		} catch(err) {
 			deferrals.done(err);
 		}
@@ -94,7 +95,7 @@ onNet("Server.onPlayerSpawned", async () => {
 });
 
 on("playerDropped", async reason => {
-	console.log(`${GetPlayerName(global.source)} disconnected - ${reason}`);
+	console.log(`[${global.source}] ${GetPlayerName(global.source)} disconnected - ${reason}`);
 	
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	player.savePlayer().then(() => zFramework.Players[player.serverId] = null);
