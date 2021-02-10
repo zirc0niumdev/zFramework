@@ -11,7 +11,7 @@ zFramework.Modules.Ban.Initialize = function() {
         
         await zFramework.Database.Query('INSERT INTO bans (identifiers, reason, banner, date) VALUES (?, ?, ?, ?)', banData).then(async () => {
             await this.Refresh();
-            target.kick(`Vous avez été ban de SantosRP.\nRaison: ${reason}\nTemps: ${time == -1 ? "infini" : (time > 1 ? `${temps} jours` : `${temps} jour`)}`);
+            target.kick(`Vous avez été ban de SantosRP.\nRaison: ${reason}\nTemps: ${time == -1 ? "Infini" : (time > 1 ? `${temps} jours` : `${temps} jour`)}`);
         });
 
     }, {help: "haha"});
@@ -31,11 +31,11 @@ zFramework.Modules.Ban.CheckUser = async function(identifiers) {
     return new Promise((resolve, reject) => {
         this.Users.some(bans => {
             const bannedIdentifiers = JSON.parse(bans.identifiers);
-            for (const bannedIdentifier of bannedIdentifiers)
+            for (const identifier in bannedIdentifiers)
             {
-                if (bannedIdentifier.includes(identifiers.discord) || bannedIdentifier.includes(identifiers.license)
-                || bannedIdentifier.includes(identifiers.steam) || bannedIdentifier.includes(identifiers.ip)
-                || bannedIdentifier.includes(identifiers.license2) || bannedIdentifier.includes(identifiers.xbox)) {
+                if (bannedIdentifiers[identifier].includes(identifiers.discord) || bannedIdentifiers[identifier].includes(identifiers.license)
+                || bannedIdentifiers[identifier].includes(identifiers.steam) || bannedIdentifiers[identifier].includes(identifiers.ip)
+                || bannedIdentifiers[identifier].includes(identifiers.license2) || bannedIdentifiers[identifier].includes(identifiers.xbox)) {
                     reject(bans.reason);
                 }
             }
