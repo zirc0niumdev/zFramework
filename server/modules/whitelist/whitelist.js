@@ -1,7 +1,37 @@
 import CCommands from '../../class/CCommands';
 
 zFramework.Modules.Whitelist.Initialize = function() {
-    new CCommands("wlrefresh", zFramework.Groups.SUPERADMIN, (player, args, source) => this.Refresh(), {help: "haha"});
+        // ADD COMMAND
+        new CCommands("wla", zFramework.Groups.ADMIN, async (player, args) => {
+            const discordId = args[0];
+            
+            await zFramework.Database.Query('INSERT INTO `whitelist` (discord) VALUE (?)', discordId).then(async () => {
+                await this.Refresh();
+
+                if (player) player.notify(`~b~ID Discord:~s~ ${discordId}\nWHITELIST.`);
+                else console.log(`ID Discord: ${discordId}\nWHITELIST.`);
+            });
+    
+        }, {help: "haha"});
+    
+        // DELETE COMMAND
+        new CCommands("wld", zFramework.Groups.ADMIN, (player, args) => {
+            const discordId = args[0];
+            
+            this.Users.some(async wl => {
+                if (wl == discordId) {
+                    await zFramework.Database.Query('DELETE FROM `whitelist` WHERE `discord` = ?', discordId).then(async () => {
+                        if (player) player.notify(`~b~ID Discord:~s~ ${discordId}\nUNWHITELIST.`);
+                        else console.log(`ID Discord: ${discordId}\nUNWHITELIST.`);
+    
+                        await this.Refresh();
+                    });
+                } else {
+                    if (player) player.notify("~r~Cet utilisateur n'est pas whitelist.");
+                    else console.log("Cet utilisateur n'est pas whitelist.");
+                }
+            });
+        }, {help: "haha"});
     
     this.Initialized = true;
     this.OnInitialize();
@@ -26,6 +56,7 @@ zFramework.Modules.Whitelist.Refresh = async function() {
     if (!this.Initialized) return;
     
     await zFramework.Database.Query('SELECT * FROM whitelist').then(res => {
+        if (this.Users !== []) this.Users = [];
         for (let i = 0; i < res.length; i++) this.Users[i] = res[i].discord;
     });
 }

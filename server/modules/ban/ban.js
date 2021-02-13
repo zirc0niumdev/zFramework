@@ -30,7 +30,7 @@ zFramework.Modules.Ban.Initialize = function() {
                 await zFramework.Database.Query('DELETE FROM `bans` WHERE `id` = ?', id).then(async () => {
                     if (player) player.notify(`~b~Nom:~s~ ${ban.username}\n~b~ID de ban:~s~ ${ban.id}\nDEBAN.`);
                     else console.log(`Nom: ${ban.username}\nID de ban: ${ban.id}\nDEBAN.`);
-                    
+
                     await this.Refresh();
                 });
             } else {
@@ -66,7 +66,7 @@ zFramework.Modules.Ban.Refresh = async function() {
     if (!this.Initialized) return;
     
     await zFramework.Database.Query('SELECT * FROM bans').then(res => {
-        this.Users = [];
+        if (this.Users !== []) this.Users = [];
         for (let i = 0; i < res.length; i++) this.Users[i] = res[i];
     });
 }
