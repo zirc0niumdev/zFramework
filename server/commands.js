@@ -40,7 +40,7 @@ new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args) => 
 
     target.notify(`~g~Vous~w~ avez été ajouté au groupe ${args[1]} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au groupe ${args[1]} !`);
-    else console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
+    console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
 }, {help: "haha"});
 
 new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args) => {
@@ -51,7 +51,7 @@ new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args) => {
 
     target.notify(`~g~Vous~w~ avez été ajouté au rank ${args[1]} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au rank ${args[1]} !`);
-    else console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
+    console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
 }, { help: "haha" });
 
 new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
@@ -62,7 +62,7 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const jobName = zFramework.Jobs.GetJobNameFromId(args[1]);
     target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
-    else console.log(`${target.name} à été ajouté au job ${jobName} !`);
+    console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {

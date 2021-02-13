@@ -16,7 +16,7 @@ zFramework.Modules.Ban.Initialize = function() {
             target.kick(`Vous avez été ban de SantosRP.\nRaison: ${reason}\nTemps: ${time == -1 ? "Infini" : `${temps} ${(time > 1 ? `jours` : `jour`)}`}`);
                 
             if (player) player.notify(`~b~Nom:~s~ ${banData[1]}\nBAN.`);
-            else console.log(`Nom: ${banData[1]}\nBAN.`);
+            console.log(`Nom: ${banData[1]}\nBAN.`);
         });
 
     }, {help: "haha"});
@@ -29,13 +29,13 @@ zFramework.Modules.Ban.Initialize = function() {
             if (ban.id == id) {
                 await zFramework.Database.Query('DELETE FROM `bans` WHERE `id` = ?', id).then(async () => {
                     if (player) player.notify(`~b~Nom:~s~ ${ban.username}\n~b~ID de ban:~s~ ${ban.id}\nDEBAN.`);
-                    else console.log(`Nom: ${ban.username}\nID de ban: ${ban.id}\nDEBAN.`);
+                    console.log(`Nom: ${ban.username}\nID de ban: ${ban.id}\nDEBAN.`);
 
                     await this.Refresh();
                 });
             } else {
                 if (player) player.notify("~r~Ban introuvable.");
-                else console.log("Ban introuvable.");
+                console.log("Ban introuvable.");
             }
         });
     }, {help: "haha"});
