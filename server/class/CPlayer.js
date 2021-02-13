@@ -23,8 +23,6 @@ export default class CPlayer {
         ExecuteCommand(`add_principal identifier.${this._licenseId} group.${this._group}`);
         
         this.clientEvent('Client.CreatePlayer', data);
-
-        console.log(`${this._name} spawned!`);
     }
 
     /**
@@ -202,7 +200,7 @@ export default class CPlayer {
 
     kick = (reason = "Aucune raison spécifiée") => DropPlayer(this._serverId, reason);
 
-    ban = (time, reason) => ExecuteCommand(`banadd ${this._serverId} ${time} ${reason}`);
+    ban = (time, reason) => ExecuteCommand(`bana ${this._serverId} ${time} ${reason}`);
 
     notify = (text) => this.clientEvent("Client.Notify", text);
     

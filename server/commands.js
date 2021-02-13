@@ -8,31 +8,31 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     SetPedIntoVehicle(player.pedId, veh, -1);
 
     player.notify(`~g~${car}~w~ spawn !`);
-}, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } });
+}, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } }, true);
 
-new CCommands("fixcar", zFramework.Groups.ADMIN, (player, args) => player.clientEvent("Client.RepairVehicle"), { help: "haha" });
+new CCommands("fixcar", zFramework.Groups.ADMIN, (player, args) => player.clientEvent("Client.RepairVehicle"), { help: "haha" }, true);
 
-new CCommands("goto", zFramework.Groups.ADMIN, async (player, args, source) => {
+new CCommands("goto", zFramework.Groups.ADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    if (args[0] == source) return;
+    if (args[0] == player.serverId) return;
 
     player.setLocation(target.getLocation());
 
     player.notify(`Vous vous êtes téléporté à ~g~${target.name}~w~ !`);
     target.notify(`~g~${player.name}~w~ s'est téléporté à vous !`);
-}, {help: "haha"});
+}, { help: "haha" }, true);
 
-new CCommands("bring", zFramework.Groups.ADMIN, async (player, args, source) => {
+new CCommands("bring", zFramework.Groups.ADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    if (args[0] == source) return;
+    if (args[0] == player.serverId) return;
 
     target.setLocation(player.getLocation());
 
     player.notify(`Vous avez téléporté ~g~${target.name}~w~ !`);
     target.notify(`~g~${player.name}~w~ vous à téléporté !`);
-}, {help: "haha"});
+}, {help: "haha"}, true);
 
-new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
     if (args[1] && args[1] > zFramework.Groups.SUPERADMIN || args[1] < zFramework.Groups.PLAYER) return;
 
@@ -43,7 +43,7 @@ new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args, sou
     else console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
 }, {help: "haha"});
 
-new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
     if (args[1] && args[1] > zFramework.Groups.SUPERVIP || args[1] < zFramework.Groups.CITIZEN) return;
     
@@ -54,7 +54,7 @@ new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args, sour
     else console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
 }, { help: "haha" });
 
-new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args, source) => {
+new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
 
     target.job = parseInt(args[1]);
@@ -65,5 +65,5 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args, sourc
     else console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
-new CCommands("test", zFramework.Groups.DEV, (player, args, source) => {
+new CCommands("test", zFramework.Groups.DEV, (player, args) => {
 }, {help: "haha"});

@@ -86,6 +86,7 @@ onNet('Server.GeneratePlayer', async () => {
 
 onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
+	console.log(`[${global.source}] ${player.name} spawned!`);
 
 	player.initialized = true;
 	player.clientEvent('Client.UpdateVar', "initialized", player.initialized);
@@ -110,7 +111,7 @@ onNet("chatMessage", (_, __, message) => {
 		const cmdname = commands[index]['name'];
 		
 		if (message.slice('/') != cmdname) {
-			emitNet('chat:addMessage', -1, { args: [ "Commande Invalide."] });
+			emitNet('chat:addMessage', -1, { args: [ "Commande Invalide." ] });
 			CancelEvent();
 			break;
 		}
