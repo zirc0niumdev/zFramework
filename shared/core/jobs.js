@@ -19,7 +19,7 @@ const taxi = {
 zFramework.Jobs[taxi.id] = taxi;
 
 const livreur = {
-    id : 3,
+    id: 3,
     name: "Livreur",
     salary: 50,
     perks: { Invoice: true, Open: true }

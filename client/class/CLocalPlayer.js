@@ -12,6 +12,7 @@ export default class CLocalPlayer {
         this._rank           = data.playerRank;
         this._job            = data.playerJob;
         this._jobRank        = data.playerJobRank;
+        this._inventory      = data.playerInventory;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._dead           = data.dead;
@@ -145,6 +146,13 @@ export default class CLocalPlayer {
     }
 
     /**
+    * @param {Object} data
+    */
+    set inventory(data) {
+        this._inventory = data;
+    }
+
+    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
@@ -221,6 +229,10 @@ export default class CLocalPlayer {
     get jobRank() {
         return this._jobRank;
     }
+    
+    get inventory() {
+        return this._inventory;
+    }
 
     get initialized() {
         return this._initialized;
@@ -239,7 +251,8 @@ export default class CLocalPlayer {
     }
 
     setPlayerModel = async (model) => {
-        await zFramework.Functions.RequestModel(model).then((hasLoaded) => {
+        await zFramework.Functions.RequestModel(model)
+        .then((hasLoaded) => {
             if (hasLoaded) {
                 SetPlayerModel(this._id, GetHashKey(model));
                 this._pedId = PlayerPedId();

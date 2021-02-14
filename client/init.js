@@ -6,6 +6,11 @@ const waitingForPlayer = setTick(() => {
 		clearTick(waitingForPlayer);
 	}
 });
+
+onNet('Client.CreatePlayer', tempPlayerData => {
+	if (zFramework.LocalPlayer) return; // kick?
+	zFramework.LocalPlayer = new CLocalPlayer(tempPlayerData);
+});
  
 on("onPlayerSpawn", () => {
 	UpdateVar("pedId", PlayerPedId());
@@ -21,10 +26,6 @@ on("onPlayerSpawn", () => {
 	SetCreateRandomCopsNotOnScenarios(false);
 
 	zFramework.Modules.Initialize();
+	zFramework.Inventory.Initialize();
 	serverEvent("Server.onPlayerSpawned");
-});
-
-onNet('Client.CreatePlayer', tempPlayerData => {
-	if (zFramework.LocalPlayer) return;
-	zFramework.LocalPlayer = new CLocalPlayer(tempPlayerData);
 });

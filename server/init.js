@@ -60,28 +60,29 @@ onNet('Server.GeneratePlayer', async () => {
 	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
 	const identifiers = zFramework.Functions.GetIdentifiersFromId(playerId);
-	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(res => {	
+
+	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(async res => {
 		const tempPlayerData = {
 			serverId: playerId,
 			pedId: GetPlayerPed(playerId),
 			playerName: GetPlayerName(playerId),
-			spawnLocation: JSON.parse(res[0].location) || { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },
-			playerModel: res[0].model || "mp_m_freemode_01",
-			playerGroup: res[0].group || zFramework.Groups.PLAYER,
-			playerLevel: res[0].level || 0,
-			playerRank: res[0].rank || zFramework.Ranks.CITIZEN,
-			playerJob: zFramework.Jobs[res[0].job || 1],
-			playerJobRank: res[0].job_rank || 0,
-			playerInventory: JSON.parse(res[0].inventory) || { items: {}, clothes: {}, pocketsWeight: "", weaponOne: "", weaponTwo: "", weaponThree: "" },
-			licenseId: res[0].license || identifiers.license,
-			discordId: res[0].discord || identifiers.discord,
-			dead: res[0].dead || false,
+			spawnLocation: res[0] ? JSON.parse(res[0].location) : { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },
+			playerModel: res[0] ? res[0].model : "mp_m_freemode_01",
+			playerGroup: res[0] ? res[0].group : zFramework.Groups.PLAYER,
+			playerLevel: res[0] ? res[0].level : 0,
+			playerRank: res[0] ? res[0].rank : zFramework.Ranks.CITIZEN,
+			playerJob: await zFramework.Jobs.GetJobFromId(res[0] ? res[0].job : 1),
+			playerJobRank: res[0] ? res[0].job_rank : 0,
+			playerInventory: res[0] ? JSON.parse(res[0].inventory) : { items: {}, clothes: {}, pocketsWeight: "", weaponOne: "", weaponTwo: "", weaponThree: "" },
+			licenseId: res[0] ? res[0].license : identifiers.license,
+			discordId: res[0] ? res[0].discord : identifiers.discord,
+			dead: res[0] ? res[0].dead : false,
 			firstSpawn: res[0] ? false : true,
-			playerSkin: JSON.parse(res[0].skin) || null,
-			playerIdentity: JSON.parse(res[0].identity) || null
+			playerSkin: res[0] ? JSON.parse(res[0].skin) : null,
+			playerIdentity: res[0] ? JSON.parse(res[0].identity) : null
 		}
-
-		zFramework.Players[playerId] = new CPlayer(tempPlayerData);
+		
+		zFramework.Players[playerId] = new CPlayer(tempPlayerData);	
 	});
 });
 

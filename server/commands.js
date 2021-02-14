@@ -34,7 +34,7 @@ new CCommands("bring", zFramework.Groups.ADMIN, async (player, args) => {
 
 new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    if (args[1] && args[1] > zFramework.Groups.SUPERADMIN || args[1] < zFramework.Groups.PLAYER) return;
+    if (args[1] && args[1] > zFramework.Groups.DEV || args[1] < zFramework.Groups.PLAYER) return;
 
     target.group = parseInt(args[1]);
 

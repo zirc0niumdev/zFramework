@@ -1,4 +1,5 @@
 zFramework.Inventory = {};
+zFramework.Inventory.Opened = false;
 
 zFramework.Inventory.GetWeight = function(inv) {
 

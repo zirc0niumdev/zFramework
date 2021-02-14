@@ -18,11 +18,11 @@ export default class CPlayer {
         this._licenseId      = data.licenseId;
         this._discordId      = data.discordId;
         this._dead           = data.dead;
-        this._firstSpawn     = data.firstSpawn || false;
+        this._firstSpawn     = data.firstSpawn;
         this._initialized    = false;
 
         ExecuteCommand(`add_principal identifier.${this._licenseId} group.${this._group}`);
-        
+
         this.clientEvent('Client.CreatePlayer', data);
     }
 
@@ -221,10 +221,10 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job.id, this._jobRank, JSON.stringify(this._inventory), this._licenseId];
+        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
