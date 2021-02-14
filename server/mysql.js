@@ -17,11 +17,15 @@ con.connect(err => {
 });
 
 zFramework.Database.Query = (q, args) => {
-	return new Promise((resolve, reject) => {
-		con.query(q, args, function(err, result) {
-			if (err) reject(`${err.code}: ${err.sqlMessage}`);
-			
-			resolve(result);
+	try {
+		return new Promise((resolve, reject) => {
+			con.query(q, args, function(err, result) {
+				if (err) reject(`FAILED: ${err.code} - ${err.sqlMessage}`);
+				
+				resolve(result);
+			});
 		});
-	});
+	} catch (err) {
+		console.log(err);
+	}
 }

@@ -12,6 +12,7 @@ export default class CPlayer {
         this._rank           = data.playerRank;
         this._job            = data.playerJob;
         this._jobRank        = data.playerJobRank;
+        this._inventory      = data.playerInventory;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._licenseId      = data.licenseId;
@@ -112,6 +113,15 @@ export default class CPlayer {
     }
 
     /**
+    * @param {Object} data
+    */
+    set inventory(data) {
+        this._inventory = data;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+    }
+
+    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
@@ -178,6 +188,10 @@ export default class CPlayer {
     get jobRank() {
         return this._jobRank;
     }
+    
+    get inventory() {
+        return this._inventory;
+    }
 
     get initialized() {
         return this._initialized;
@@ -207,15 +221,15 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, Object.keys(this._job)[0], this._jobRank, this._licenseId];
+        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job.id, this._jobRank, JSON.stringify(this._inventory), this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
-
-        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ? WHERE license = ?', playerData).then(() => {
+        
+        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ? WHERE license = ?', playerData).then(() => {
             console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
         });
     }

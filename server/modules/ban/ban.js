@@ -4,16 +4,14 @@ zFramework.Modules.Ban.Initialize = function() {
     // ADD COMMAND
     new CCommands("bana", zFramework.Groups.ADMIN, async (player, args) => {
         const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-        const time = parseInt(args[1]) /* not a good way */ || -1; 
-        const reason = args.slice(2).join(' ') || "Aucune raison spécifiée";
-        const date = getDate(); // can be simplified
-        console.log(target.name, player.name);
-        const data = [JSON.stringify(target.getIdentifiers()), target.name, reason, player.name || "console", date];
+        const reason = args.slice(1).join(' ') || "Aucune raison spécifiée";
+        const date = getDate();
         
-        await zFramework.Database.Query('INSERT INTO `bans` (identifiers, username, reason, banner, date) VALUES (?, ?, ?, ?, ?)', data).then(async () => {
+        await zFramework.Database.Query('INSERT INTO `bans` (identifiers, username, reason, banner, date) VALUES (?, ?, ?, ?, ?)',
+        [JSON.stringify(target.getIdentifiers()), target.name, reason, player.name || "console", date]).then(async () => {
             await this.Refresh();
                 
-            target.kick(`Vous avez été ban de SantosRP.\nRaison: ${reason}\nTemps: ${time == -1 ? "Infini" : `${temps} ${(time > 1 ? `jours` : `jour`)}`}`);
+            target.kick(`Vous avez été ban de SantosRP.\nRaison: ${reason}\nTemps: Permanent`);
                 
             if (player) player.notify(`~b~Nom:~s~ ${banData[1]}\nBAN.`);
             console.log(`Nom: ${banData[1]}\nBAN.`);
@@ -55,7 +53,7 @@ zFramework.Modules.Ban.CheckUser = async function(identifiers) {
         this.Users.some(ban => {
             const bannedIdentifiers = JSON.parse(ban.identifiers);
             for (const identifier in bannedIdentifiers)
-                if (bannedIdentifiers[identifier].includes(identifiers[identifier])) reject(ban.reason);
+                if (bannedIdentifiers[identifier].includes(identifiers[identifier])) reject(`Vous êtes ban de SantosRP.\nRaison: ${ban.reason}\nPar: ${ban.banner}\nTemps: Permanent\nDate du ban: ${ban.date}`);
         });
                 
         resolve();
