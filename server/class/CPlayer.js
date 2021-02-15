@@ -113,7 +113,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {Object} data
+    * @param {object} data
     */
     set inventory(data) {
         this._inventory = data;
@@ -203,6 +203,12 @@ export default class CPlayer {
         
         emitNet(eventName, this._serverId, ...args);
     }
+
+    // addItemToInv = (item) => {
+    //     const currentInventory = this._inventory;
+    //     currentInventory.items.push(item);
+    //     this.inventory = currentInventory;
+    //}
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 

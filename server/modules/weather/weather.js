@@ -9,12 +9,12 @@ zFramework.Modules.Weather.PickWeather = data => {
 }
 
 zFramework.Modules.Weather.Initialize = function() {
-    new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args, source) => {
+    new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args) => {
         zFramework.Modules.Weather.Freezed = !zFramework.Modules.Weather.Freezed;
         player.notify(`~g~Vous~w~ avez ${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"} le temps !`);
     }, {help: "haha"});
     
-    new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args, source) => {
+    new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args) => {
         if (args[0] && args[0] > 23 || args[0] < 0) return;
         if (args[1] && args[1] > 59 || args[1] < 0) return;
     
@@ -25,7 +25,7 @@ zFramework.Modules.Weather.Initialize = function() {
         player.notify(`~g~Vous~w~ avez set le temps à ${args[0]} ${args[1]} !`);
     }, {help: "haha"});
     
-    new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args, source) => {
+    new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args) => {
         const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name === args[0]);
         if (!weatherFound) return;
     
@@ -61,7 +61,7 @@ zFramework.Modules.Weather.Initialize = function() {
 
 onNet("Server.onPlayerSpawned", async () => {
     if (!zFramework.Modules.Weather.Initialized) return;
-	const player = await zFramework.Functions.GetPlayerFromId(source);
+	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 
 	// Sync Weather
 	player.clientEvent('Client.SetWeather', zFramework.Modules.Weather.Current, zFramework.Modules.Weather.Time);

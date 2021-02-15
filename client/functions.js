@@ -60,6 +60,48 @@ zFramework.Functions.RequestModel = model => {
 	});
 };
 
+zFramework.UI = {};
+zFramework.UI.KeepFocus = false;
+let threadCreated = false;
+
+const controlsDisabled = [1, 2, 3, 4, 5, 6, 18, 24, 25, 37, 69, 70, 182, 199, 200, 257];
+
+zFramework.Functions.SetKeepInputMode = bool => {
+	SetNuiFocusKeepInput(bool);
+
+	zFramework.UI.KeepFocus = bool
+
+	if (!threadCreated && bool) {
+		threadCreated = true
+
+		// const timer = setTick(() => {
+		// 	while (zFramework.UI.KeepFocus) {
+		// 		for (control in controlsDisabled) DisableControlAction(0, control, true);
+		// 	}
+
+		// 	clearTick(timer);
+		// });
+	}
+}
+
+zFramework.Functions.RegisterControlKey = (strKeyName, strDescription, strKey, onPress, onRelease) => {
+    RegisterKeyMapping(`+${strKeyName}`, strDescription, "keyboard", strKey);
+
+	RegisterCommand(`+${strKeyName}`, () => {
+		if (!onPress || UpdateOnscreenKeyboard() == 0) return;
+        onPress();
+    }, false);
+
+    RegisterCommand(`-${strKeyName}`, () => {
+        if (!onRelease || UpdateOnscreenKeyboard() == 0) return;
+        onRelease();
+    }, false);
+}
+
+zFramework.Functions.SendToNUI = data => {
+	SendNuiMessage(JSON.stringify(data));
+}
+
 zFramework.Functions.RepairVehicle = () => {
 	const vehicle = GetVehiclePedIsUsing(zFramework.LocalPlayer.pedId);
 	if (!vehicle) return;

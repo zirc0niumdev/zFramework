@@ -150,6 +150,8 @@ export default class CLocalPlayer {
     */
     set inventory(data) {
         this._inventory = data;
+
+        // stuff?
     }
 
     /**
@@ -240,7 +242,7 @@ export default class CLocalPlayer {
 
     //Functions
     spawnPlayer = async () => {
-        //await Delay(2500);
+        await Delay(2500); // need to find an alternative
         exports.spawnmanager.spawnPlayer({
             x: this._spawnLocation.x,
             y: this._spawnLocation.y,
@@ -269,8 +271,6 @@ export default class CLocalPlayer {
             emit('Client.OpenCharacterCreator');
         } else {
             this.loadSkin();
-            //this.loadClothes();
-            this.onReady();
         }
 
         this.tick();
@@ -289,11 +289,11 @@ export default class CLocalPlayer {
         SetPedComponentVariation(this._pedId, 8, 15, 0, 2);
         SetPedComponentVariation(this._pedId, 11, 15, 0, 2);
 
-        if (!this._identity) return;
+        if (!this._identity) return emit('Client.OpenCharacterCreator');
         if (this._identity.sex == "Homme") {
             SetPedComponentVariation(this._pedId, 4, 21, 0, 2);
             SetPedComponentVariation(this._pedId, 6, 34, 0, 2);
-        } else {
+        } else if (this._identity.sex == "Femme") {
             SetPedComponentVariation(this._pedId, 4, 10, 0, 2);
             SetPedComponentVariation(this._pedId, 6, 35, 0, 2);
         }
@@ -301,7 +301,7 @@ export default class CLocalPlayer {
 
     loadSkin = () => {
         // Features
-        for (const feature in (this._skin.features)) SetPedFaceFeature(this._pedId, parseInt(feature), parseFloat(this._skin.features[feature]));
+        for (const feature in this._skin.features) SetPedFaceFeature(this._pedId, parseInt(feature), parseFloat(this._skin.features[feature]));
 
         // Appearance
         for (let i = 0; i < 11; i++) SetPedHeadOverlay(this._pedId, i, this._skin.appearance[i].value, this._skin.appearance[i].opacity);
@@ -318,6 +318,8 @@ export default class CLocalPlayer {
         SetPedHeadOverlayColor(this._pedId, 5, 2, parseInt(this._skin.colors.blushColor), 0);
         SetPedHeadOverlayColor(this._pedId, 8, 2, parseInt(this._skin.colors.lipstickColor), 0);
         SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
+        
+        this.onReady();
     }
 
     getLocation = () => {

@@ -27,5 +27,6 @@ on("onPlayerSpawn", () => {
 
 	zFramework.Modules.Initialize();
 	zFramework.Inventory.Initialize();
+	
 	serverEvent("Server.onPlayerSpawned");
 });

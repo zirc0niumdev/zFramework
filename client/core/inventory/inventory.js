@@ -1,3 +1,39 @@
+function OpenInventory() {
+    SetNuiFocus(true, true);
+    //zFramework.Functions.SetKeepInputMode(true);
+    const playerInv = zFramework.LocalPlayer.inventory;
+    
+    zFramework.Functions.SendToNUI(
+        {
+            eventName: "showInventory",
+            eventData: {
+            //      inv: playerInv.items,
+            //     //clothes: formattedInv.clothes,
+            //     //pocketsWeight: round(GM.Inventory:GetInvWeight(_6U), 2),
+            //     //weaponOne: weap[1],
+            //     //weaponTwo: weap[2],
+            //     //weaponThree: weap[3]
+            }
+        }
+    );
+    zFramework.Inventory.Opened = true;
+}
+
+function CloseInventory() {
+    zFramework.Inventory.Opened = false;
+    SetNuiFocus(false, false);
+    zFramework.Functions.SendToNUI({ eventName: "hideInventory" });
+    Wait(50);
+}
+
+zFramework.Functions.RegisterControlKey("openInventory", "Ouvrir/Fermer l'inventaire", "TAB", () => {
+    if (!zFramework.Inventory.Opened) {
+        OpenInventory();
+    } else {
+        CloseInventory();
+    }
+});
+
 zFramework.Inventory.Tick = function() {
     const defaultWeap = GetHashKey("WEAPON_UNARMED");
 
@@ -31,7 +67,13 @@ zFramework.Inventory.Tick = function() {
 }
 
 zFramework.Inventory.Initialize = function() {
-    // Register Control Key ?
+    for (d = 1; d <= 3; d++) {
+        zFramework.Functions.RegisterControlKey(`wepBind${d}`, `Equiper votre arme dans le slot ${d}`, d.toString(), () => {
+            if (UpdateOnscreenKeyboard() == 0 || zFramework.UI.KeepFocus) return;
+            
+            //XmVolesU(d);
+        });
+    }
 
     this.Tick();
 }

@@ -2,7 +2,6 @@ fx_version 'cerulean'
 game 'gta5'
 
 author 'zirconiium'
-version '1.0.0'
 
 client_scripts {
 	'zFramework.js',
@@ -15,6 +14,15 @@ server_scripts {
 	'zFramework.js',
 	'dist/shared/*.js',
 	'dist/server/*.js'
+}
+
+ui_page {
+	'ui/index.html'
+}
+
+files {
+	'ui/index.html',
+	'ui/main.js'
 }
 
 dependency 'yarn'
