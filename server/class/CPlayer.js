@@ -204,11 +204,24 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
-    // addItemToInv = (item) => {
-    //     const currentInventory = this._inventory;
-    //     currentInventory.items.push(item);
-    //     this.inventory = currentInventory;
-    //}
+    addItem = (name, qty = 1) => {
+        const item = this.hasItem(name);
+        if (item) this._inventory.items[item].qty += qty;
+        else this._inventory.items.push({ name, qty });
+
+        // TODO: weight management
+    }
+
+    hasItem = (name) => {
+        return this._inventory.items.findIndex(item => item.name === name);
+    }
+
+    deleteItem = (name) => {
+        const item = this.hasItem(name);
+        if (item) this._inventory.items.splice(item, 1);
+
+        // TODO: weight management
+    }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
