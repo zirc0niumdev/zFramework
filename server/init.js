@@ -73,7 +73,7 @@ onNet('Server.GeneratePlayer', async () => {
 			playerRank: res[0] ? res[0].rank : zFramework.Ranks.CITIZEN,
 			playerJob: await zFramework.Jobs.GetJobFromId(res[0] ? res[0].job : 1),
 			playerJobRank: res[0] ? res[0].job_rank : 0,
-			playerInventory: res[0] ? JSON.parse(res[0].inventory) : { items: [], clothes: [], pocketsWeight: 45, weaponOne: "", weaponTwo: "", weaponThree: "" },
+			playerInventory: res[0] ? JSON.parse(res[0].inventory) : { items: [], clothes: [], weight: 0, weaponOne: "", weaponTwo: "", weaponThree: "" },
 			licenseId: res[0] ? res[0].license : identifiers.license,
 			discordId: res[0] ? res[0].discord : identifiers.discord,
 			dead: res[0] ? res[0].dead : false,

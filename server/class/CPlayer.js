@@ -205,22 +205,39 @@ export default class CPlayer {
     }
 
     addItem = (name, qty = 1) => {
+        if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
+        if (!this.canCarryItem(name)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
+
         const item = this.hasItem(name);
-        if (item) this._inventory.items[item].qty += qty;
+        if (item > -1) this._inventory.items[item].qty += qty;
         else this._inventory.items.push({ name, qty });
 
-        // TODO: weight management
+        const { weight } = zFramework.Items.GetItem(name);
+        this._inventory.weight += weight;
     }
 
-    hasItem = (name) => {
-        return this._inventory.items.findIndex(item => item.name === name);
+    hasItem = (name) => this._inventory.items.findIndex(item => item.name === name);
+
+    canCarryItem = (name) => {
+        const item = zFramework.Items.GetItem(name);
+        if (this._inventory.weight + item.weight > 45) return false;
+
+        return true;
     }
 
-    deleteItem = (name) => {
+    deleteItem = (name, qty = 1) => {
+        if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
+
         const item = this.hasItem(name);
-        if (item) this._inventory.items.splice(item, 1);
+        if (item < 0) return;
+            
+        this._inventory.items[item].qty -= qty;
+        if (this._inventory.items[item].qty <= 0) this._inventory.items.splice(item, 1);
 
-        // TODO: weight management
+        const { weight } = zFramework.Items.GetItem(name);
+        this._inventory.weight -= weight;
+
+        console.log(this._inventory);
     }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
