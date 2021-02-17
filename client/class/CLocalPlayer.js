@@ -264,6 +264,8 @@ export default class CLocalPlayer {
         });
     }
 
+    isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
+
     onInitialized = () => {
         this.applyDefaultOutfit();
 

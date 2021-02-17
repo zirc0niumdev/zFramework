@@ -1,3 +1,53 @@
+function inventoryAction(action, name, amount = 1) {
+    const item = zFramework.Items.GetItem(name);
+    if (!item) return;
+    console.log("tesaat");
+
+    const playerPed = zFramework.LocalPlayer.pedId;
+    const playerVehicle = zFramework.LocalPlayer.isInVehicle();
+    if (playerVehicle && GetPedInVehicleSeat(playerVehicle, -1) == playerPed && GetEntitySpeed(playerVehicle) > 3) return;
+    console.log("tesaaat");
+
+    if (action == 1) {
+        console.log("tesaaaaaaat");
+        console.log(zFramework.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name, "items"));
+        if (zFramework.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name) < amount)
+            return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${name}.`);
+
+        console.log("tesaaaat");
+
+        const useFunc = GetUseItemFromName(item.onUse);
+        useFunc(zFramework.LocalPlayer, amount, item);
+        
+        console.log("tesaaaaat");
+
+        if (!item.keep && !item.onUse != "weapon")
+            console.log("remove item");
+    }
+}
+
+function changeWeaponSlot(slotName, weaponName) {
+
+    if (!zFramework.Inventory.Opened) return;
+    OpenInventory();
+}
+
+RegisterNuiCallbackType('inventoryInteraction');
+on('__cfx_nui:inventoryInteraction', (data, cb) => {
+    const { eventName, amount} = data;
+    const { name } = data.itemData;
+
+    if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
+
+    if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree")
+        changeWeaponSlot(eventName == "weaponOne" && 1 || eventName && 2 || 3, name);
+    else if (eventName == "useInventory")
+        console.log("test");
+        inventoryAction(1, name, parseInt(amount));
+
+    cb("ok");
+});
+
 zFramework.Inventory.OnInventoryUpdated = function() {
     if (!this.Opened) return;
 
@@ -31,8 +81,7 @@ function CloseInventory() {
     Wait(50);
 }
 
-RegisterNuiCallbackType('hideInventory'); // register the type
-
+RegisterNuiCallbackType('hideInventory');
 on('__cfx_nui:hideInventory', (data, cb) => {
     SetNuiFocus(false, false);
     zFramework.Functions.SetKeepInputMode(false);
