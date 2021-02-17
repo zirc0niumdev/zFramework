@@ -204,24 +204,20 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
-    addItem = (name, qty = 1, isClothes = false) => {
+    addItem = (name, qty = 1) => {
         if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
         if (!this.canCarryItem(name)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
 
-        const item = this.hasItem(name, isClothes);
-        const table = isClothes ? "clothes" : "items";
+        const item = zFramework.Items.GetItem(name);
+        const myItem = this.hasItem(item.name, item.type);
+        console.log(myItem);
+        if (myItem > -1) this._inventory[item.type][myItem].qty += qty;
+        else this._inventory[item.type].push({ name, qty });
 
-        if (item > -1) this._inventory[table][item].qty += qty;
-        else this._inventory[table].push({ name, qty });
-
-        const { weight } = zFramework.Items.GetItem(name);
-        this._inventory.weight += weight;
+        this._inventory.weight += item.weight;
     }
 
-    hasItem = (name, isClothes = false) => {
-        const table = isClothes ? "clothes" : "items";
-        this._inventory[table].findIndex(item => item.name === name);
-    };
+    hasItem = (name, type) => this._inventory[type].findIndex(item => item.name === name);
 
     canCarryItem = (name) => {
         const item = zFramework.Items.GetItem(name);
@@ -230,18 +226,17 @@ export default class CPlayer {
         return true;
     }
 
-    deleteItem = (name, qty = 1, isClothes = false) => {
+    deleteItem = (name, qty = 1) => {
         if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
 
-        const item = this.hasItem(name, isClothes);
-        if (item < 0) return;
-        const table = isClothes ? "clothes" : "items";
+        const item = zFramework.Items.GetItem(name);
+        const myItem = this.hasItem(item.name, item.type);
+        if (myItem < 0) return;
             
-        this._inventory[table][item].qty -= qty;
-        if (this._inventory[table][item].qty <= 0) this._inventory[table].splice(item, 1);
+        this._inventory[item.type][myItem].qty -= qty;
+        if (this._inventory[item.type][myItem].qty <= 0) this._inventory[item.type].splice(myItem, 1);
 
-        const { weight } = zFramework.Items.GetItem(name);
-        this._inventory.weight -= weight;
+        this._inventory.weight -= item.weight;
     }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
