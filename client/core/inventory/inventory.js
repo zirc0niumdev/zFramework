@@ -1,3 +1,9 @@
+zFramework.Inventory.OnInventoryUpdated = function() {
+    if (!this.Opened) return;
+
+    OpenInventory();
+}
+
 function OpenInventory() {
     SetNuiFocus(true, true);
     zFramework.Functions.SetKeepInputMode(true);

@@ -210,11 +210,15 @@ export default class CPlayer {
 
         const item = zFramework.Items.GetItem(name);
         const myItem = this.hasItem(item.name, item.type);
-        console.log(myItem);
+        
+        // stack management
         if (myItem > -1) this._inventory[item.type][myItem].qty += qty;
         else this._inventory[item.type].push({ name, qty });
 
+        // weight management
         this._inventory.weight += item.weight;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
     hasItem = (name, type) => this._inventory[type].findIndex(item => item.name === name);
@@ -232,11 +236,15 @@ export default class CPlayer {
         const item = zFramework.Items.GetItem(name);
         const myItem = this.hasItem(item.name, item.type);
         if (myItem < 0) return;
-            
+        
+        // stack management
         this._inventory[item.type][myItem].qty -= qty;
         if (this._inventory[item.type][myItem].qty <= 0) this._inventory[item.type].splice(myItem, 1);
 
+        // weight management
         this._inventory.weight -= item.weight;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);

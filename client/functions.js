@@ -73,8 +73,7 @@ zFramework.Functions.SetKeepInputMode = bool => {
 		threadCreated = true;
 
 		const timer = setTick(() => {
-			if (zFramework.UI.KeepFocus)
-				for (control of controlsDisabled) DisableControlAction(0, control, true);
+			if (zFramework.UI.KeepFocus) for (control of controlsDisabled) DisableControlAction(0, control, true);
 			else {
 				threadCreated = false;
 				clearTick(timer);

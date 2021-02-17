@@ -151,7 +151,7 @@ export default class CLocalPlayer {
     set inventory(data) {
         this._inventory = data;
 
-        // stuff?
+        zFramework.Inventory.OnInventoryUpdated();
     }
 
     /**
@@ -357,14 +357,11 @@ export default class CLocalPlayer {
 	    const SUPPRESSED_MODELS = ["BLIMP", "SHAMAL", "LUXOR", "LUXOR2", "JET", "LAZER", "TITAN", "BARRACKS", "BARRACKS2", "CRUSADER", "RHINO", "AIRTUG", "RIPLEY", "MIXER", "FIRETRUK", "duster", "frogger", "maverick", "buzzard", "buzzard2", "polmav", "tanker", "tanker2"];
 
         setInterval(() => {
-            for (const sctyp of SCENARIO_TYPES)
-                SetScenarioTypeEnabled(sctyp, false);
+            for (const sctyp of SCENARIO_TYPES) SetScenarioTypeEnabled(sctyp, false);
                 
-            for (const scgrp of SCENARIO_GROUPS)
-                SetScenarioGroupEnabled(scgrp, false);
+            for (const scgrp of SCENARIO_GROUPS) SetScenarioGroupEnabled(scgrp, false);
 
-            for (const model of SUPPRESSED_MODELS)
-                SetVehicleModelIsSuppressed(GetHashKey(model), true);
+            for (const model of SUPPRESSED_MODELS) SetVehicleModelIsSuppressed(GetHashKey(model), true);
         }, 10000);
     }
 }
