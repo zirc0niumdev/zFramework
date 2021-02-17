@@ -1,22 +1,21 @@
 function OpenInventory() {
     SetNuiFocus(true, true);
-    //zFramework.Functions.SetKeepInputMode(true);
-    const playerInv = zFramework.LocalPlayer.inventory;
+    zFramework.Functions.SetKeepInputMode(true);
+    const { items, clothes, weight, weaponOne, weaponTwo, weaponThree } = zFramework.LocalPlayer.inventory;
     
     zFramework.Functions.SendToNUI(
         {
             eventName: "showInventory",
             eventData: {
-            //      inv: playerInv.items,
-            //     //clothes: formattedInv.clothes,
-            //     //pocketsWeight: round(GM.Inventory:GetInvWeight(_6U), 2),
-            //     //weaponOne: weap[1],
-            //     //weaponTwo: weap[2],
-            //     //weaponThree: weap[3]
+                items,
+                clothes,
+                weight: Math.round(weight),
+                weaponOne,
+                weaponTwo,
+                weaponThree
             }
         }
     );
-    zFramework.Inventory.Opened = true;
 }
 
 function CloseInventory() {
@@ -26,8 +25,19 @@ function CloseInventory() {
     Wait(50);
 }
 
+RegisterNuiCallbackType('hideInventory'); // register the type
+
+on('__cfx_nui:hideInventory', (data, cb) => {
+    SetNuiFocus(false, false);
+    zFramework.Functions.SetKeepInputMode(false);
+    zFramework.Inventory.Opened = false;
+
+    cb("ok");
+});
+
 zFramework.Functions.RegisterControlKey("openInventory", "Ouvrir/Fermer l'inventaire", "TAB", () => {
-    if (!zFramework.Inventory.Opened) {
+    if (!zFramework.Inventory.Opened && !zFramework.UI.KeepFocus) {
+        zFramework.Inventory.Opened = true;
         OpenInventory();
     } else {
         CloseInventory();

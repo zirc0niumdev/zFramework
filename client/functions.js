@@ -51,11 +51,11 @@ zFramework.Functions.RequestModel = model => {
 		RequestModel(model);
 		const start = GetGameTimer();
 		const interval = setInterval(() => {
-		  if (HasModelLoaded(model) || GetGameTimer() - start >= 1000) {
-			clearInterval(interval);
-			SetModelAsNoLongerNeeded(model);
-			resolve(HasModelLoaded(model));
-		  }
+			if (HasModelLoaded(model) || GetGameTimer() - start >= 1000) {
+				clearInterval(interval);
+				SetModelAsNoLongerNeeded(model);
+				resolve(HasModelLoaded(model));
+		  	}
 		}, 0);
 	});
 };
@@ -67,20 +67,19 @@ let threadCreated = false;
 const controlsDisabled = [1, 2, 3, 4, 5, 6, 18, 24, 25, 37, 69, 70, 182, 199, 200, 257];
 
 zFramework.Functions.SetKeepInputMode = bool => {
-	SetNuiFocusKeepInput(bool);
-
-	zFramework.UI.KeepFocus = bool
+	zFramework.UI.KeepFocus = bool;
 
 	if (!threadCreated && bool) {
-		threadCreated = true
+		threadCreated = true;
 
-		// const timer = setTick(() => {
-		// 	while (zFramework.UI.KeepFocus) {
-		// 		for (control in controlsDisabled) DisableControlAction(0, control, true);
-		// 	}
-
-		// 	clearTick(timer);
-		// });
+		const timer = setTick(() => {
+			if (zFramework.UI.KeepFocus)
+				for (control of controlsDisabled) DisableControlAction(0, control, true);
+			else {
+				threadCreated = false;
+				clearTick(timer);
+			}
+		});
 	}
 }
 

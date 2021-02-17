@@ -236,8 +236,6 @@ export default class CPlayer {
 
         const { weight } = zFramework.Items.GetItem(name);
         this._inventory.weight -= weight;
-
-        console.log(this._inventory);
     }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
