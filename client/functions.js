@@ -43,6 +43,16 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 	});
 }
 
+let jsonData = [];
+zFramework.Functions.GetJsonConfig = (varName, inValue) => {
+	if (!jsonData[varName]) {
+		const jsonStr = LoadResourceFile(GetCurrentResourceName(), `config/files/${varName}.json`);
+		jsonData[varName] = jsonStr != "null" && JSON.parse(jsonStr);
+	}
+	console.log(jsonData[varName][inValue]);
+	return inValue && jsonData[varName][inValue] || !inValue && jsonData[varName];
+}
+
 zFramework.Functions.RequestModel = model => {
 	model = GetHashKey(model);
 	return new Promise(resolve => {

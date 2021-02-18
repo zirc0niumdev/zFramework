@@ -22,7 +22,9 @@ ui_page {
 
 files {
 	'ui/index.html',
-	'ui/main.js'
+	'ui/main.js',
+	'ui/assets/img/items/*.png',
+	'config/**/*.json'
 }
 
 dependency 'yarn'

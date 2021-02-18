@@ -66,6 +66,5 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {
-    const item = zFramework.Items.GetItem("Test");
-    TriggerEvent("Server.AddItemToInv", player.serverId, item);
+    TriggerEvent("Server.AddItem", player.serverId, "Poing américain");
 }, {help: "haha"});

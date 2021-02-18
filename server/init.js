@@ -90,12 +90,17 @@ onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
+	if (player.firstSpawn)
+	{
+		player.addItem("Argent", 250);
+		// player.addItem("Pain", 1200);
+		// player.addItem("Eau", 1200);
+	}
+
 	player.initialized = true;
-	player.clientEvent('Client.UpdateVar', "initialized", player.initialized);
 
 	// try move that to client side
-	for (const command in zFramework.Commands)
-		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
+	for (const command in zFramework.Commands) player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 });
 
 on("playerDropped", async reason => {

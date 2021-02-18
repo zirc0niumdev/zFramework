@@ -126,6 +126,8 @@ export default class CPlayer {
     */
     set initialized(toggle) {
         this._initialized = toggle;
+        
+        this.clientEvent('Client.UpdateVar', "initialized", this._initialized);
     }
 
     //Getters
@@ -181,6 +183,10 @@ export default class CPlayer {
         return this._group;
     }
 
+    get firstSpawn() {
+        return this._firstSpawn;
+    }
+
     get job() {
         return this._job;
     }
@@ -205,45 +211,50 @@ export default class CPlayer {
     }
 
     addItem = (name, qty = 1) => {
+        if (typeof(qty) !== "number") qty = parseInt(qty);
+
         if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
-        if (!this.canCarryItem(name)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
+        if (!this.canCarryItem(name, qty)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
 
         const item = zFramework.Items.GetItem(name);
-        const myItem = this.hasItem(item.name, item.type);
-        
+        const hasItem = zFramework.Inventory.HasItem(this._inventory, item.name, item.type);
+
         // stack management
-        if (myItem > -1) this._inventory[item.type][myItem].qty += qty;
-        else this._inventory[item.type].push({ name, qty });
+        if (hasItem) {
+            const itemIndex = zFramework.Inventory.FindItem(this._inventory, item.name, item.type);
+            this._inventory[item.type][itemIndex].qty += qty;
+        } else this._inventory[item.type].push({ name, qty });
 
         // weight management
-        this._inventory.weight += item.weight;
-
+        this._inventory.weight += item.weight * qty;
+        
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
-    hasItem = (name, type) => this._inventory[type].findIndex(item => item.name === name);
-
-    canCarryItem = (name) => {
+    canCarryItem = (name, qty) => {
         const item = zFramework.Items.GetItem(name);
-        if (this._inventory.weight + item.weight > 45) return false;
+        if (this._inventory.weight + item.weight * qty > zFramework.Inventory.PlayerWeight) return false;
 
         return true;
     }
 
     deleteItem = (name, qty = 1) => {
+        if (typeof(qty) !== "number") qty = parseInt(qty);
+
         if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
 
         const item = zFramework.Items.GetItem(name);
-        const myItem = this.hasItem(item.name, item.type);
-        if (myItem < 0) return;
-        
+        const hasItem = zFramework.Inventory.HasItem(this._inventory, item.name, item.type);
+        const itemIndex = zFramework.Inventory.FindItem(this._inventory, item.name, item.type);
+        if (!hasItem) return;
+
         // stack management
-        this._inventory[item.type][myItem].qty -= qty;
-        if (this._inventory[item.type][myItem].qty <= 0) this._inventory[item.type].splice(myItem, 1);
+        this._inventory[item.type][itemIndex].qty -= qty;
+        if (this._inventory[item.type][itemIndex].qty <= 0) this._inventory[item.type].splice(itemIndex, 1);
 
         // weight management
-        this._inventory.weight -= item.weight;
-
+        this._inventory.weight -= item.weight * qty;
+        
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
