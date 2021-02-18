@@ -106,13 +106,10 @@ function tick() {
         const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
         if (selectedWeapon && selectedWeapon != defaultWeap) {
             let currentWeapon;
-            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) {
-                if (GetHashKey(weaponHash) == selectedWeapon) {
-                    currentWeapon = weaponName;
-                }
-            }
-            if (!zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) {
-                RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
+            if (!zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            else {
+                // todo
             }
         }
     }, 150);
@@ -124,7 +121,7 @@ function tick() {
         if (zFramework.Inventory.Opened) {
             DisableControlAction(0, 24, true);
             DisableControlAction(0, 25, true);
-            for (let i = 0; i <= 6; i++) DisableControlAction(0, i, true);
+            for (let i = 0; i < 6; i++) DisableControlAction(0, i, true);
             HideHudAndRadarThisFrame();
         }
     });
