@@ -16,10 +16,13 @@ export default class CLocalPlayer {
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._dead           = data.dead;
+        this._needs          = data.needs;
         this._invincible     = false;
         this._invisible      = false;
         this._freeze         = false;
         this._blockInput     = false;
+        this._spectateMode   = false;
+        this._cinemaMode     = false;
         this._initialized    = false;
 
         this.spawnPlayer();
@@ -151,7 +154,16 @@ export default class CLocalPlayer {
     set inventory(data) {
         this._inventory = data;
 
-        zFramework.Inventory.OnInventoryUpdated();
+        zFramework.Inventory.OnUpdated();
+    }
+
+    /**
+    * @param {Object} data
+    */
+    set needs(data) {
+        this._needs = data;
+
+        zFramework.Needs.OnUpdated();
     }
 
     /**
@@ -350,6 +362,8 @@ export default class CLocalPlayer {
             RemoveAllPickupsOfType(14);
 
             DisableControlAction(2, 47, true);
+
+            zFramework.Core.Think();
         });
     }
 

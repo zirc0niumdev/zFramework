@@ -26,7 +26,7 @@ on("onPlayerSpawn", () => {
 	SetCreateRandomCopsNotOnScenarios(false);
 
 	zFramework.Modules.Initialize();
-	zFramework.Inventory.Initialize();
+	zFramework.Core.Initialize();
 	
 	serverEvent("Server.onPlayerSpawned");
 });

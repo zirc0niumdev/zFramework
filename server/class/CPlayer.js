@@ -13,6 +13,7 @@ export default class CPlayer {
         this._job            = data.playerJob;
         this._jobRank        = data.playerJobRank;
         this._inventory      = data.playerInventory;
+        this._needs          = data.playerNeeds;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._licenseId      = data.licenseId;
@@ -122,6 +123,15 @@ export default class CPlayer {
     }
 
     /**
+    * @param {object} data
+    */
+    set needs(data) {
+        this._needs = data;
+
+        this.clientEvent('Client.UpdateVar', "needs", this._needs);
+    }
+
+    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
@@ -199,6 +209,10 @@ export default class CPlayer {
         return this._inventory;
     }
 
+    get needs() {
+        return this._needs;
+    }
+
     get initialized() {
         return this._initialized;
     }
@@ -260,9 +274,9 @@ export default class CPlayer {
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
-    getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
-
     setLocation = (location) => SetEntityCoords(this._pedId, location.x, location.y, location.z);
+
+    getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
     canSave = () => this._initialized;
 
@@ -275,15 +289,15 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), this._licenseId];
+        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
         
-        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ? WHERE license = ?', playerData).then(() => {
+        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
             console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
         });
     }

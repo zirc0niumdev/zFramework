@@ -15,7 +15,7 @@ function inventoryAction(action, name, amount = 1) {
         const useFunc = GetUseItemFromName(item.onUse);
         useFunc(zFramework.LocalPlayer, amount, item);
 
-        if (!item.keep && item.onUse != "weapon") serverEvent("Server.DeleteItem", item.name, amount);
+        if (!item.keep && item.onUse != "weapon") serverEvent("Server.Inventory.DeleteItem", item.name, amount);
     } else if (action == 2) {
 
     } else if (action == 3) {
@@ -48,7 +48,7 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
     cb("ok");
 });
 
-zFramework.Inventory.OnInventoryUpdated = function() {
+zFramework.Inventory.OnUpdated = function() {
     if (!this.Opened) return;
 
     openInventory();
