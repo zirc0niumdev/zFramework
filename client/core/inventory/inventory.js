@@ -1,3 +1,5 @@
+const weaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };
+
 function inventoryAction(action, name, amount = 1) {
     const item = zFramework.Items.GetItem(name);
     if (!item) return;
@@ -23,11 +25,11 @@ function inventoryAction(action, name, amount = 1) {
     }
 }
 
-function changeWeaponSlot(slotName, weaponName) {
-    console.log("test");
+function changeWeaponSlot(slotName, previousSlotName, weaponName) {
     if (!zFramework.Functions.GetJsonConfig("weapons", weaponName)) return;
-    console.log(zFramework.Functions.GetJsonConfig("weapons", weaponName));
-    console.log(zFramework.LocalPlayer.inventory[slotName]);
+    
+    if (previousSlotName == "weaponOne" || previousSlotName == "weaponTwo" || previousSlotName == "weaponThree") zFramework.LocalPlayer.inventory[previousSlotName] = "";
+    if (slotName != "inventory") zFramework.LocalPlayer.inventory[slotName] = weaponName;
 
     if (!zFramework.Inventory.Opened) return;
     OpenInventory();
@@ -35,15 +37,12 @@ function changeWeaponSlot(slotName, weaponName) {
 
 RegisterNuiCallbackType('inventoryInteraction');
 on('__cfx_nui:inventoryInteraction', (data, cb) => {
-    const { eventName, amount } = data;
+    const { eventName, previousEvent, amount } = data;
     const { name } = data.itemData;
 
-    if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
+    if (eventName == "targetInventory" || !name) return;
 
-    if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") {
-        console.log("test");
-        changeWeaponSlot(eventName == "weaponOne" && 1 || eventName == "weaponTwo" && 2 || 3, name);
-    }
+    if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree" || eventName == "inventory") changeWeaponSlot(eventName, previousEvent, name);
     else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
 
     cb("ok");
@@ -132,18 +131,17 @@ zFramework.Inventory.Tick = function() {
     });
 }
 
-const weaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };
 function takeWeapon(slot) {
     const weapon = zFramework.LocalPlayer.inventory[weaponSlot[slot]];
-
-    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon)) inventoryAction(1, weapon, 1);
+    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon)) {
+        if (zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, weapon)) inventoryAction(1, weapon, 1);
+    }
 }
 
 zFramework.Inventory.Initialize = function() {
-    for (d = 1; d <= 3; d++) {
+    for (let d = 1; d < 4; d++) {
         zFramework.Functions.RegisterControlKey(`wepBind${d}`, `Equiper votre arme dans le slot ${d}`, d.toString(), () => {
             if (UpdateOnscreenKeyboard() == 0 || zFramework.UI.KeepFocus) return;
-            
             takeWeapon(d);
         });
     }

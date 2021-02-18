@@ -49,7 +49,7 @@ zFramework.Functions.GetJsonConfig = (varName, inValue) => {
 		const jsonStr = LoadResourceFile(GetCurrentResourceName(), `config/files/${varName}.json`);
 		jsonData[varName] = jsonStr != "null" && JSON.parse(jsonStr);
 	}
-	console.log(jsonData[varName][inValue]);
+	
 	return inValue && jsonData[varName][inValue] || !inValue && jsonData[varName];
 }
 
