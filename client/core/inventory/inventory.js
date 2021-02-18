@@ -32,7 +32,7 @@ function changeWeaponSlot(slotName, previousSlotName, weaponName) {
     if (slotName != "inventory") zFramework.LocalPlayer.inventory[slotName] = weaponName;
 
     if (!zFramework.Inventory.Opened) return;
-    OpenInventory();
+    openInventory();
 }
 
 RegisterNuiCallbackType('inventoryInteraction');
@@ -51,10 +51,10 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
 zFramework.Inventory.OnInventoryUpdated = function() {
     if (!this.Opened) return;
 
-    OpenInventory();
+    openInventory();
 }
 
-function OpenInventory() {
+function openInventory() {
     SetNuiFocus(true, true);
     zFramework.Functions.SetKeepInputMode(true);
     const { items, clothes, weight, weaponOne, weaponTwo, weaponThree } = zFramework.LocalPlayer.inventory;
@@ -74,7 +74,7 @@ function OpenInventory() {
     );
 }
 
-function CloseInventory() {
+function closeInventory() {
     zFramework.Inventory.Opened = false;
     SetNuiFocus(false, false);
     zFramework.Functions.SendToNUI({ eventName: "hideInventory" });
@@ -91,32 +91,31 @@ on('__cfx_nui:hideInventory', (data, cb) => {
 });
 
 zFramework.Functions.RegisterControlKey("openInventory", "Ouvrir/Fermer l'inventaire", "TAB", () => {
-    if (!zFramework.Inventory.Opened && !zFramework.UI.KeepFocus) {
-        zFramework.Inventory.Opened = true;
-        OpenInventory();
-    } else {
-        CloseInventory();
-    }
+    if (zFramework.Inventory.Opened && zFramework.UI.KeepFocus) return closeInventory();
+    
+    zFramework.Inventory.Opened = true;
+    openInventory();
 });
 
-zFramework.Inventory.Tick = function() {
+function tick() {
     const defaultWeap = GetHashKey("WEAPON_UNARMED");
-
-    // TODO
-    // setInterval(() => {
-    //     const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
-    //     if (selectedWeapon && selectedWeapon != defaultWeap) {
-    //         // let currentWeapon;
-    //         // for (;;) {
-    //         //     if (GetHashKey(;) == selectedWeapon) {
-    //         //         currentWeapon = ;;
-    //         //     }
-    //         // }
-    //         // if (!zFramework.LocalPlayer.inventory[o]) {
-    //         //     RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
-    //         // }
-    //     }
-    // }, 150);
+    const ammoConfig = zFramework.Functions.GetJsonConfig("ammo");
+    const weaponsConfig = zFramework.Functions.GetJsonConfig("weapons");
+    
+    setInterval(() => {
+        const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
+        if (selectedWeapon && selectedWeapon != defaultWeap) {
+            let currentWeapon;
+            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) {
+                if (GetHashKey(weaponHash) == selectedWeapon) {
+                    currentWeapon = weaponName;
+                }
+            }
+            if (!zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) {
+                RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            }
+        }
+    }, 150);
 
     setTick(() => {
         HudWeaponWheelIgnoreSelection();
@@ -146,5 +145,5 @@ zFramework.Inventory.Initialize = function() {
         });
     }
 
-    this.Tick();
+    tick();
 }
