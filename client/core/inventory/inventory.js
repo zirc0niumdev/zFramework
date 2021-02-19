@@ -1,5 +1,11 @@
 const weaponSlot = zFramework.Core.Inventory.WeaponSlot;
 
+function transferItem(name, amount, isDrop) {
+    if (zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name) - amount < 0) return zFramework.Functions.Notify("~r~Vous n'avez pas autant d'objets.");
+
+    
+}
+
 function inventoryAction(action, name, amount = 1) {
     const item = zFramework.Core.Items.GetItem(name);
     if (!item) return;
@@ -17,7 +23,7 @@ function inventoryAction(action, name, amount = 1) {
 
         if (!item.keep && item.onUse != "weapon") serverEvent("Server.Inventory.DeleteItem", item.name, amount);
     } else if (action == 2) {
-
+        transferItem(name, amount, isDrop)
     } else if (action == 3) {
         
     } else if (action == 4) {
@@ -46,7 +52,7 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
     else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
-    else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
+    else if (eventName == "useInventory") inventoryAction(2, name, parseInt(amount));
 
     cb("ok");
 });
