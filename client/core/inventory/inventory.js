@@ -30,8 +30,7 @@ function changeWeaponSlot(slotName, weaponName) {
     
     for (const slot in weaponSlot) {
         if (weaponSlot[slot] != slotName)
-            if (zFramework.LocalPlayer.inventory[weaponSlot[slot]] == weaponName)
-                zFramework.LocalPlayer.inventory[weaponSlot[slot]] = zFramework.LocalPlayer.inventory[slotName];
+            if (zFramework.LocalPlayer.inventory[weaponSlot[slot]] == weaponName) zFramework.LocalPlayer.inventory[weaponSlot[slot]] = zFramework.LocalPlayer.inventory[slotName];
     }
 
     zFramework.LocalPlayer.inventory[slotName] = weaponName;
@@ -48,6 +47,7 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
     if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
+    else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
     else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
 
     cb("ok");
@@ -102,7 +102,19 @@ zFramework.Functions.RegisterControlKey("openInventory", "Ouvrir/Fermer l'invent
     openInventory();
 });
 
-function tick() {
+zFramework.Core.Inventory.Think = function() {
+    HudWeaponWheelIgnoreSelection();
+    DisableControlAction(0, 37, true);
+        
+    if (zFramework.Core.Inventory.Opened) {
+        DisableControlAction(0, 24, true);
+        DisableControlAction(0, 25, true);
+        for (let i = 0; i < 6; i++) DisableControlAction(0, i, true);
+        HideHudAndRadarThisFrame();
+    }
+}
+
+zFramework.Core.Inventory.Thread = function() {
     const defaultWeap = GetHashKey("WEAPON_UNARMED");
     const ammoConfig = zFramework.Functions.GetJsonConfig("ammo");
     const weaponsConfig = zFramework.Functions.GetJsonConfig("weapons");
@@ -114,22 +126,15 @@ function tick() {
             for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
             if (!zFramework.Core.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
             else {
-                // todo
+                const ammo = ammoConfig[currentWeapon]; if (!ammo) return;
+                const itemAmount = zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, ammo);
+                const ammoCount = itemAmount && (GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) != itemAmount && GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) > itemAmount && itemAmount || GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) || 0);
+
+                SetPedAmmo(zFramework.LocalPlayer.pedId, selectedWeapon, ammoCount);
+                if (itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) serverEvent('Server.Inventory.DeleteItem', ammo, 1);
             }
         }
     }, 150);
-
-    setTick(() => {
-        HudWeaponWheelIgnoreSelection();
-        DisableControlAction(0, 37, true);
-        
-        if (zFramework.Core.Inventory.Opened) {
-            DisableControlAction(0, 24, true);
-            DisableControlAction(0, 25, true);
-            for (let i = 0; i < 6; i++) DisableControlAction(0, i, true);
-            HideHudAndRadarThisFrame();
-        }
-    });
 }
 
 function takeWeapon(slot) {
@@ -147,5 +152,5 @@ zFramework.Core.Inventory.Initialize = function() {
         });
     }
 
-    tick();
+    this.Thread();
 }

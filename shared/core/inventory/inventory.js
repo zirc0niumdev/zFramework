@@ -14,7 +14,8 @@ zFramework.Core.Inventory.GetItem = function(inv, name) {
     if (!zFramework.Core.Items.IsValid(name));
 
     const { type } = zFramework.Core.Items.GetItem(name);
-    const invItem = this.HasItem(inv, name, type);
+    if (!type) return;
+    const invItem = this.FindItem(inv, name, type);
     if (!invItem) return;
 
     return inv[type][invItem];
@@ -23,6 +24,6 @@ zFramework.Core.Inventory.GetItem = function(inv, name) {
 zFramework.Core.Inventory.GetItemAmount = function(inv, name) {
     const item = this.GetItem(inv, name);
     if (!item) return;
-    
+
     return item.qty;
 }
