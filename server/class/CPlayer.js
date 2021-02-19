@@ -224,6 +224,16 @@ export default class CPlayer {
         emitNet(eventName, this._serverId, ...args);
     }
 
+    addHunger = (amount) => this._needs = { hunger: Math.max(0, Math.min(100, this._needs.hunger + amount)) };
+
+    addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
+
+    changeWeaponSlot = (name, value) => {
+        this._inventory[name] = value;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+    };
+
     addItem = (name, qty = 1) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
@@ -233,7 +243,6 @@ export default class CPlayer {
         const item = zFramework.Core.Items.GetItem(name);
         const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
 
-        
         // stack management
         if (hasItem) {
             const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
@@ -269,6 +278,9 @@ export default class CPlayer {
 
         // weight management
         if (item.weight) this._inventory.weight -= item.weight * qty;
+
+        const weaponSlot = zFramework.Core.Inventory.FindItemInSlot(this._inventory, name);
+        if (weaponSlot) this._inventory[weaponSlot] = "";
         
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }

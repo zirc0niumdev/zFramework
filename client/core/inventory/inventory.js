@@ -1,4 +1,4 @@
-const weaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };
+const weaponSlot = zFramework.Core.Inventory.WeaponSlot;
 
 function inventoryAction(action, name, amount = 1) {
     const item = zFramework.Core.Items.GetItem(name);
@@ -27,16 +27,14 @@ function inventoryAction(action, name, amount = 1) {
 
 function changeWeaponSlot(slotName, weaponName) {
     if (!zFramework.Functions.GetJsonConfig("weapons", weaponName)) return;
-    
+
     for (const slot in weaponSlot) {
         if (weaponSlot[slot] != slotName)
-            if (zFramework.LocalPlayer.inventory[weaponSlot[slot]] == weaponName) zFramework.LocalPlayer.inventory[weaponSlot[slot]] = zFramework.LocalPlayer.inventory[slotName];
+            if (zFramework.LocalPlayer.inventory[weaponSlot[slot]] == weaponName)
+                serverEvent("Server.Inventory.ChangeSlot", weaponSlot[slot], zFramework.LocalPlayer.inventory[slotName]);
     }
 
-    zFramework.LocalPlayer.inventory[slotName] = weaponName;
-
-    if (!zFramework.Core.Inventory.Opened) return;
-    openInventory();
+    serverEvent("Server.Inventory.ChangeSlot", slotName, weaponName);
 }
 
 RegisterNuiCallbackType('inventoryInteraction');
