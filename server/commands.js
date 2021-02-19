@@ -4,13 +4,13 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     const car = args[0];
     if (!car) return;
 
+    if (car === "fix") return player.clientEvent("Client.RepairVehicle");
+
     const veh = CreateVehicle(GetHashKey(car), player.getLocation().x, player.getLocation().y, player.getLocation().z, GetEntityHeading(player.pedId), true, false);
     SetPedIntoVehicle(player.pedId, veh, -1);
 
     player.notify(`~g~${car}~w~ spawn !`);
 }, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } }, true);
-
-new CCommands("fixcar", zFramework.Groups.ADMIN, (player, args) => player.clientEvent("Client.RepairVehicle"), { help: "haha" }, true);
 
 new CCommands("goto", zFramework.Groups.ADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
@@ -63,6 +63,16 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
     target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
     console.log(`${target.name} à été ajouté au job ${jobName} !`);
+}, {help: "haha"});
+
+new CCommands("give", zFramework.Groups.SUPERADMIN, async (player, args) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
+    const item = zFramework.Core.Items.GetItem(args[1]);
+    if (!item) return;
+    const amount = args[2];
+    if (!amount) return;
+    
+    target.addItem(item.name, amount);
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {

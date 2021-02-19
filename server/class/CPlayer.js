@@ -126,8 +126,8 @@ export default class CPlayer {
     * @param {object} data
     */
     set needs(data) {
-        this._needs = data;
-
+        for (const type in data) this._needs[type] = data[type];
+        
         this.clientEvent('Client.UpdateVar', "needs", this._needs);
     }
 
@@ -227,27 +227,28 @@ export default class CPlayer {
     addItem = (name, qty = 1) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
-        if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
+        if (!zFramework.Core.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
         if (!this.canCarryItem(name, qty)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
 
-        const item = zFramework.Items.GetItem(name);
-        const hasItem = zFramework.Inventory.HasItem(this._inventory, item.name, item.type);
+        const item = zFramework.Core.Items.GetItem(name);
+        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
 
+        
         // stack management
         if (hasItem) {
-            const itemIndex = zFramework.Inventory.FindItem(this._inventory, item.name, item.type);
+            const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
             this._inventory[item.type][itemIndex].qty += qty;
         } else this._inventory[item.type].push({ name, qty });
 
         // weight management
-        this._inventory.weight += item.weight * qty;
+        if (item.weight) this._inventory.weight += item.weight * qty;
         
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
     canCarryItem = (name, qty) => {
-        const item = zFramework.Items.GetItem(name);
-        if (this._inventory.weight + item.weight * qty > zFramework.Inventory.PlayerWeight) return false;
+        const item = zFramework.Core.Items.GetItem(name);
+        if (this._inventory.weight + item.weight * qty > zFramework.Core.Inventory.PlayerWeight) return false;
 
         return true;
     }
@@ -255,11 +256,11 @@ export default class CPlayer {
     deleteItem = (name, qty = 1) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
-        if (!zFramework.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
+        if (!zFramework.Core.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
 
-        const item = zFramework.Items.GetItem(name);
-        const hasItem = zFramework.Inventory.HasItem(this._inventory, item.name, item.type);
-        const itemIndex = zFramework.Inventory.FindItem(this._inventory, item.name, item.type);
+        const item = zFramework.Core.Items.GetItem(name);
+        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
+        const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
         if (!hasItem) return;
 
         // stack management
@@ -267,7 +268,7 @@ export default class CPlayer {
         if (this._inventory[item.type][itemIndex].qty <= 0) this._inventory[item.type].splice(itemIndex, 1);
 
         // weight management
-        this._inventory.weight -= item.weight * qty;
+        if (item.weight) this._inventory.weight -= item.weight * qty;
         
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }

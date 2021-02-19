@@ -13,10 +13,10 @@ export default class CLocalPlayer {
         this._job            = data.playerJob;
         this._jobRank        = data.playerJobRank;
         this._inventory      = data.playerInventory;
+        this._needs          = data.playerNeeds;
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._dead           = data.dead;
-        this._needs          = data.needs;
         this._invincible     = false;
         this._invisible      = false;
         this._freeze         = false;
@@ -154,7 +154,7 @@ export default class CLocalPlayer {
     set inventory(data) {
         this._inventory = data;
 
-        zFramework.Inventory.OnUpdated();
+        zFramework.Core.Inventory.OnUpdated();
     }
 
     /**
@@ -163,7 +163,7 @@ export default class CLocalPlayer {
     set needs(data) {
         this._needs = data;
 
-        zFramework.Needs.OnUpdated();
+        zFramework.Core.Needs.OnUpdated();
     }
 
     /**
@@ -246,6 +246,10 @@ export default class CLocalPlayer {
     
     get inventory() {
         return this._inventory;
+    }
+    
+    get needs() {
+        return this._needs;
     }
 
     get initialized() {

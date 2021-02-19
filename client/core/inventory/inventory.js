@@ -1,7 +1,7 @@
 const weaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };
 
 function inventoryAction(action, name, amount = 1) {
-    const item = zFramework.Items.GetItem(name);
+    const item = zFramework.Core.Items.GetItem(name);
     if (!item) return;
 
     const playerPed = zFramework.LocalPlayer.pedId;
@@ -10,7 +10,7 @@ function inventoryAction(action, name, amount = 1) {
     
     if (action == 1) {
         if (!item.onUse) return;
-        if (zFramework.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name) < amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${name}.`);
+        if (zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name) < amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${name}.`);
         
         const useFunc = GetUseItemFromName(item.onUse);
         useFunc(zFramework.LocalPlayer, amount, item);
@@ -25,30 +25,35 @@ function inventoryAction(action, name, amount = 1) {
     }
 }
 
-function changeWeaponSlot(slotName, previousSlotName, weaponName) {
+function changeWeaponSlot(slotName, weaponName) {
     if (!zFramework.Functions.GetJsonConfig("weapons", weaponName)) return;
     
-    if (previousSlotName == "weaponOne" || previousSlotName == "weaponTwo" || previousSlotName == "weaponThree") zFramework.LocalPlayer.inventory[previousSlotName] = "";
-    if (slotName != "inventory") zFramework.LocalPlayer.inventory[slotName] = weaponName;
+    for (const slot in weaponSlot) {
+        if (weaponSlot[slot] != slotName)
+            if (zFramework.LocalPlayer.inventory[weaponSlot[slot]] == weaponName)
+                zFramework.LocalPlayer.inventory[weaponSlot[slot]] = zFramework.LocalPlayer.inventory[slotName];
+    }
 
-    if (!zFramework.Inventory.Opened) return;
+    zFramework.LocalPlayer.inventory[slotName] = weaponName;
+
+    if (!zFramework.Core.Inventory.Opened) return;
     openInventory();
 }
 
 RegisterNuiCallbackType('inventoryInteraction');
 on('__cfx_nui:inventoryInteraction', (data, cb) => {
-    const { eventName, previousEvent, amount } = data;
+    const { eventName, amount } = data;
     const { name } = data.itemData;
 
-    if (eventName == "targetInventory" || !name) return;
+    if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
 
-    if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree" || eventName == "inventory") changeWeaponSlot(eventName, previousEvent, name);
+    if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
     else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
 
     cb("ok");
 });
 
-zFramework.Inventory.OnUpdated = function() {
+zFramework.Core.Inventory.OnUpdated = function() {
     if (!this.Opened) return;
 
     openInventory();
@@ -75,7 +80,7 @@ function openInventory() {
 }
 
 function closeInventory() {
-    zFramework.Inventory.Opened = false;
+    zFramework.Core.Inventory.Opened = false;
     SetNuiFocus(false, false);
     zFramework.Functions.SendToNUI({ eventName: "hideInventory" });
     Wait(50);
@@ -85,15 +90,15 @@ RegisterNuiCallbackType('hideInventory');
 on('__cfx_nui:hideInventory', (data, cb) => {
     SetNuiFocus(false, false);
     zFramework.Functions.SetKeepInputMode(false);
-    zFramework.Inventory.Opened = false;
+    zFramework.Core.Inventory.Opened = false;
 
     cb("ok");
 });
 
 zFramework.Functions.RegisterControlKey("openInventory", "Ouvrir/Fermer l'inventaire", "TAB", () => {
-    if (zFramework.Inventory.Opened && zFramework.UI.KeepFocus) return closeInventory();
+    if (zFramework.Core.Inventory.Opened && zFramework.UI.KeepFocus) return closeInventory();
     
-    zFramework.Inventory.Opened = true;
+    zFramework.Core.Inventory.Opened = true;
     openInventory();
 });
 
@@ -107,7 +112,7 @@ function tick() {
         if (selectedWeapon && selectedWeapon != defaultWeap) {
             let currentWeapon;
             for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
-            if (!zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            if (!zFramework.Core.Inventory.HasItem(zFramework.LocalPlayer.inventory, currentWeapon)) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
             else {
                 // todo
             }
@@ -118,7 +123,7 @@ function tick() {
         HudWeaponWheelIgnoreSelection();
         DisableControlAction(0, 37, true);
         
-        if (zFramework.Inventory.Opened) {
+        if (zFramework.Core.Inventory.Opened) {
             DisableControlAction(0, 24, true);
             DisableControlAction(0, 25, true);
             for (let i = 0; i < 6; i++) DisableControlAction(0, i, true);
@@ -130,11 +135,11 @@ function tick() {
 function takeWeapon(slot) {
     const weapon = zFramework.LocalPlayer.inventory[weaponSlot[slot]];
     if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon)) {
-        if (zFramework.Inventory.HasItem(zFramework.LocalPlayer.inventory, weapon)) inventoryAction(1, weapon, 1);
+        if (zFramework.Core.Inventory.HasItem(zFramework.LocalPlayer.inventory, weapon)) inventoryAction(1, weapon, 1);
     }
 }
 
-zFramework.Inventory.Initialize = function() {
+zFramework.Core.Inventory.Initialize = function() {
     for (let d = 1; d < 4; d++) {
         zFramework.Functions.RegisterControlKey(`wepBind${d}`, `Equiper votre arme dans le slot ${d}`, d.toString(), () => {
             if (UpdateOnscreenKeyboard() == 0 || zFramework.UI.KeepFocus) return;

@@ -5,6 +5,8 @@ author 'zirconiium'
 
 client_scripts {
 	'zFramework.js',
+	'dist/shared/modules.js',
+	'dist/shared/core.js',
 	'dist/shared/*.js',
 	'dist/client/*.js'
 }
@@ -12,6 +14,8 @@ client_scripts {
 server_scripts {
 	'config.js', -- need to ditch that shit
 	'zFramework.js',
+	'dist/shared/modules.js',
+	'dist/shared/core.js',
 	'dist/shared/*.js',
 	'dist/server/*.js'
 }

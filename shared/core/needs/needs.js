@@ -1,1 +1,1 @@
-zFramework.Needs = {};
+zFramework.Core.Needs = {};

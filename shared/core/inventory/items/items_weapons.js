@@ -5,4 +5,4 @@ const poingAmericainItem = {
     type: "items",
     onUse: "weapon"
 };
-zFramework.Items.RegisterItem(poingAmericainItem);
+zFramework.Core.Items.RegisterItem(poingAmericainItem);

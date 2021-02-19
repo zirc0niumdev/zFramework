@@ -1,10 +1,3 @@
-zFramework.Core = {};
-
-zFramework.Core.List = {
-    Inventory: true,
-    Needs: true
-};
-
 zFramework.Core.Initialize = function() {
 	for (const moduleName in this.List) {
 		if (this[moduleName] && this[moduleName]["Initialize"]) {

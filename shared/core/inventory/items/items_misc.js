@@ -3,4 +3,4 @@ const moneyItem = {
     weight: 0.002,
     type: "items"
 };
-zFramework.Items.RegisterItem(moneyItem);
+zFramework.Core.Items.RegisterItem(moneyItem);

@@ -14,7 +14,7 @@ onUseFunc["weapon"] = (localPlayer, amount, item) => {
     if (isArmed) return zFramework.Functions.Notify(`Vous avez déséquipé votre ~r~${item.name}~w~.`);
 
     const ammo = zFramework.Functions.GetJsonConfig("ammo", item.name);
-    const ammoAmount = ammo && zFramework.Inventory.GetItemAmount(localPlayer.inventory, item.name) || 200;
+    const ammoAmount = ammo && zFramework.Core.Inventory.GetItemAmount(localPlayer.inventory, item.name) || 200;
     GiveWeaponToPed(localPlayer.pedId, weapon, parseInt(ammoAmount) || 0, true, true);
     Wait(10);
     zFramework.Functions.Notify(`Vous avez équipé votre ~g~${item.name}~w~.`);

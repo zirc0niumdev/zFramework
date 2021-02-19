@@ -1,9 +1,9 @@
-zFramework.Items = {};
+zFramework.Core.Items = {};
 
 let m_tblItemRegister = {};
 
-zFramework.Items.RegisterItem = tblItem => m_tblItemRegister[tblItem.name] = tblItem;
-zFramework.Items.IsValid = strItemName => (m_tblItemRegister[strItemName] && true) || false;
+zFramework.Core.Items.RegisterItem = tblItem => m_tblItemRegister[tblItem.name] = tblItem;
+zFramework.Core.Items.IsValid = strItemName => (m_tblItemRegister[strItemName] && true) || false;
 
-zFramework.Items.GetItem = strItemName => m_tblItemRegister[strItemName];
-zFramework.Items.GetAllItems = () => m_tblItemRegister;
+zFramework.Core.Items.GetItem = strItemName => m_tblItemRegister[strItemName];
+zFramework.Core.Items.GetAllItems = () => m_tblItemRegister;

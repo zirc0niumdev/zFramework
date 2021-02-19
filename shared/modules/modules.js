@@ -1,12 +1,3 @@
-zFramework.Modules = {};
-
-zFramework.Modules.List = {
-	Weather: true,
-	Discord: true,
-	Whitelist: true,
-	Ban: true
-}
-
 zFramework.Modules.Initialize = function() {
 	for (const moduleName in this.List) {
 		if (this[moduleName] && this[moduleName]["Initialize"]) {
