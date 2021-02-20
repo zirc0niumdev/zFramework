@@ -228,17 +228,14 @@ export default class CPlayer {
 
     addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
 
-    setItemData = (name, key, value) => {
-        const item = zFramework.Core.Items.GetItem(name);
-        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, name, item.type);
-        console.log(item, hasItem);
-        if (hasItem) {
-            const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, name, item.type);
+    setItem = (index, type, key, value, isData = false) => {
+        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, index, type);
+        if (!hasItem) return;
 
-            this._inventory[item.type][itemIndex]["data"][key] = value;
-    
-            this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
-        }
+        if (isData) this._inventory[type][index]["data"][key] = value;
+        else this._inventory[type][index][key] = value;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
     changeWeaponSlot = (key, value) => {
@@ -257,7 +254,7 @@ export default class CPlayer {
 
         // stack management
         if (hasItem) {
-            const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
+            const itemIndex = zFramework.Core.Inventory.GetItemIndex(this._inventory, item.name, item.type);
             this._inventory[item.type][itemIndex].qty += qty;
         } else this._inventory[item.type].push({ name, base: name, data, qty });
 
@@ -274,13 +271,14 @@ export default class CPlayer {
         return true;
     }
 
-    deleteItem = (name, qty = 1) => {
+    deleteItem = (name, qty = 1, index) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
         const item = zFramework.Core.Items.GetItem(name);
         const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
-        const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
         if (!hasItem) return;
+
+        const itemIndex = index || zFramework.Core.Inventory.GetItemIndex(this._inventory, item.name, item.type);
 
         // stack management
         this._inventory[item.type][itemIndex].qty -= qty;
@@ -289,7 +287,7 @@ export default class CPlayer {
         // weight management
         if (item.weight) this._inventory.weight -= item.weight * qty;
 
-        const weaponSlot = zFramework.Core.Inventory.FindItemInSlot(this._inventory, name);
+        const weaponSlot = zFramework.Core.Inventory.GetItemInSlot(this._inventory, name);
         if (weaponSlot) this._inventory[weaponSlot] = "";
         
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);

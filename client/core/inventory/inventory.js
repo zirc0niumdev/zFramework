@@ -6,26 +6,30 @@ function transferItem(name, amount, isDrop) {
 
 }
 
-async function inventoryAction(action, name, amount = 1) {
+async function inventoryAction(action, name, index, amount = 1) {
     const playerPed = zFramework.LocalPlayer.pedId;
     const playerVehicle = zFramework.LocalPlayer.isInVehicle();
     if (playerVehicle && GetPedInVehicleSeat(playerVehicle, -1) == playerPed && GetEntitySpeed(playerVehicle) > 3) return;
     
+    const item = zFramework.Core.Items.GetItem(name);
+    if (!item) return;
+
     if (action == 1) {
-        const item = zFramework.Core.Items.GetItem(name);
-        if (!item) return;
+        const invItem = zFramework.Core.Inventory.GetItem(zFramework.LocalPlayer.inventory, name);
         if (!item.onUse) return;
-        if (zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, name) < amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${name}.`);
+        console.log(name);
+        console.log(invItem);
+        if (invItem.qty < amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${invItem.name}.`);
         
         const useFunc = GetUseItemFromName(item.onUse);
-        useFunc(zFramework.LocalPlayer, amount, item);
+        useFunc(zFramework.LocalPlayer, item, index, amount);
 
-        if (!item.keep && item.onUse != "weapon") serverEvent("Server.Inventory.DeleteItem", item.name, amount);
-    } else if (action == 2) transferItem(name, amount, false);
-    else if (action == 3) transferItem(name, amount, true);
+        if (!item.keep && item.onUse != "weapon") serverEvent("Server.Inventory.DeleteItem", item.name, amount, index);
+    } else if (action == 2) transferItem(index, amount, false);
+    else if (action == 3) transferItem(index, amount, true);
     else if (action == 4) {
         const surname = await zFramework.Functions.KeyboardInput("Surnom", "", 20);
-        serverEvent('Server.Inventory.UpdateItemData', name, "surname", surname);
+        serverEvent('Server.Inventory.UpdateItem', index, item.type, "base", surname);
     } else if (action == 5) {
         
     }
@@ -45,20 +49,20 @@ function changeWeaponSlot(slotName, weaponName) {
 RegisterNuiCallbackType('inventoryInteraction');
 on('__cfx_nui:inventoryInteraction', (data, cb) => {
     const { eventName, amount } = data;
-    const { name, base, itemKey, itemData } = data.itemData;
+    const { name, index } = data.itemData;
 
     if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
-    else if (eventName == "useInventory") inventoryAction(1, name, parseInt(amount));
-    else if (eventName == "giveInventory") inventoryAction(2, name, parseInt(amount));
-    else if (eventName == "throwInventory") inventoryAction(3, name, parseInt(amount));
+    else if (eventName == "useInventory") inventoryAction(1, name, parseInt(index), parseInt(amount));
+    else if (eventName == "giveInventory") inventoryAction(2, name, parseInt(index), parseInt(amount));
+    else if (eventName == "throwInventory") inventoryAction(3, name, parseInt(index), parseInt(amount));
     else if (eventName == "infoInventory") {
         if (name.includes("Argent")) return;
-        inventoryAction(5, name, parseInt(amount));
+        inventoryAction(5, name, parseInt(index));
     } else if (eventName == "renameInventory") {
         if (name.includes("Argent")) return;
-        inventoryAction(4, name, parseInt(amount));
+        inventoryAction(4, name, parseInt(index));
     }
 
     cb("ok");
@@ -76,12 +80,12 @@ function formatInventoryForNUI(inv) {
 
     if (inv.items && inv.items !== []) {
         for (const [index, item] of Object.entries(inv.items))
-            items[index] = { name: item.name, base: item.base, qty: item.qty, itemKey: parseInt(index), itemData: item.data };
+            items[index] = { name: item.name, base: item.base, qty: item.qty, index, itemData: item.data };
     }
 
     if (inv.clothes && inv.clothes !== []) {
         for (const [index, item] of Object.entries(inv.clothes))
-            clothes[index] = { name: item.name, base: item.base, qty: item.qty, itemKey: parseInt(index), itemData: item.data };
+            clothes[index] = { name: item.name, base: item.base, qty: item.qty, index, itemData: item.data };
     }
 
     return { items, clothes };

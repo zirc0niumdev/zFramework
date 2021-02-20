@@ -3,15 +3,18 @@ zFramework.Core.Inventory.Opened = false;
 zFramework.Core.Inventory.PlayerWeight = 45.0;
 zFramework.Core.Inventory.WeaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };
 
-zFramework.Core.Inventory.HasItem = (inv, name, type = "items") => inv[type].find(it => it.name === name || it.data.surname === name) && true || false;
+zFramework.Core.Inventory.HasItem = (inv, name, type = "items") => {
+    if (typeof(name) == "string") return inv[type].find(it => it.name === name) && true || false;
+    if (typeof(name) == "number") return inv[type][name] && true || false;
+};
 
-zFramework.Core.Inventory.FindItem = (inv, name, type = "items") => {
+zFramework.Core.Inventory.GetItemIndex = (inv, name, type = "items") => {
     if (!zFramework.Core.Items.IsValid(name));
 
-    return inv[type].findIndex(it => it.name === name || it.data.surname === name);
+    return inv[type].findIndex(it => it.name === name);
 }
 
-zFramework.Core.Inventory.FindItemInSlot = function(inv, name) {
+zFramework.Core.Inventory.GetItemInSlot = function(inv, name) {
     if (!zFramework.Core.Items.IsValid(name));
     
     for (const slot in this.WeaponSlot)
@@ -20,15 +23,20 @@ zFramework.Core.Inventory.FindItemInSlot = function(inv, name) {
 }
 
 zFramework.Core.Inventory.GetItem = function(inv, name) {
-    if (!zFramework.Core.Items.IsValid(name));
+    if (!this.HasItem(inv, name, type)) return;
 
     const { type } = zFramework.Core.Items.GetItem(name);
     if (!type) return;
-    if (!this.HasItem(inv, name, type)) return;
-    const invItem = this.FindItem(inv, name, type);
+    const invItem = this.GetItemIndex(inv, name, type);
     if (!invItem) return;
 
     return inv[type][invItem];
+}
+
+zFramework.Core.Inventory.GetItemByIndex = function(inv, index, type) {
+    if (!this.HasItem(inv, index, type)) return;
+
+    return inv[type][index];
 }
 
 zFramework.Core.Inventory.GetItemName = function(inv, name) {
