@@ -228,16 +228,28 @@ export default class CPlayer {
 
     addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
 
-    changeWeaponSlot = (name, value) => {
-        this._inventory[name] = value;
+    setItemData = (name, key, value) => {
+        const item = zFramework.Core.Items.GetItem(name);
+        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, name, item.type);
+        console.log(item, hasItem);
+        if (hasItem) {
+            const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, name, item.type);
+
+            this._inventory[item.type][itemIndex]["data"][key] = value;
+    
+            this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+        }
+    };
+
+    changeWeaponSlot = (key, value) => {
+        this._inventory[key] = value;
 
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
-    addItem = (name, qty = 1) => {
+    addItem = (name, qty = 1, data = {}) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
-        if (!zFramework.Core.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
         if (!this.canCarryItem(name, qty)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
 
         const item = zFramework.Core.Items.GetItem(name);
@@ -247,7 +259,7 @@ export default class CPlayer {
         if (hasItem) {
             const itemIndex = zFramework.Core.Inventory.FindItem(this._inventory, item.name, item.type);
             this._inventory[item.type][itemIndex].qty += qty;
-        } else this._inventory[item.type].push({ name, qty });
+        } else this._inventory[item.type].push({ name, base: name, data, qty });
 
         // weight management
         if (item.weight) this._inventory.weight += item.weight * qty;
@@ -264,8 +276,6 @@ export default class CPlayer {
 
     deleteItem = (name, qty = 1) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
-
-        if (!zFramework.Core.Items.IsValid(name)) return this.notify("~r~Cet item n'est pas valide, contactez un admin.");
 
         const item = zFramework.Core.Items.GetItem(name);
         const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);

@@ -91,7 +91,7 @@ onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
-	if (player.firstSpawn)
+	//if (player.firstSpawn)
 	{
 		player.addItem("Argent", 250);
 		// player.addItem("Pain", 1200);

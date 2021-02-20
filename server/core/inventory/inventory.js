@@ -8,7 +8,12 @@ onNet("Server.Inventory.DeleteItem", async (name, amount) => {
     player.deleteItem(name, amount);
 });
 
-onNet("Server.Inventory.ChangeSlot", async (name, value) => {
+onNet("Server.Inventory.ChangeSlot", async (key, value) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    player.changeWeaponSlot(name, value);
+    player.changeWeaponSlot(key, value);
+});
+
+onNet("Server.Inventory.UpdateItemData", async (name, key, value) => {
+    const player = await zFramework.Functions.GetPlayerFromId(global.source);
+    player.setItemData(name, key, value);
 });
