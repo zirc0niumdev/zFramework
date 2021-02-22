@@ -11,7 +11,7 @@ onNet("Server.Inventory.ChangeSlot", async (key, value) => {
 
 onNet("Server.Inventory.UpdateItem", async (name, num, data = {}) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    player.updateItem(name, num, data = {});
+    player.updateItem(name, num, data);
 });
 
 // onNet("Server.Inventory.TransferItem", async (targetId, item, index, amount) => {

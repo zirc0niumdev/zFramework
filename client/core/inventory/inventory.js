@@ -21,7 +21,7 @@ zFramework.Core.Inventory.UpdateItem = function(name, num, data = {}) {
 
     items[name][num] = data;
 
-    //serverEvent("Server.Inventory.UpdateItem", name, num, data);
+    serverEvent("Server.Inventory.UpdateItem", name, num, data);
 }
 
 function transferItem(item, amount, isDrop) {
@@ -43,13 +43,14 @@ async function inventoryAction(action, it) {
     const playerVehicle = zFramework.LocalPlayer.isInVehicle();
     if (playerVehicle && GetPedInVehicleSeat(playerVehicle, -1) == playerPed && GetEntitySpeed(playerVehicle) > 3) return;
 
+    const { inventory } = zFramework.LocalPlayer;
     const item = zFramework.Core.Items.Get(it.name);
     const itemNum = it.itemKey[0];
-    const itemData = zFramework.LocalPlayer.inventory.items[it.name][itemNum];
+    const itemData = inventory.items[it.name][itemNum];
 
     if (action == 1) {
         if (!item.onUse) return;
-        if (zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, it.name) < it.amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${item.name}.`);
+        if (zFramework.Core.Inventory.GetItemAmount(inventory, it.name) < it.amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${item.name}.`);
         
         const useFunc = GetUseItemFromName(item.onUse);
         useFunc(zFramework.LocalPlayer, itemData, itemNum, it.amount, item);
@@ -60,7 +61,11 @@ async function inventoryAction(action, it) {
     // else if (action == 3) transferItem({ name: it.name, index: it.index, data: it.data, qty: invItem.qty }, amount, true);
     else if (action == 4) {
         if (it.name.includes("Argent")) return;
-        const surname = await zFramework.Functions.KeyboardInput("Renommer", "", 20);
+        if (!inventory.items[it.name] || !itemData) return;
+
+        let surname = await zFramework.Functions.KeyboardInput("Renommer", itemData.name || it.name, 20);
+        if (surname && surname == it.name) surname = null;
+
         itemData.name = surname;
         zFramework.Core.Inventory.UpdateItem(it.name, itemNum, itemData);
     } else if (action == 5) {

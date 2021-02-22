@@ -277,6 +277,18 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
+    
+    updateItem = (name, num, data = {}) => {
+        if (typeof(num) !== "number") num = Number(num);
+
+        if (!this.inventory.items[name]) return;
+
+        // data management
+        this.inventory.items[name][num] = data;
+            
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+    }
+
     changeWeaponSlot = (key, value) => {
         this._inventory[key] = value;
 
