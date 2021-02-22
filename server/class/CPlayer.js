@@ -272,7 +272,7 @@ export default class CPlayer {
         for (let i=0; i < num; i++) this.inventory.items[name].push(data);
     
         // weight management
-        if (item.weight) this._inventory.weight += item.weight * num;
+        this._inventory.weight += (item.weight || zFramework.Core.Inventory.DefaultWeight) * num;
             
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
@@ -326,10 +326,7 @@ export default class CPlayer {
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management
-        if (item.weight) this._inventory.weight -= item.weight * num;
-
-        const weaponSlot = zFramework.Core.Inventory.GetItemInSlot(this._inventory, name);
-        if (weaponSlot) this._inventory[weaponSlot] = "";
+        if (item.weight) this._inventory.weight -= (item.weight || zFramework.Core.Inventory.DefaultWeight) * num;
 
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }

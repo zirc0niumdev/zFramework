@@ -7,12 +7,6 @@ zFramework.Core.Inventory.ClothesItems = ["Vêtement", "Sac", "Tenue", "Accessoi
 
 zFramework.Core.Inventory.GetWeight = inv => inv.weight;
 
-zFramework.Core.Inventory.GetItemInSlot = function(inv, name) {
-    for (const slot in this.WeaponSlot)
-        if (inv[this.WeaponSlot[slot]] == name)
-            return this.WeaponSlot[slot];
-}
-
 zFramework.Core.Inventory.CanCarryItem = function(inv, name, qty, plyWeight, next) {
     const result = (zFramework.Core.Items.Get(name).weight || this.DefaultWeight) * qty + this.GetWeight(inv) <= plyWeight;
     if (next) next(result);

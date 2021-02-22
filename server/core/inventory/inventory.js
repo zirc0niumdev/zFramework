@@ -16,7 +16,7 @@ onNet("Server.Inventory.UpdateItem", async (name, num, data = {}) => {
 
 onNet("Server.Inventory.TransferItem", async (targetId, name, amount) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    const target = await zFramework.Functions.GetPlayerFromId(global.source);
+    const target = await zFramework.Functions.GetPlayerFromId(targetId);
 
     if (!zFramework.Core.Inventory.CanCarryItem(target.inventory, name, amount.length, zFramework.Core.Inventory.PlayerWeight)) return player.notify("~r~Cette personne ne peut pas porter plus d'objet.");
 

@@ -39,11 +39,10 @@ function transferItem(item, isDrop) {
 
         if (isDrop) console.log("pickup hsit");
         else {
-            //const closePly = zFramework.Functions.GetClosePlayer();
-            serverEvent("Server.Inventory.TransferItem", 0, item.name, item.amount);
+            const closePly = zFramework.Functions.GetClosePlayer();
 
-            // if (closePly) 
-            // else zFramework.Functions.Notify("~w~Rapprochez-vous.");
+            if (closePly) serverEvent("Server.Inventory.TransferItem", 0, item.name, item.amount);
+            else zFramework.Functions.Notify("~y~Rapprochez-vous.");
         }
     }
 }
@@ -175,12 +174,26 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
     return { inv: items, clothes };
 }
 
+function getInventoryWeapons() {
+    let weapons = {}
+
+    for (const [slotName, weaponName] of Object.entries(zFramework.LocalPlayer.inventory)) {
+        if (slotName.includes("weapon")) {
+            if (zFramework.LocalPlayer.inventory.items[weaponName])
+                weapons[slotName] = weaponName
+        }
+    }
+
+    return weapons;
+}
+
 function openInventory() {
     SetNuiFocus(true, true);
     zFramework.Functions.SetKeepInputMode(true);
 
-    const { items, weight, weaponOne, weaponTwo, weaponThree } = zFramework.LocalPlayer.inventory;
+    const { items, weight } = zFramework.LocalPlayer.inventory;
     const { inv, clothes } = formatInventoryForNUI(items, zFramework.LocalPlayer.money, zFramework.LocalPlayer.dirtyMoney);
+    const weapons = getInventoryWeapons();
 
     zFramework.Functions.SendToNUI(
         {
@@ -189,9 +202,9 @@ function openInventory() {
                 items: inv,
                 clothes: clothes,
                 weight: weight.toFixed(2),
-                weaponOne,
-                weaponTwo,
-                weaponThree
+                weaponOne: weapons["weaponOne"],
+                weaponTwo: weapons["weaponTwo"],
+                weaponThree: weapons["weaponThree"]
             }
         }
     );
