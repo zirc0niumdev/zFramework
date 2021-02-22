@@ -61,10 +61,14 @@ onNet('Server.GeneratePlayer', async () => {
 
 	const identifiers = zFramework.Functions.GetIdentifiersFromId(playerId);
 
-	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license).then(async res => {
+	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license)
+	.then(async res => {
 		const tempPlayerData = {
 			serverId: playerId,
 			pedId: GetPlayerPed(playerId),
+			playerMoney: res[0] ? res[0].money : 250,
+			playerDirtyMoney: res[0] ? res[0].dirtyMoney : 0,
+			playerUUID: res[0] ? res[0].uuid : zFramework.Functions.GenerateUUID(),
 			playerName: GetPlayerName(playerId),
 			spawnLocation: res[0] ? JSON.parse(res[0].location) : { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },
 			playerModel: res[0] ? res[0].model : "mp_m_freemode_01",
@@ -73,7 +77,7 @@ onNet('Server.GeneratePlayer', async () => {
 			playerRank: res[0] ? res[0].rank : zFramework.Ranks.CITIZEN,
 			playerJob: await zFramework.Jobs.GetJobFromId(res[0] ? res[0].job : 1),
 			playerJobRank: res[0] ? res[0].job_rank : 0,
-			playerInventory: res[0] ? JSON.parse(res[0].inventory) : { items: [], clothes: [], weight: 0, weaponOne: "", weaponTwo: "", weaponThree: "" },
+			playerInventory: res[0] ? JSON.parse(res[0].inventory) : { items: {}, weight: 0, weaponOne: "", weaponTwo: "", weaponThree: "" },
 			playerNeeds: res[0] ? JSON.parse(res[0].needs) : { hunger: 100, thirst: 100, health: 100 },
 			licenseId: res[0] ? res[0].license : identifiers.license,
 			discordId: res[0] ? res[0].discord : identifiers.discord,
@@ -82,7 +86,7 @@ onNet('Server.GeneratePlayer', async () => {
 			playerSkin: res[0] ? JSON.parse(res[0].skin) : null,
 			playerIdentity: res[0] ? JSON.parse(res[0].identity) : null
 		}
-		
+
 		zFramework.Players[playerId] = new CPlayer(tempPlayerData);	
 	});
 });
@@ -93,7 +97,7 @@ onNet("Server.onPlayerSpawned", async () => {
 
 	//if (player.firstSpawn)
 	{
-		player.addItem("Argent", 250);
+		// player.addItem("Argent", 250);
 		// player.addItem("Pain", 1200);
 		// player.addItem("Eau", 1200);
 	}

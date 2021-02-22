@@ -5,6 +5,8 @@ export default class CPlayer {
         this._serverId       = data.serverId;
         this._pedId          = data.pedId;
         this._name           = data.playerName;
+        this._money          = data.playerMoney;
+        this._dirtyMoney     = data.playerDirtyMoney;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
         this._group          = data.playerGroup;
@@ -19,6 +21,7 @@ export default class CPlayer {
         this._licenseId      = data.licenseId;
         this._discordId      = data.discordId;
         this._dead           = data.dead;
+        this._uuid           = data.playerUUID;
         this._firstSpawn     = data.firstSpawn;
         this._initialized    = false;
 
@@ -28,12 +31,30 @@ export default class CPlayer {
     }
 
     /**
-    * @param {string} name
+    * @param {String} name
     */
     set model(name) {
         this._model = name;
 
         this.clientEvent('Client.UpdateVar', "model", this._model);
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set money(amount) {
+        this._money = amount;
+
+        this.clientEvent('Client.UpdateVar', "money", this._money);
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set dirtyMoney(amount) {
+        this._dirtyMoney = amount;
+
+        this.clientEvent('Client.UpdateVar', "dirtyMoney", this._dirtyMoney);
     }
 
     /**
@@ -56,7 +77,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {boolean} toggle
+    * @param {Boolean} toggle
     */
     set dead(toggle) {
         this._dead = toggle;
@@ -65,7 +86,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} amount
+    * @param {Number} amount
     */
     set level(amount) {
         this._level = amount;
@@ -74,7 +95,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} type
+    * @param {Number} type
     */
     set rank(type) {
         this._rank = type;
@@ -83,7 +104,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} type
+    * @param {Number} type
     */
     set group(type) {
         ExecuteCommand(`remove_principal identifier.${this._licenseId} group.${this._group}`);
@@ -94,7 +115,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} id
+    * @param {Number} id
     */
     set job(id) {
         const job = zFramework.Jobs.GetJobFromId(id);
@@ -105,7 +126,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {number} id
+    * @param {Number} id
     */
     set jobRank(id) {
         this._jobRank = id;
@@ -114,7 +135,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {object} data
+    * @param {Object} data
     */
     set inventory(data) {
         this._inventory = data;
@@ -123,7 +144,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {object} data
+    * @param {Object} data
     */
     set needs(data) {
         for (const type in data) this._needs[type] = data[type];
@@ -132,7 +153,7 @@ export default class CPlayer {
     }
 
     /**
-    * @param {boolean} toggle
+    * @param {Boolean} toggle
     */
     set initialized(toggle) {
         this._initialized = toggle;
@@ -147,6 +168,18 @@ export default class CPlayer {
     
     get name() {
         return this._name;
+    }
+
+    get money() {
+        return this._money;
+    }
+
+    get dirtyMoney() {
+        return this._dirtyMoney;
+    }
+
+    get uuid() {
+        return this._uuid;
     }
 
     get pedId() {
@@ -228,15 +261,24 @@ export default class CPlayer {
 
     addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
 
-    setItem = (index, type, key, value, isData = false) => {
-        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, index, type);
-        if (!hasItem) return;
+    addItem = (name, qty = 1, data = {}) => {
+        if (typeof(qty) !== "number") qty = parseInt(qty);
+        if (!this.canCarryItem(name, qty)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
 
-        if (isData) this._inventory[type][index]["data"][key] = value;
-        else this._inventory[type][index][key] = value;
+        const item = zFramework.Core.Items.Get(name);
+        if (!item) return;
 
+        const { has, index } = zFramework.Core.Inventory.GetItem(this._inventory, name, data);
+
+        // stack management
+        if (!has || item.unique) this._inventory["items"].push({ name, data, qty });
+        else this._inventory["items"][index].qty += qty;
+    
+        // weight management
+        if (item.weight) this._inventory.weight += item.weight * qty;
+            
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
-    };
+    }
 
     changeWeaponSlot = (key, value) => {
         this._inventory[key] = value;
@@ -244,45 +286,25 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
-    addItem = (name, qty = 1, data = {}) => {
-        if (typeof(qty) !== "number") qty = parseInt(qty);
-
-        if (!this.canCarryItem(name, qty)) return this.notify("~r~Vous ne pouvez pas porter plus sur vous.");
-
-        const item = zFramework.Core.Items.GetItem(name);
-        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
-
-        // stack management
-        if (hasItem) {
-            const itemIndex = zFramework.Core.Inventory.GetItemIndex(this._inventory, item.name, item.type);
-            this._inventory[item.type][itemIndex].qty += qty;
-        } else this._inventory[item.type].push({ name, base: name, data, qty });
-
-        // weight management
-        if (item.weight) this._inventory.weight += item.weight * qty;
-        
-        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
-    }
-
     canCarryItem = (name, qty) => {
-        const item = zFramework.Core.Items.GetItem(name);
-        if (this._inventory.weight + item.weight * qty > zFramework.Core.Inventory.PlayerWeight) return false;
+        const { weight } = zFramework.Core.Items.Get(name);
+        if (this._inventory.weight + weight * qty > zFramework.Core.Inventory.PlayerWeight) return false;
 
         return true;
     }
 
-    deleteItem = (name, qty = 1, index) => {
+    deleteItem = (name, qty = 1, data = {}) => {
         if (typeof(qty) !== "number") qty = parseInt(qty);
 
-        const item = zFramework.Core.Items.GetItem(name);
-        const hasItem = zFramework.Core.Inventory.HasItem(this._inventory, item.name, item.type);
-        if (!hasItem) return;
+        const item = zFramework.Core.Items.Get(name);
+        if (!item) return;
 
-        const itemIndex = index || zFramework.Core.Inventory.GetItemIndex(this._inventory, item.name, item.type);
+        const { has, index } = zFramework.Core.Inventory.GetItem(this._inventory, name, data);
+        if (!has) return;
 
         // stack management
-        this._inventory[item.type][itemIndex].qty -= qty;
-        if (this._inventory[item.type][itemIndex].qty <= 0) this._inventory[item.type].splice(itemIndex, 1);
+        this._inventory["items"][index].qty -= qty;
+        if (this._inventory["items"][index].qty <= 0) this._inventory["items"].splice(index, 1);
 
         // weight management
         if (item.weight) this._inventory.weight -= item.weight * qty;
@@ -310,15 +332,15 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
+        let playerData = [this._money, this._dirtyMoney, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
         if (this._firstSpawn) {
-            playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin));
-            return await zFramework.Database.Query('INSERT INTO players (model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin, this._uuid));
+            return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
         
-        return await zFramework.Database.Query('UPDATE players SET model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
+        return await zFramework.Database.Query('UPDATE players SET money = ?, dirtyMoney = ?, model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
             console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
         });
     }

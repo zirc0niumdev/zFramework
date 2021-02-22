@@ -67,12 +67,26 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
 
 new CCommands("give", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    const item = zFramework.Core.Items.GetItem(args[1]);
-    if (!item) return;
     const amount = args[2];
     if (!amount) return;
     
-    target.addItem(item.name, amount);
+    target.addItem(args[1], amount);
+}, {help: "haha"});
+
+new CCommands("rename", zFramework.Groups.SUPERADMIN, async (player, args) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
+    const amount = args[2];
+    if (!amount) return;
+    
+    target.addItem(args[1], amount);
+}, {help: "haha"});
+
+new CCommands("delete", zFramework.Groups.SUPERADMIN, async (player, args) => {
+    const target = await zFramework.Functions.GetPlayerFromId(args[0]);
+    const amount = args[2];
+    if (!amount) return;
+    
+    target.deleteItem(args[1], amount);
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {

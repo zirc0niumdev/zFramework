@@ -2,7 +2,7 @@ const poingAmericainItem = {
     name: "Poing américain",
     price: 425,
     weight: 0.2,
-    type: "items",
+    unique: true,
     onUse: "weapon"
 };
-zFramework.Core.Items.RegisterItem(poingAmericainItem);
+zFramework.Core.Items.Register(poingAmericainItem);

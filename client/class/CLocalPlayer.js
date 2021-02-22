@@ -5,6 +5,8 @@ export default class CLocalPlayer {
         this._id             = PlayerId();
         this._serverId       = data.serverId;
         this._pedId          = PlayerPedId();
+        this._money          = data.playerMoney;
+        this._dirtyMoney     = data.playerDirtyMoney;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
         this._group          = data.playerGroup;
@@ -34,6 +36,20 @@ export default class CLocalPlayer {
     */
     set pedId(id) {
         this._pedId = id;
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set money(amount) {
+        this._money = amount;
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set dirtyMoney(amount) {
+        this._dirtyMoney = amount;
     }
 
     /**
@@ -186,6 +202,14 @@ export default class CLocalPlayer {
 
     get serverId() {
         return this._serverId;
+    }
+
+    get money() {
+        return this._money;
+    }
+
+    get dirtyMoney() {
+        return this._dirtyMoney;
     }
 
     get spawnLocation() {

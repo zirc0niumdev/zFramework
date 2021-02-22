@@ -28,3 +28,5 @@ zFramework.Functions.CheckIdentifiers = id => {
 		resolve(identifiers);
 	});
 }
+
+zFramework.Functions.GenerateUUID = () => `667${Date.now() + Math.floor(Math.random() * 100)}`;
