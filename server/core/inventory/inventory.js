@@ -14,12 +14,20 @@ onNet("Server.Inventory.UpdateItem", async (name, num, data = {}) => {
     player.updateItem(name, num, data);
 });
 
-// onNet("Server.Inventory.TransferItem", async (targetId, item, index, amount) => {
-//     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-//     const target = await zFramework.Functions.GetPlayerFromId(targetId);
+onNet("Server.Inventory.TransferItem", async (targetId, name, amount) => {
+    const player = await zFramework.Functions.GetPlayerFromId(global.source);
+    const target = await zFramework.Functions.GetPlayerFromId(global.source);
 
-//     if (!target.canCarryItem(item.name, amount)) return;
+    if (!zFramework.Core.Inventory.CanCarryItem(target.inventory, name, amount.length, zFramework.Core.Inventory.PlayerWeight)) return player.notify("~r~Cette personne ne peut pas porter plus d'objet.");
 
-//     // target.addItem();
-//     // player.deleteItem(name, qty, index);
-// });
+    for (const key of amount){
+        const data = player.getItemData(name, key) || {};
+
+        target.addItem(name, 1, data);
+        player.deleteItem(name, 1, data);
+    }
+
+
+    target.notify(`~g~Quelqu'un vous à donné ~b~${amount.length}x ${name}~s~.`);
+    player.notify(`~g~Vous avez donné ~b~${amount.length}x ${name}~s~.`);
+});

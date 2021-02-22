@@ -261,7 +261,7 @@ export default class CPlayer {
 
     addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
 
-    addItem = (name, num = 1) => {
+    addItem = (name, num = 1, data = {}) => {
         if (typeof(num) !== "number") num = Number(num);
 
         const item = zFramework.Core.Items.Get(name);
@@ -269,7 +269,7 @@ export default class CPlayer {
 
         // stack management
         if (!this.inventory.items[name]) this.inventory.items[name] = [];
-        for (let i=0; i < num; i++) this.inventory.items[name].push({});
+        for (let i=0; i < num; i++) this.inventory.items[name].push(data);
     
         // weight management
         if (item.weight) this._inventory.weight += item.weight * num;
@@ -277,11 +277,18 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
+    getItemData = (name, num) => {
+        if (typeof(num) !== "number") num = Number(num);
+
+        if (!this.inventory.items[name][num]) return;
+
+        return this.inventory.items[name][num];
+    }
     
     updateItem = (name, num, data = {}) => {
         if (typeof(num) !== "number") num = Number(num);
 
-        if (!this.inventory.items[name]) return;
+        if (!this.inventory.items[name][num]) return;
 
         // data management
         this.inventory.items[name][num] = data;
@@ -295,7 +302,7 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
-    deleteItem = (name, num = 1) => {
+    deleteItem = (name, num = 1, data = {}) => {
         if (typeof(num) !== "number") num = Number(num);
         
         const item = zFramework.Core.Items.Get(name);
@@ -304,7 +311,18 @@ export default class CPlayer {
         if (!this.inventory.items[name]) return;
 
         // stack management
-        this.inventory.items[name].splice(0, num);
+
+        if (data !== {}) {
+            for (let i=0; i < num; i++) {
+                const itemWData = this.inventory.items[name].findIndex(datas => datas === data);
+                if (itemWData > -1) {
+                    this.inventory.items[name].splice(itemWData, 1);
+                    num--;
+                }
+            }
+        }
+
+        if (num > 0) this.inventory.items[name].splice(0, num);
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management

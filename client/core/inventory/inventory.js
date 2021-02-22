@@ -5,7 +5,7 @@ zFramework.Core.Inventory.AddItem = function(name, num) {
     const itemTbl = inventory.items[name];
     const amount = typeof(num) == "object" && ((num.length > 1 || typeof(itemTbl) == "object") && num.length || num[0]) || num;
 
-    if (typeof(num) == "number" && num > 0 && !zFramework.Core.Inventory.CanCarryItem(inventory, name, num, inventory.weight))
+    if (typeof(num) == "number" && num > 0 && !zFramework.Core.Inventory.CanCarryItem(inventory, name, num, this.PlayerWeight))
         return zFramework.Functions.Notify("~r~Vous n'avez pas suffisamment de place sur vous.");
 
         
@@ -24,18 +24,28 @@ zFramework.Core.Inventory.UpdateItem = function(name, num, data = {}) {
     serverEvent("Server.Inventory.UpdateItem", name, num, data);
 }
 
-function transferItem(item, amount, isDrop) {
-    // if (amount < 1) return;
-    // if (item.qty - amount < 0) return zFramework.Functions.Notify(`~r~Vous n'avez pas autant de ${item.base}.`);
+function transferItem(item, isDrop) {
+    if (!item.amount || zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, item.name) - item.amount < 0) return zFramework.Functions.Notify(`~r~Vous n'avez pas autant de ${item.name}.`);
 
-    // if (isDrop)
-    //     console.log("pickup hsit");
-    // else {
-    //     const closePly = zFramework.Functions.GetClosePlayer();
+    if (item.amount && item.amount >= 1) {
+        let items = [];
 
-    //     if (closePly) serverEvent("Server.Inventory.TransferItem", GetPlayerServerId(closePly), item);
-    //     else zFramework.Functions.Notify("~w~Rapprochez-vous.");
-    // }
+        for (let i=0; i < item.amount; i++) {
+            if (!zFramework.LocalPlayer.inventory.items[item.name][i]) break;
+            items.push(item.itemKey[i]);
+        }
+
+        item.amount = items;
+
+        if (isDrop) console.log("pickup hsit");
+        else {
+            //const closePly = zFramework.Functions.GetClosePlayer();
+            serverEvent("Server.Inventory.TransferItem", 0, item.name, item.amount);
+
+            // if (closePly) 
+            // else zFramework.Functions.Notify("~w~Rapprochez-vous.");
+        }
+    }
 }
 
 async function inventoryAction(action, it) {
@@ -56,9 +66,8 @@ async function inventoryAction(action, it) {
         useFunc(zFramework.LocalPlayer, itemData, itemNum, it.amount, item);
 
         if (!item.keep && item.onUse != "weapon") zFramework.Core.Inventory.AddItem(it.name, [itemNum]);
-    }
-    // } else if (action == 2) transferItem({ name: it.name, index: it.index, data: it.data }, amount, false);
-    // else if (action == 3) transferItem({ name: it.name, index: it.index, data: it.data, qty: invItem.qty }, amount, true);
+    } else if (action == 2) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, false);
+    else if (action == 3) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, true);
     else if (action == 4) {
         if (it.name.includes("Argent")) return;
         if (!inventory.items[it.name] || !itemData) return;
@@ -96,9 +105,9 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
     else if (eventName == "useInventory") inventoryAction(1,  { name, itemKey, amount });
-    // else if (eventName == "giveInventory") inventoryAction(2, { name, itemKey, amount });
-    // else if (eventName == "throwInventory") inventoryAction(3, { name, itemKey, amount });
-    // else if (eventName == "infoInventory") inventoryAction(5, { name, itemKey, amount });
+    else if (eventName == "giveInventory") inventoryAction(2, { name, itemKey, amount });
+    else if (eventName == "throwInventory") inventoryAction(3, { name, itemKey, amount });
+    else if (eventName == "infoInventory") inventoryAction(5, { name, itemKey, amount });
     else if (eventName == "renameInventory") inventoryAction(4, { name, itemKey, amount });
 
     cb("ok");
