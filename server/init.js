@@ -97,9 +97,11 @@ onNet("Server.onPlayerSpawned", async () => {
 
 	//if (player.firstSpawn)
 	{
-		// player.addItem("Argent", 250);
-		// player.addItem("Pain", 1200);
-		// player.addItem("Eau", 1200);
+		// add telephone
+		// add carte identité
+		// add carte bancaire
+		// player.addItem("Pain", 4);
+		// player.addItem("Eau", 8);
 	}
 
 	player.initialized = true;

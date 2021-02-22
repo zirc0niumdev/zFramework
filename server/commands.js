@@ -67,7 +67,7 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
 
 new CCommands("give", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    const amount = args[2];
+    const amount = Number(args[2]);
     if (!amount) return;
     
     target.addItem(args[1], amount);

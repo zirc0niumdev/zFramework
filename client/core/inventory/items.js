@@ -1,10 +1,6 @@
 let onUseFunc = {};
 
-onUseFunc["test"] = () => {
-    zFramework.Functions.Notify("Test");
-}
-
-onUseFunc["weapon"] = (localPlayer, item, index, amount) => {
+onUseFunc["weapon"] = (localPlayer, data, num, amount, item) => {
     if (localPlayer.isInVehicle()) return zFramework.Functions.Notify("Vous êtes dans l'incapacité d'utiliser une arme.");
     const weapon = zFramework.Functions.GetJsonConfig("weapons", item.name);
     if (!weapon) return zFramework.Functions.Notify("~r~Veuillez signaler cette arme à un admin, elle ne fonctionne pas.");

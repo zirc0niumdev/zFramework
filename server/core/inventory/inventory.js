@@ -1,12 +1,8 @@
-onNet("Server.Inventory.AddItem", async (name, keys) => {
+onNet("Server.Inventory.ManageItem", async (name, num) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    player.addItem(name, keys);
+    if (typeof(num) == "array") player.deleteItem(name, num);
+    else player.addItem(name, num);
 });
-
-// onNet("Server.Inventory.DeleteItem", async (name, amount, data = {}) => {
-//     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-//     player.deleteItem(name, amount, data);
-// });
 
 onNet("Server.Inventory.ChangeSlot", async (key, value) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
