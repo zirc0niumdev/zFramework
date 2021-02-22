@@ -92,6 +92,27 @@ zFramework.Functions.SetKeepInputMode = bool => {
 	}
 }
 
+zFramework.Functions.GetClosestPlayer = (d = 1.5, addVector) => {
+	const { pedId } = zFramework.LocalPlayer;
+	const playerForward = GetEntityForwardVector(pedId);
+	let playerPos = GetEntityCoords(pedId);
+	let closestPlayer;
+
+	playerPos[0] += (addVector || playerForward[0] * 0.5);
+	playerPos[1] += (addVector || playerForward[1] * 0.5);
+	playerPos[2] += (addVector || playerForward[2] * 0.5);
+
+	for (const num of GetActivePlayers()) {
+		const otherPed = GetPlayerPed(num);
+		const otherPedPos = otherPed != pedId && IsEntityVisible(otherPed) && GetEntityCoords(otherPed);
+
+		if (otherPedPos && GetDistanceBetweenCoords(otherPedPos[0], otherPedPos[1], otherPedPos[2], playerPos[0], playerPos[1], playerPos[2]) <= d && (!closestPlayer || GetDistanceBetweenCoords(otherPedPos[0], otherPedPos[1], otherPedPos[2], playerPos[0], playerPos[1], playerPos[2])))
+			closestPlayer = num;
+	}
+
+	return closestPlayer;
+}
+
 zFramework.Functions.RegisterControlKey = (strKeyName, strDescription, strKey, onPress, onRelease) => {
     RegisterKeyMapping(`+${strKeyName}`, strDescription, "keyboard", strKey);
 

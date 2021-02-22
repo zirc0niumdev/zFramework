@@ -95,13 +95,13 @@ onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
-	//if (player.firstSpawn)
+	if (player.firstSpawn)
 	{
 		// add telephone
 		// add carte identité
 		// add carte bancaire
-		// player.addItem("Pain", 4);
-		// player.addItem("Eau", 8);
+		player.addItem("Pain", 4);
+		player.addItem("Eau de source", 8);
 	}
 
 	player.initialized = true;

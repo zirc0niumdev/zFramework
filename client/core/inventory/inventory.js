@@ -39,9 +39,8 @@ function transferItem(item, isDrop) {
 
         if (isDrop) console.log("pickup hsit");
         else {
-            const closePly = zFramework.Functions.GetClosePlayer();
-
-            if (closePly) serverEvent("Server.Inventory.TransferItem", 0, item.name, item.amount);
+            const closestPly = zFramework.Functions.GetClosestPlayer();
+            if (closestPly) serverEvent("Server.Inventory.TransferItem", GetPlayerServerId(closestPly), item.name, item.amount);
             else zFramework.Functions.Notify("~y~Rapprochez-vous.");
         }
     }
@@ -278,7 +277,7 @@ function takeWeapon(slot) {
 
 zFramework.Core.Inventory.Initialize = function() {
     for (let d = 1; d < 4; d++) {
-        zFramework.Functions.RegisterControlKey(`wepBind${d}`, `Equiper votre arme dans le slot ${d}`, d.toString(), () => {
+        zFramework.Functions.RegisterControlKey(`wepBind${d}`, `Arme du slot ${d}`, d.toString(), () => {
             if (UpdateOnscreenKeyboard() == 0 || zFramework.UI.KeepFocus) return;
             takeWeapon(d);
         });
