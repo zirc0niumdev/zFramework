@@ -20,4 +20,4 @@ zFramework.Core.Inventory.CanCarryItem = function(inv, name, qty, plyWeight, nex
     return result;
 }
 
-zFramework.Core.Inventory.GetItemAmount = (inv, name) => inv && inv.items[name] && (typeof(inv.items[name]) == "object" && inv.items[name].length || inv.items[name]) || 0;
+zFramework.Core.Inventory.GetItemAmount = (inv, name) => inv.items && inv.items[name] && (typeof(inv.items[name]) == "object" && inv.items[name].length || inv.items[name]) || 0;

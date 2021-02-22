@@ -262,16 +262,14 @@ export default class CPlayer {
     addThirst = (amount) => this._needs = { thirst: Math.max(0, Math.min(100, this._needs.thirst + amount)) };
 
     addItem = (name, num = 1) => {
+        if (typeof(num) !== "number") num = Number(num);
+
         const item = zFramework.Core.Items.Get(name);
         if (!item) return;
 
         // stack management
-        if (!this.inventory.items[name]) {
-            this.inventory.items[name] = [{}];
-            num--;
-        }
-
-        if (num > 0) for (let i=0; i < num; i++) this.inventory.items[name].push({});
+        if (!this.inventory.items[name]) this.inventory.items[name] = [];
+        for (let i=0; i < num; i++) this.inventory.items[name].push({});
     
         // weight management
         if (item.weight) this._inventory.weight += item.weight * num;
@@ -285,8 +283,8 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
-    deleteItem = (name, num = [1]) => {
-        if (typeof(num) !== "array") num = JSON.parse(num);
+    deleteItem = (name, num = 1) => {
+        if (typeof(num) !== "number") num = Number(num);
         
         const item = zFramework.Core.Items.Get(name);
         if (!item) return;
@@ -294,11 +292,11 @@ export default class CPlayer {
         if (!this.inventory.items[name]) return;
 
         // stack management
-        this.inventory.items[name].splice(0, num[0]);
+        this.inventory.items[name].splice(0, num);
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management
-        if (item.weight) this._inventory.weight -= item.weight * num[0];
+        if (item.weight) this._inventory.weight -= item.weight * num;
 
         const weaponSlot = zFramework.Core.Inventory.GetItemInSlot(this._inventory, name);
         if (weaponSlot) this._inventory[weaponSlot] = "";

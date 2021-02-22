@@ -1,6 +1,6 @@
 onNet("Server.Inventory.ManageItem", async (name, num) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    if (typeof(num) == "array") player.deleteItem(name, num);
+    if (typeof(num) === "object") player.deleteItem(name, num[0]);
     else player.addItem(name, num);
 });
 
@@ -9,10 +9,10 @@ onNet("Server.Inventory.ChangeSlot", async (key, value) => {
     player.changeWeaponSlot(key, value);
 });
 
-// onNet("Server.Inventory.UpdateItem", async (index, type, key, value, isData = false) => {
-//     const player = await zFramework.Functions.GetPlayerFromId(global.source);
-//     //player.setItem(index, type, key, value, isData);
-// });
+onNet("Server.Inventory.UpdateItem", async (name, num, data = {}) => {
+    const player = await zFramework.Functions.GetPlayerFromId(global.source);
+    player.updateItem(name, num, data = {});
+});
 
 // onNet("Server.Inventory.TransferItem", async (targetId, item, index, amount) => {
 //     const player = await zFramework.Functions.GetPlayerFromId(global.source);

@@ -1,13 +1,15 @@
 zFramework.Core.Inventory.AddItem = function(name, num) {
+    console.log(num);
+    console.log(typeof(num));
     const { inventory } = zFramework.LocalPlayer;
     const itemTbl = inventory.items[name];
-    const amount = typeof(num) == "array" && ((num.length > 1 || typeof(itemTbl) == "object") && num.length || num[0]) || num;
+    const amount = typeof(num) == "object" && ((num.length > 1 || typeof(itemTbl) == "object") && num.length || num[0]) || num;
 
     if (typeof(num) == "number" && num > 0 && !zFramework.Core.Inventory.CanCarryItem(inventory, name, num, inventory.weight))
         return zFramework.Functions.Notify("~r~Vous n'avez pas suffisamment de place sur vous.");
 
         
-    if (typeof(num) == "array" || num < 0 && zFramework.Core.Inventory.GetItemAmount(inventory, name) - amount < 0)
+    if ((typeof(num) == "object" || num < 0) && zFramework.Core.Inventory.GetItemAmount(inventory, name) - amount < 0)
         return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${name} sur vous.`);
 
     serverEvent("Server.Inventory.ManageItem", name, num);
@@ -48,12 +50,11 @@ async function inventoryAction(action, it) {
     if (action == 1) {
         if (!item.onUse) return;
         if (zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, it.name) < it.amount) return zFramework.Functions.Notify(`~r~Vous n'avez pas suffisamment de ${item.name}.`);
-
         
         const useFunc = GetUseItemFromName(item.onUse);
         useFunc(zFramework.LocalPlayer, itemData, itemNum, it.amount, item);
 
-        //if (!item.keep && item.onUse != "weapon") serverEvent("Server.Inventory.DeleteItem", it, amount);
+        if (!item.keep && item.onUse != "weapon") zFramework.Core.Inventory.AddItem(it.name, [itemNum]);
     }
     // } else if (action == 2) transferItem({ name: it.name, index: it.index, data: it.data }, amount, false);
     // else if (action == 3) transferItem({ name: it.name, index: it.index, data: it.data, qty: invItem.qty }, amount, true);
@@ -151,7 +152,7 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
                     });
                 }
             }
-        } else items.push({ name: itemName, qty: itemTbl });
+        }
     }
   
     if (money && money > 0) items.push({ name: "Argent", qty: money, money: true });
@@ -221,13 +222,15 @@ zFramework.Core.Inventory.Thread = function() {
     const defaultWeap = GetHashKey("WEAPON_UNARMED");
     const ammoConfig = zFramework.Functions.GetJsonConfig("ammo");
     const weaponsConfig = zFramework.Functions.GetJsonConfig("weapons");
-    
+
     setInterval(() => {
         const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
         if (selectedWeapon && selectedWeapon != defaultWeap) {
             let currentWeapon;
-            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
-            if (!zFramework.LocalPlayer.inventory.items[currentWeapon]) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon)currentWeapon = weaponName;
+            
+            if (!zFramework.LocalPlayer.inventory.items[currentWeapon])
+                RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
             else {
                 const ammo = ammoConfig[currentWeapon];
                 if (!ammo) return;
@@ -235,7 +238,7 @@ zFramework.Core.Inventory.Thread = function() {
                 const ammoCount = itemAmount && (GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) != itemAmount && GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) > itemAmount && itemAmount || GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) || 0);
 
                 SetPedAmmo(zFramework.LocalPlayer.pedId, selectedWeapon, ammoCount);
-                //if (itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) serverEvent('Server.Inventory.DeleteItem', ammo, 1);
+                if (itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) zFramework.Core.Inventory.AddItem(ammo, [1]);
             }
         }
     }, 150);
@@ -243,8 +246,7 @@ zFramework.Core.Inventory.Thread = function() {
 
 function takeWeapon(slot) {
     const weapon = zFramework.LocalPlayer.inventory[zFramework.Core.Inventory.WeaponSlot[slot]];
-    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon) && zFramework.LocalPlayer.inventory.items[weapon])
-        inventoryAction(1, { name: weapon, itemKey: [0], amount: 1 });
+    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon) && zFramework.LocalPlayer.inventory.items[weapon]) inventoryAction(1, { name: weapon, itemKey: [0], amount: 1 });
 }
 
 zFramework.Core.Inventory.Initialize = function() {
