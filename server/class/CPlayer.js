@@ -302,27 +302,16 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     };
 
-    deleteItem = (name, num = 1, data = {}) => {
-        if (typeof(num) !== "number") num = Number(num);
-        
+    deleteItem = (name, num) => {
         const item = zFramework.Core.Items.Get(name);
         if (!item) return;
 
         if (!this.inventory.items[name]) return;
 
         // stack management
+        if (typeof(num) !== "number" || typeof(num) !== "string") for (const key of num) this.inventory.items[name].splice(key, 1);
+        else this.inventory.items[name].splice(0, num);
 
-        if (data !== {}) {
-            for (let i=0; i < num; i++) {
-                const itemWData = this.inventory.items[name].findIndex(datas => datas === data);
-                if (itemWData > -1) {
-                    this.inventory.items[name].splice(itemWData, 1);
-                    num--;
-                }
-            }
-        }
-
-        if (num > 0) this.inventory.items[name].splice(0, num);
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management

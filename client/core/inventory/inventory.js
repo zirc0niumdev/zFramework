@@ -40,15 +40,16 @@ function transferItem(item, isDrop) {
             const playerForward = getForwardVector();
             const playerPos = getLocation() + (addVector || playerForward * 0.5);
 
-            serverEvent("Server.Pickup.Management", 4, {
-              name: item.name,
-              amount: item.amount,
-              pos: {
-                x: playerPos.x,
-                y: playerPos.y,
-                z: playerPos.z,
-                h: GetEntityHeading(pedId),
-              },
+            serverEvent("Server.Pickup.Management", 1,
+            {
+                name: item.name,
+                amount: item.amount,
+                pos: {
+                    x: playerPos.x,
+                    y: playerPos.y,
+                    z: playerPos.z,
+                    h: GetEntityHeading(pedId),
+                },
             });
         } else {
             const closestPly = zFramework.Functions.GetClosestPlayer();
@@ -60,11 +61,10 @@ function transferItem(item, isDrop) {
 
 function transferMoney(isGive, type, amount) {
     const closestPlayer = isGive && zFramework.Functions.GetClosestPlayer()
-	const { pedId, getLocation, getForwardVector } = zFramework.LocalPlayer;
+	const { getLocation, getForwardVector } = zFramework.LocalPlayer;
 	const playerForward = getForwardVector();
 	const playerPos = getLocation() + (addVector || playerForward * 0.5);
     if (isGive && !closestPlayer) return zFramework.Functions.Notify("~r~Il n'y a personne proche de vous.");
-
 
     serverEvent(
       "Server.Inventory.GiveMoney",
@@ -294,8 +294,7 @@ zFramework.Core.Inventory.Thread = function() {
             let currentWeapon;
             for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon)currentWeapon = weaponName;
             
-            if (!zFramework.LocalPlayer.inventory.items[currentWeapon])
-                RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            if (!zFramework.LocalPlayer.inventory.items[currentWeapon]) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
             else {
                 const ammo = ammoConfig[currentWeapon];
                 if (!ammo) return;
@@ -323,5 +322,5 @@ zFramework.Core.Inventory.Initialize = function() {
     }
 
     this.Thread();
-    this.Pickup.Thread();
+    //this.Pickup.Thread();
 }

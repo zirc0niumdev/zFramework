@@ -1,6 +1,6 @@
-import Vector3 from "../../shared/class/CVector3";
+import Vector3 from "../shared/class/CVector3";
 
-serverEvent = (eventName, ...args) => emitNet(eventName, ...args);
+global.serverEvent = (eventName, ...args) => emitNet(eventName, ...args);
 
 zFramework.Functions.GetDistance = function(entity, target) {
 	if (!DoesEntityExist(entity) || !DoesEntityExist(target)) return;
@@ -124,7 +124,7 @@ zFramework.Functions.SetKeepInputMode = bool => {
 		threadCreated = true;
 
 		const timer = setTick(() => {
-			if (zFramework.UI.KeepFocus) for (control of controlsDisabled) DisableControlAction(0, control, true);
+			if (zFramework.UI.KeepFocus) for (const control of controlsDisabled) DisableControlAction(0, control, true);
 			else {
 				threadCreated = false;
 				clearTick(timer);
