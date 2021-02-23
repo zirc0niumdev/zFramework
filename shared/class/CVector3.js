@@ -11,9 +11,11 @@ export default class Vector3 {
     * @param v the vector to add with
     */
     add(v) {
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
+        this.x += (typeof(v) === "number" && v || v.x);
+        this.y += (typeof(v) === "number" && v || v.y);
+        this.z += (typeof(v) === "number" && v || v.z);
+
+        return this;
     }
 
     /**
@@ -22,9 +24,37 @@ export default class Vector3 {
     * @param v the vector to subtract with
     */
     subtract(v) {
-        this.x -= v.x;
-        this.y -= v.y;
-        this.z -= v.z;
+        this.x -= (typeof(v) === "number" && v || v.x);
+        this.y -= (typeof(v) === "number" && v || v.y);
+        this.z -= (typeof(v) === "number" && v || v.z);
+
+        return this;
+    }
+
+    /**
+    * Set the values of this vector to the difference of itself and the given vector.
+    *
+    * @param v the vector to multiply with
+    */
+    multiply(v) {
+        this.x *= (typeof(v) === "number" && v || v.x);
+        this.y *= (typeof(v) === "number" && v || v.y);
+        this.z *= (typeof(v) === "number" && v || v.z);
+
+        return this;
+    }
+
+    /**
+    * Set the values of this vector to the difference of itself and the given vector.
+    *
+    * @param v the vector to divide with
+    */
+    divide(v) {
+        this.x /= (typeof(v) === "number" && v || v.x);
+        this.y /= (typeof(v) === "number" && v || v.y);
+        this.z /= (typeof(v) === "number" && v || v.z);
+
+        return this;
     }
 
     distance(v) {
@@ -49,6 +79,8 @@ export default class Vector3 {
         this.x = ix * q.w + iw * -q.x + iy * -q.z - iz * -q.y;
         this.y = iy * q.w + iw * -q.y + iz * -q.x - ix * -q.z;
         this.z = iz * q.w + iw * -q.z + ix * -q.y - iy * -q.x;
+
+        return this;
     }
 
     /**

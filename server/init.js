@@ -103,6 +103,8 @@ onNet("Server.onPlayerSpawned", async () => {
 		player.addItem("Eau de source", 8);
 	}
 
+	player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
+
 	player.initialized = true;
 
 	// try move that to client side
@@ -113,7 +115,7 @@ on("playerDropped", async reason => {
 	console.log(`[${global.source}] ${GetPlayerName(global.source)} disconnected - Reason: ${reason}`);
 	
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-	player.savePlayer().then(() => zFramework.Players[player.serverId] = null);
+	player.savePlayer().then(() => delete zFramework.Players[player.serverId]);
 });
 
 // Simplify that

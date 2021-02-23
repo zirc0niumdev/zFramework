@@ -23,6 +23,7 @@ export default class CLocalPlayer {
         this._invisible      = false;
         this._freeze         = false;
         this._blockInput     = false;
+        this._ko             = false;
         this._spectateMode   = false;
         this._cinemaMode     = false;
         this._initialized    = false;
@@ -153,6 +154,13 @@ export default class CLocalPlayer {
     }
 
     /**
+    * @param {Boolean} toggle
+    */
+    set ko(toggle) {
+        this._ko = toggle;
+    }
+
+    /**
     * @param {Object} job
     */
     set job(job) {
@@ -232,6 +240,10 @@ export default class CLocalPlayer {
 
     get dead() {
         return this._dead;
+    }
+
+    get ko() {
+        return this._ko;
     }
 
     get level() {
@@ -369,6 +381,14 @@ export default class CLocalPlayer {
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
     getForwardVector = () => new Vector3(GetEntityForwardVector(this._pedId)[0].toFixed(2), GetEntityForwardVector(this._pedId)[1].toFixed(2), GetEntityForwardVector(this._pedId)[2].toFixed(2));
+
+    getFront = () => this.getLocation().add(this.getForwardVector().multiply(0.5));
+
+    can = () => {
+        if (this._dead || this._ko) return false;
+
+        return true;
+    }
 
     tick = () => {
         setTick(() => {

@@ -20,35 +20,36 @@ onNet("Server.Inventory.TransferItem", async (targetId, name, keys) => {
 
     if (!zFramework.Core.Inventory.CanCarryItem(target.inventory, name, keys.length, zFramework.Core.Inventory.PlayerWeight)) return player.notify("~r~Cette personne ne peut pas porter plus d'objet.");
 
+    player.deleteItem(name, keys);
+
     for (const num of keys) {
         const data = player.getItemData(name, num);
         target.addItem(name, 1, data);
     }
 
-    player.deleteItem(name, keys);
-
     target.notify(`~g~Quelqu'un vous à donné ~b~${keys.length}x ${name}~s~.`);
     player.notify(`~g~Vous avez donné ~b~${keys.length}x ${name}~s~.`);
 });
 
-onNet("Server.Inventory.GiveMoney", async (type, targetId, amount, pos) => {
+onNet("Server.Inventory.GiveMoney", async (type, isDrop, amount, pos) => {
     type = type === "Argent" ? "money" : type === "Argent Sale" ? "dirtyMoney" : null;
-    if (!type || player[type] < amount) return;
-
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
+    if (!type || player[type] < amount) return;
 
     player[type] -= amount;
 
-    if (!targetId) {
-        // const itemTbl = zFramework.Core.Inventory.Pickups.push(
-        // {
-        //     name: type,
-        //     pos,
-        //     amount
-        // });
+    if (isDrop && typeof(isDrop) === "boolean") {
+        const model = "v_serv_abox_02";
 
-        // player.clientEvent("Client.Pickup.Management", 1, { id: itemTbl, name: type, model: "ng_proc_box_01a", pos, amount });
-        // player.notify(`~g~Vous avez laché ~b~${amount}$~s~.`);
+        const itemTbl = zFramework.Core.Inventory.Pickups.push(
+        {
+            pos,
+            model, 
+            value: { name: type, amount }
+        });
+
+        player.clientEvent("Client.Pickup.Management", 1, { id: itemTbl - 1, model, pos });
+        player.notify(`~g~Vous avez laché ~b~${amount}$~s~.`);
     } else {    
         const target = await zFramework.Functions.GetPlayerFromId(targetId);
 

@@ -36,9 +36,8 @@ function transferItem(item, isDrop) {
         item.amount = items;
 
         if (isDrop) {
-            const { pedId, getLocation, getForwardVector } = zFramework.LocalPlayer;
-            const playerForward = getForwardVector();
-            const playerPos = getLocation() + (addVector || playerForward * 0.5);
+            const { pedId, getFront } = zFramework.LocalPlayer;
+            const playerPos = getFront();
 
             serverEvent("Server.Pickup.Management", 1,
             {
@@ -60,19 +59,17 @@ function transferItem(item, isDrop) {
 }
 
 function transferMoney(isGive, type, amount) {
-    const closestPlayer = isGive && zFramework.Functions.GetClosestPlayer()
-	const { getLocation, getForwardVector } = zFramework.LocalPlayer;
-	const playerForward = getForwardVector();
-	const playerPos = getLocation() + (addVector || playerForward * 0.5);
-    if (isGive && !closestPlayer) return zFramework.Functions.Notify("~r~Il n'y a personne proche de vous.");
+    const closestPly = isGive && zFramework.Functions.GetClosestPlayer()
+	const { getFront } = zFramework.LocalPlayer;
+	const playerPos = getFront();
+    if (isGive && !closestPly) return zFramework.Functions.Notify("~r~Il n'y a personne proche de vous.");
 
-    serverEvent(
-      "Server.Inventory.GiveMoney",
-      type,
-      (closestPlayer && GetPlayerServerId(closestPlayer)) || !isGive,
-      parseInt(amount),
-      { x: playerPos.x, y: playerPos.y, z: playerPos.z }
-    );
+    serverEvent("Server.Inventory.GiveMoney", type, (closestPly && GetPlayerServerId(closestPly)) || !isGive, parseInt(amount),
+    {
+        x: playerPos.x,
+        y: playerPos.y,
+        z: playerPos.z
+    });
 }
 
 async function inventoryAction(action, it) {
@@ -134,11 +131,11 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
         if (itemData.money || itemData.dirtyMoney) return;
         inventoryAction(1,  { name, itemKey, amount });
     } else if (eventName == "giveInventory") {
-        if (itemData.money || itemData.dirtyMoney) return transferMoney(true, name, amount);
-        inventoryAction(2, { name, itemKey, amount });
+        if (itemData.money || itemData.dirtyMoney) transferMoney(true, name, amount);
+        else inventoryAction(2, { name, itemKey, amount });
     } else if (eventName == "throwInventory") {
-        if (itemData.money || itemData.dirtyMoney) return transferMoney(false, name, amount);
-        inventoryAction(3, { name, itemKey, amount });
+        if (itemData.money || itemData.dirtyMoney) transferMoney(false, name, amount);
+        else inventoryAction(3, { name, itemKey, amount });
     } else if (eventName == "infoInventory") {
         if (itemData.money || itemData.dirtyMoney) return;
         inventoryAction(5, { name, itemKey, amount });
@@ -322,5 +319,5 @@ zFramework.Core.Inventory.Initialize = function() {
     }
 
     this.Thread();
-    //this.Pickup.Thread();
+    this.PickupThread();
 }

@@ -11,34 +11,40 @@ zFramework.Functions.GetDistance = function(entity, target) {
 	return entityCoords.distance(targetCoords);
 }
 
-zFramework.Functions.GetDistanceByCoords = (entityCoords, targetCoords) => entityCoords.distance(targetCoords);
+zFramework.Functions.GetDistanceByCoords = (entityCoords, targetCoords) => {
+	const entCoords = new Vector3(entityCoords.x, entityCoords.y, entityCoords.z);
+
+	return entCoords.distance(targetCoords);
+};
 
 zFramework.Functions.GetEntityLocation = (entity) => {
 	if (!DoesEntityExist(entity)) return;
 	return new Vector3(GetEntityCoords(entity)[0].toFixed(2), GetEntityCoords(entity)[1].toFixed(2), GetEntityCoords(entity)[2].toFixed(2));
 }
 
-zFramework.Functions.DrawText3D = function(x, y, z, text) {
-	console.log(new Vector3(GetGameplayCamCoords()));
-	//const JGSK, rA5U, Uc06 = table.unpack(GetGameplayCamCoords());
+zFramework.Functions.DrawText3D = function(x, y, z, text, size, scale) {
+	const ihKb = size || 7;
 
-    // const cameraCoords = this.GetDistanceByCoords(JGSK, rA5U, Uc06, { x, y, z })
+    size = this.GetDistanceByCoords(new Vector3(GetGameplayCamCoords()[0], GetGameplayCamCoords()[1], GetGameplayCamCoords()[2]), { x, y, z });
 
-    // const textDistance = this.GetDistanceByCoords(zFramework.LocalPlayer.getLocation(), { x, y, z }) - 1.65
-    // const DHPxI = ((1 / M7) * (7 * .7)) * (1 / GetGameplayCamFov()) * 100, dx = 255;
+	const textDistance = this.GetDistanceByCoords(zFramework.LocalPlayer.getLocation(), { x, y, z }) - 1.65;
+    const DHPxI = ((1 / size) * (ihKb * .7)) * (1 / GetGameplayCamFov()) * 100;
+	let dx = 255;
 
-    // if (textDistance < 7) dx = Math.floor(255 * ((7 - textDistance) / 7));
-    // elseif (textDistance >= 7) dx = 0;
+    if (textDistance < ihKb) dx = Math.floor(255 * ((ihKb - textDistance) / ihKb));
+    else if (textDistance >= ihKb) dx = 0;
 
-	// SetTextFont(0);
-    // SetTextScale(.0 * DHPxI, .1 * DHPxI);
-    // SetTextColour(255, 255, 255, Math.max(0, Math.min(255, dx)));
-    // SetTextCentre(1);
-    // SetDrawOrigin(x, y, z, 0);
-    // SetTextEntry("STRING");
-    // AddTextComponentString(text);
-    // DrawText(0.0, 0.0);
-    // ClearDrawOrigin();
+    dx = scale || dx;
+
+	SetTextFont(0);
+    SetTextScale(0.0 * DHPxI, .1 * DHPxI);
+    SetTextColour(255, 255, 255, Math.max(0, Math.min(255, dx)));
+    SetTextCentre(1);
+    SetDrawOrigin(x, y, z, 0);
+    SetTextEntry("STRING");
+    AddTextComponentString(text);
+    DrawText(0.0, 0.0);
+    ClearDrawOrigin();
 }
 
 zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
@@ -101,13 +107,28 @@ zFramework.Functions.RequestModel = model => {
 		
 		RequestModel(model);
 		const start = GetGameTimer();
-		const interval = setInterval(() => {
+		const interval = setTick(() => {
 			if (HasModelLoaded(model) || GetGameTimer() - start >= 1000) {
-				clearInterval(interval);
+				clearTick(interval);
 				SetModelAsNoLongerNeeded(model);
 				resolve(HasModelLoaded(model));
 		  	}
-		}, 0);
+		});
+	});
+};
+
+zFramework.Functions.RequestDict = dict => {
+	return new Promise(resolve => {
+		if (!DoesAnimDictExist(dict)) resolve(false);
+		
+		RequestAnimDict(dict);
+		const start = GetGameTimer();
+		const interval = setTick(() => {
+			if (HasAnimDictLoaded(dict) || GetGameTimer() - start >= 1000) {
+				clearTick(interval);
+				resolve(HasAnimDictLoaded(dict));
+		  	}
+		});
 	});
 };
 
@@ -138,13 +159,66 @@ zFramework.Functions.GetClosestPlayer = (d = 1.5, addVector) => {
 	let closestPlayer;
 
 	for (const num of GetActivePlayers()) {
-		const otherPed = otherPed != pedId && IsEntityVisible(otherPed) && (num);
+		const otherPed = otherPed != pedId && IsEntityVisible(otherPed) && GetPlayerPed(num);
 
-		if (otherPedPos && zFramework.Functions.GetDistance(otherPed, pedId) <= d && (!closestPlayer || zFramework.Functions.GetDistance(otherPed, pedId)))
+		if (otherPed && zFramework.Functions.GetDistance(otherPed, pedId) <= d && (!closestPlayer || zFramework.Functions.GetDistance(otherPed, pedId)))
 			closestPlayer = num;
 	}
 
 	return closestPlayer;
+}
+
+zFramework.Functions.PlayAnim = function(anims, time, flag = false, ped, pos) {
+	if (typeof(anims) !== "object") anims = [anims];
+	const { pedId, can, isInVehicle } = zFramework.LocalPlayer;
+
+	ped = ped || pedId;
+
+	if (!anims || !anims[0] || anims[0].length < 1) return;
+
+	if (IsPedRunningRagdollTask(ped) || !can || IsEntityPlayingAnim(ped, anims[0], anims[1], 3) || IsPedActiveInScenario(ped) || isInVehicle())
+		return ClearPedTasks(ped);
+
+	this.ForceAnim(anims, flag, { ped, time, pos });
+}
+
+const animBug = ["WORLD_HUMAN_MUSICIAN", "WORLD_HUMAN_CLIPBOARD"];
+const femaleFix = {
+	["WORLD_HUMAN_BUM_WASH"]: ["amb@world_human_bum_wash@male@high@idle_a", "idle_a"],
+	["WORLD_HUMAN_SIT_UPS"]: ["amb@world_human_sit_ups@male@idle_a", "idle_a"],
+	["WORLD_HUMAN_PUSH_UPS"]: ["amb@world_human_push_ups@male@base", "base"],
+	["WORLD_HUMAN_BUM_FREEWAY"]: ["amb@world_human_bum_freeway@male@base", "base"],
+	["WORLD_HUMAN_CLIPBOARD"]: ["amb@world_human_clipboard@male@base", "base"],
+	["WORLD_HUMAN_VEHICLE_MECHANIC"]: ["amb@world_human_vehicle_mechanic@male@base", "base"]
+}
+
+zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) {
+	flag = flag && parseInt(flag);
+	const { LocalPlayer } = zFramework;
+	const ped = args.ped || LocalPlayer.pedId, time = args.time, clearTasks = args.clearTasks, animPos = args.pos, animRot = args.ang;
+
+	if (LocalPlayer.isInVehicle() && (!flag || flag < 40)) return;
+
+	if (!clearTasks) ClearPedTasks(ped);
+
+	if (!anims[1] && femaleFix[anims[0]] && GetEntityModel(ped) == -1667301416) anims = femaleFix[anims[0]];
+
+	if (anims[1]) await this.RequestDict(anims[0]);
+
+	if (!anims[1]) {
+		ClearAreaOfObjects(LocalPlayer.getLocation(), 1.0);
+		TaskStartScenarioInPlace(ped, anims[0], -1, !animBug.find(anim => anim === anims[0]));
+	} else {
+		if (!animPos) {TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, false, false, false);}
+		else TaskPlayAnimAdvanced(ped, anims[0], anims[1], animPos.x, animPos.y, animPos.z, animRot.x, animRot.y, animRot.z, 8.0, -8.0, -1, flag || 44, -1, 0, 0);
+	}
+
+	if (time && typeof(time) === "number") {
+		await Delay(time);
+		ClearPedTasks(ped);
+	}
+
+	if (!args.dict) RemoveAnimDict(anims[0]);
 }
 
 zFramework.Functions.RegisterControlKey = (strKeyName, strDescription, strKey, onPress, onRelease) => {
