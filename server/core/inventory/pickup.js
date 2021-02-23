@@ -5,7 +5,6 @@ onNet("Server.Pickup.Management", async (action, item) => {
 
     switch (action) {
         case 1:
-            player.deleteItem(item.name, item.amount);
             const model = "v_serv_abox_02";
 
             let datas = {};
@@ -13,6 +12,8 @@ onNet("Server.Pickup.Management", async (action, item) => {
                 const data = player.getItemData(item.name, num);
                 datas[num] = data;
             }
+
+            player.deleteItem(item.name, item.amount);
     
             const itemTbl = zFramework.Core.Inventory.Pickups.push(
             {
@@ -22,7 +23,7 @@ onNet("Server.Pickup.Management", async (action, item) => {
             });
     
             player.clientEvent("Client.Pickup.Management", 1, { id: itemTbl - 1, model, pos: item.pos });
-            player.notify(`~g~Vous avez laché ~b~${item.amount.length}$~s~.`);
+            player.notify(`~g~Vous avez laché ~b~${item.amount.length}x ${item.name}~s~.`);
 
             break;
     
@@ -40,7 +41,7 @@ onNet("Server.Pickup.Management", async (action, item) => {
 
             emitNet('Client.Pickup.Management', -1, action, item.id);
 
-            player.notify(`~g~Vous avez ramassé ~b~${pickup.value.amount && typeof(pickup.value.amount) === "number" ? `${pickup.value.amount}$` : `${pickup.value.data.length}x ${pickup.value.name}`}~s~.`);
+            player.notify(`~g~Vous avez ramassé ~b~${pickup.value.amount && typeof(pickup.value.amount) === "number" ? `${pickup.value.amount}$` : `${Object.keys(pickup.value.data).length}x ${pickup.value.name}`}~s~.`);
 
             break;
     }

@@ -38,7 +38,7 @@ function transferItem(item, isDrop) {
         if (isDrop) {
             const { pedId, getFront } = zFramework.LocalPlayer;
             const playerPos = getFront();
-
+            
             serverEvent("Server.Pickup.Management", 1,
             {
                 name: item.name,
