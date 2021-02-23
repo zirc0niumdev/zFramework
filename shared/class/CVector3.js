@@ -27,6 +27,14 @@ export default class Vector3 {
         this.z -= v.z;
     }
 
+    distance(v) {
+        const diffX = this.x - v.x;
+        const diffY = this.y - v.y;
+        const diffZ = this.z - v.z;
+
+        return Math.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
+    }
+
     /**
     * Multiply the given Quaternion with this vector.
     *

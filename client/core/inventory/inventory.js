@@ -36,7 +36,20 @@ function transferItem(item, isDrop) {
         item.amount = items;
 
         if (isDrop) {
-            
+            const { pedId, getLocation, getForwardVector } = zFramework.LocalPlayer;
+            const playerForward = getForwardVector();
+            const playerPos = getLocation() + (addVector || playerForward * 0.5);
+
+            serverEvent("Server.Pickup.Management", 4, {
+              name: item.name,
+              amount: item.amount,
+              pos: {
+                x: playerPos.x,
+                y: playerPos.y,
+                z: playerPos.z,
+                h: GetEntityHeading(pedId),
+              },
+            });
         } else {
             const closestPly = zFramework.Functions.GetClosestPlayer();
             if (closestPly) serverEvent("Server.Inventory.TransferItem", GetPlayerServerId(closestPly), item.name, item.amount);
@@ -47,20 +60,18 @@ function transferItem(item, isDrop) {
 
 function transferMoney(isGive, type, amount) {
     const closestPlayer = isGive && zFramework.Functions.GetClosestPlayer()
-    const { pedId } = zFramework.LocalPlayer;
+	const { pedId, getLocation, getForwardVector } = zFramework.LocalPlayer;
+	const playerForward = getForwardVector();
+	const playerPos = getLocation() + (addVector || playerForward * 0.5);
     if (isGive && !closestPlayer) return zFramework.Functions.Notify("~r~Il n'y a personne proche de vous.");
 
-    let pos = GetEntityCoords(pedId);
-    pos[0] += GetEntityForwardVector(pedId)[0] * 0.5;
-    pos[1] += GetEntityForwardVector(pedId)[1] * 0.5;
-    pos[2] += GetEntityForwardVector(pedId)[2] * 0.5;
 
     serverEvent(
       "Server.Inventory.GiveMoney",
       type,
       (closestPlayer && GetPlayerServerId(closestPlayer)) || !isGive,
       parseInt(amount),
-      { x: pos[0], y: pos[1], z: [2] }
+      { x: playerPos.x, y: playerPos.y, z: playerPos.z }
     );
 }
 
@@ -312,4 +323,5 @@ zFramework.Core.Inventory.Initialize = function() {
     }
 
     this.Thread();
+    this.Pickup.Thread();
 }

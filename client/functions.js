@@ -1,4 +1,45 @@
+import Vector3 from "../../shared/class/CVector3";
+
 serverEvent = (eventName, ...args) => emitNet(eventName, ...args);
+
+zFramework.Functions.GetDistance = function(entity, target) {
+	if (!DoesEntityExist(entity) || !DoesEntityExist(target)) return;
+
+	const entityCoords = this.GetEntityLocation(entity);
+	const targetCoords = this.GetEntityLocation(target);
+
+	return entityCoords.distance(targetCoords);
+}
+
+zFramework.Functions.GetDistanceByCoords = (entityCoords, targetCoords) => entityCoords.distance(targetCoords);
+
+zFramework.Functions.GetEntityLocation = (entity) => {
+	if (!DoesEntityExist(entity)) return;
+	return new Vector3(GetEntityCoords(entity)[0].toFixed(2), GetEntityCoords(entity)[1].toFixed(2), GetEntityCoords(entity)[2].toFixed(2));
+}
+
+zFramework.Functions.DrawText3D = function(x, y, z, text) {
+	console.log(new Vector3(GetGameplayCamCoords()));
+	//const JGSK, rA5U, Uc06 = table.unpack(GetGameplayCamCoords());
+
+    // const cameraCoords = this.GetDistanceByCoords(JGSK, rA5U, Uc06, { x, y, z })
+
+    // const textDistance = this.GetDistanceByCoords(zFramework.LocalPlayer.getLocation(), { x, y, z }) - 1.65
+    // const DHPxI = ((1 / M7) * (7 * .7)) * (1 / GetGameplayCamFov()) * 100, dx = 255;
+
+    // if (textDistance < 7) dx = Math.floor(255 * ((7 - textDistance) / 7));
+    // elseif (textDistance >= 7) dx = 0;
+
+	// SetTextFont(0);
+    // SetTextScale(.0 * DHPxI, .1 * DHPxI);
+    // SetTextColour(255, 255, 255, Math.max(0, Math.min(255, dx)));
+    // SetTextCentre(1);
+    // SetDrawOrigin(x, y, z, 0);
+    // SetTextEntry("STRING");
+    // AddTextComponentString(text);
+    // DrawText(0.0, 0.0);
+    // ClearDrawOrigin();
+}
 
 zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
 	const timeout = 0;
@@ -94,19 +135,12 @@ zFramework.Functions.SetKeepInputMode = bool => {
 
 zFramework.Functions.GetClosestPlayer = (d = 1.5, addVector) => {
 	const { pedId } = zFramework.LocalPlayer;
-	const playerForward = GetEntityForwardVector(pedId);
 	let closestPlayer;
-	
-	let playerPos = GetEntityCoords(pedId);
-	playerPos[0] += (addVector || playerForward[0] * 0.5);
-	playerPos[1] += (addVector || playerForward[1] * 0.5);
-	playerPos[2] += (addVector || playerForward[2] * 0.5);
 
 	for (const num of GetActivePlayers()) {
-		const otherPed = GetPlayerPed(num);
-		const otherPedPos = otherPed != pedId && IsEntityVisible(otherPed) && GetEntityCoords(otherPed);
+		const otherPed = otherPed != pedId && IsEntityVisible(otherPed) && (num);
 
-		if (otherPedPos && GetDistanceBetweenCoords(otherPedPos[0], otherPedPos[1], otherPedPos[2], playerPos[0], playerPos[1], playerPos[2]) <= d && (!closestPlayer || GetDistanceBetweenCoords(otherPedPos[0], otherPedPos[1], otherPedPos[2], playerPos[0], playerPos[1], playerPos[2])))
+		if (otherPedPos && zFramework.Functions.GetDistance(otherPed, pedId) <= d && (!closestPlayer || zFramework.Functions.GetDistance(otherPed, pedId)))
 			closestPlayer = num;
 	}
 

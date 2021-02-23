@@ -296,7 +296,7 @@ export default class CLocalPlayer {
 
     setPlayerModel = async (model) => {
         await zFramework.Functions.RequestModel(model)
-        .then((hasLoaded) => {
+        .then(hasLoaded => {
             if (hasLoaded) {
                 SetPlayerModel(this._id, GetHashKey(model));
                 this._pedId = PlayerPedId();
@@ -366,9 +366,9 @@ export default class CLocalPlayer {
         this.onReady();
     }
 
-    getLocation = () => {
-        return new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
-    }
+    getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
+
+    getForwardVector = () => new Vector3(GetEntityForwardVector(this._pedId)[0].toFixed(2), GetEntityForwardVector(this._pedId)[1].toFixed(2), GetEntityForwardVector(this._pedId)[2].toFixed(2));
 
     tick = () => {
         setTick(() => {
