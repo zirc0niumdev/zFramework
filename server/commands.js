@@ -78,7 +78,7 @@ new CCommands("delete", zFramework.Groups.SUPERADMIN, async (player, args) => {
     const amount = args[2];
     if (!amount) return;
     
-    target.deleteItem(args[1], amount);
+    target.deleteItem(args[1], parseInt(amount));
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {
