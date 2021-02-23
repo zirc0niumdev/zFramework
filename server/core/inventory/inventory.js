@@ -20,12 +20,12 @@ onNet("Server.Inventory.TransferItem", async (targetId, name, keys) => {
 
     if (!zFramework.Core.Inventory.CanCarryItem(target.inventory, name, keys.length, zFramework.Core.Inventory.PlayerWeight)) return player.notify("~r~Cette personne ne peut pas porter plus d'objet.");
 
-    player.deleteItem(name, keys);
-
     for (const num of keys) {
         const data = player.getItemData(name, num);
         target.addItem(name, 1, data);
     }
+
+    player.deleteItem(name, keys);
 
     target.notify(`~g~Quelqu'un vous à donné ~b~${keys.length}x ${name}~s~.`);
     player.notify(`~g~Vous avez donné ~b~${keys.length}x ${name}~s~.`);
@@ -37,21 +37,23 @@ onNet("Server.Inventory.GiveMoney", async (type, isDrop, amount, pos) => {
     if (!type || player[type] < amount) return;
 
     player[type] -= amount;
-
+    
     if (isDrop && typeof(isDrop) === "boolean") {
         const model = "v_serv_abox_02";
 
-        const itemTbl = zFramework.Core.Inventory.Pickups.push(
+        const id = Object.keys(zFramework.Core.Inventory.Pickups).length + 1;
+
+        zFramework.Core.Inventory.Pickups[id] = 
         {
             pos,
             model, 
             value: { name: type, amount }
-        });
+        };
 
-        player.clientEvent("Client.Pickup.Management", 1, { id: itemTbl - 1, model, pos });
+        player.clientEvent("Client.Pickup.Management", 1, { id, model, pos });
         player.notify(`~g~Vous avez laché ~b~${amount}$~s~.`);
     } else {    
-        const target = await zFramework.Functions.GetPlayerFromId(targetId);
+        const target = await zFramework.Functions.GetPlayerFromId(isDrop);
 
         target[type] += amount;
 

@@ -154,14 +154,14 @@ zFramework.Functions.SetKeepInputMode = bool => {
 	}
 }
 
-zFramework.Functions.GetClosestPlayer = (d = 1.5, addVector) => {
+zFramework.Functions.GetClosestPlayer = function(d = 1.5) {
 	const { pedId } = zFramework.LocalPlayer;
 	let closestPlayer;
 
 	for (const num of GetActivePlayers()) {
-		const otherPed = otherPed != pedId && IsEntityVisible(otherPed) && GetPlayerPed(num);
-
-		if (otherPed && zFramework.Functions.GetDistance(otherPed, pedId) <= d && (!closestPlayer || zFramework.Functions.GetDistance(otherPed, pedId)))
+		const otherPed = GetPlayerPed(num);
+		console.log(otherPed);
+		if (otherPed && otherPed != pedId && IsEntityVisible(otherPed) && this.GetDistance(otherPed, pedId) <= d && (!closestPlayer || this.GetDistance(otherPed, pedId)))
 			closestPlayer = num;
 	}
 

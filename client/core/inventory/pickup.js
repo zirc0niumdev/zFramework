@@ -107,13 +107,9 @@ zFramework.Core.Inventory.PickupThread = function() {
 
                     if (zFramework.Functions.GetDistanceByCoords(objPos, playerPos) < 1.2) {
                         DisableControlAction(0, 51, true);
-                        if (IsDisabledControlJustPressed(0, 51)) {
-                            pickupObject(id, objPos);
-                        }
+                        if (IsDisabledControlJustPressed(0, 51)) pickupObject(id, objPos);
                     }
                 }
-
-                break;
             }
         }
     });
