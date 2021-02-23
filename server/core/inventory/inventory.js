@@ -27,7 +27,27 @@ onNet("Server.Inventory.TransferItem", async (targetId, name, amount) => {
         player.deleteItem(name, 1, data);
     }
 
-
     target.notify(`~g~Quelqu'un vous à donné ~b~${amount.length}x ${name}~s~.`);
     player.notify(`~g~Vous avez donné ~b~${amount.length}x ${name}~s~.`);
+});
+
+onNet("Server.Inventory.GiveMoney", async (type, targetId, amount, pos) => {
+    type = type === "Argent" ? "money" : type === "Argent Sale" ? "dirtyMoney" : null;
+    if (!type) return;
+
+    const player = await zFramework.Functions.GetPlayerFromId(global.source);
+
+    if (!targetId) {
+
+    } else {
+        if (player[type] < amount) return;
+    
+        const target = await zFramework.Functions.GetPlayerFromId(targetId);
+
+        target[type] += amount;
+        player[type] -= amount;
+
+        target.notify(`~g~Quelqu'un vous à donné ~b~${amount}$~s~.`);
+        player.notify(`~g~Vous avez donné ~b~${amount}$~s~.`);
+    }
 });

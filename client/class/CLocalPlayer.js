@@ -43,6 +43,7 @@ export default class CLocalPlayer {
     */
     set money(amount) {
         this._money = amount;
+        zFramework.Core.Inventory.OnUpdated();
     }
 
     /**
@@ -50,6 +51,7 @@ export default class CLocalPlayer {
     */
     set dirtyMoney(amount) {
         this._dirtyMoney = amount;
+        zFramework.Core.Inventory.OnUpdated();
     }
 
     /**

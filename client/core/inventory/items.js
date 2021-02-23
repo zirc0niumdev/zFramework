@@ -17,4 +17,12 @@ onUseFunc["weapon"] = (localPlayer, data, num, amount, item) => {
     // send /me
 }
 
+onUseFunc["eatItem"] = (localPlayer, data, num, amount, item) => {
+    
+}
+
+onUseFunc["drinkItem"] = (localPlayer, data, num, amount, item) => {
+    
+}
+
 GetUseItemFromName = _ => onUseFunc[_];

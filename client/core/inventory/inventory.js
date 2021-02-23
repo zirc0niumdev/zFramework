@@ -1,6 +1,4 @@
 zFramework.Core.Inventory.AddItem = function(name, num) {
-    console.log(num);
-    console.log(typeof(num));
     const { inventory } = zFramework.LocalPlayer;
     const itemTbl = inventory.items[name];
     const amount = typeof(num) == "object" && ((num.length > 1 || typeof(itemTbl) == "object") && num.length || num[0]) || num;
@@ -37,13 +35,33 @@ function transferItem(item, isDrop) {
 
         item.amount = items;
 
-        if (isDrop) console.log("pickup hsit");
-        else {
+        if (isDrop) {
+            
+        } else {
             const closestPly = zFramework.Functions.GetClosestPlayer();
             if (closestPly) serverEvent("Server.Inventory.TransferItem", GetPlayerServerId(closestPly), item.name, item.amount);
             else zFramework.Functions.Notify("~y~Rapprochez-vous.");
         }
     }
+}
+
+function transferMoney(isGive, type, amount) {
+    const closestPlayer = isGive && zFramework.Functions.GetClosestPlayer()
+    const { pedId } = zFramework.LocalPlayer;
+    if (isGive && !closestPlayer) return zFramework.Functions.Notify("~r~Il n'y a personne proche de vous.");
+
+    let pos = GetEntityCoords(pedId);
+    pos[0] += GetEntityForwardVector(pedId)[0] * 0.5;
+    pos[1] += GetEntityForwardVector(pedId)[1] * 0.5;
+    pos[2] += GetEntityForwardVector(pedId)[2] * 0.5;
+
+    serverEvent(
+      "Server.Inventory.GiveMoney",
+      type,
+      (closestPlayer && GetPlayerServerId(closestPlayer)) || !isGive,
+      parseInt(amount),
+      { x: pos[0], y: pos[1], z: [2] }
+    );
 }
 
 async function inventoryAction(action, it) {
@@ -67,7 +85,6 @@ async function inventoryAction(action, it) {
     } else if (action == 2) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, false);
     else if (action == 3) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, true);
     else if (action == 4) {
-        if (it.name.includes("Argent")) return;
         if (!inventory.items[it.name] || !itemData) return;
 
         let surname = await zFramework.Functions.KeyboardInput("Renommer", itemData.name || it.name, 20);
@@ -93,20 +110,31 @@ function changeWeaponSlot(slotName, weaponName) {
 
 RegisterNuiCallbackType('inventoryInteraction');
 on('__cfx_nui:inventoryInteraction', (data, cb) => {
-    const { eventName } = data;
+    const { eventName, itemData } = data;
     const amount = parseInt(data.amount);
     
-    const name = data.itemData.base || data.itemData.name;
-    const itemKey = data.itemData.itemKey || [0];
+    const name = itemData.base || itemData.name;
+    const itemKey = itemData.itemKey || [0];
 
     if (eventName == "targetInventory" || eventName == "inventory" || !name) return;
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
-    else if (eventName == "useInventory") inventoryAction(1,  { name, itemKey, amount });
-    else if (eventName == "giveInventory") inventoryAction(2, { name, itemKey, amount });
-    else if (eventName == "throwInventory") inventoryAction(3, { name, itemKey, amount });
-    else if (eventName == "infoInventory") inventoryAction(5, { name, itemKey, amount });
-    else if (eventName == "renameInventory") inventoryAction(4, { name, itemKey, amount });
+    else if (eventName == "useInventory") {
+        if (itemData.money || itemData.dirtyMoney) return;
+        inventoryAction(1,  { name, itemKey, amount });
+    } else if (eventName == "giveInventory") {
+        if (itemData.money || itemData.dirtyMoney) return transferMoney(true, name, amount);
+        inventoryAction(2, { name, itemKey, amount });
+    } else if (eventName == "throwInventory") {
+        if (itemData.money || itemData.dirtyMoney) return transferMoney(false, name, amount);
+        inventoryAction(3, { name, itemKey, amount });
+    } else if (eventName == "infoInventory") {
+        if (itemData.money || itemData.dirtyMoney) return;
+        inventoryAction(5, { name, itemKey, amount });
+    } else if (eventName == "renameInventory") {
+        if (itemData.money || itemData.dirtyMoney) return;
+        inventoryAction(4, { name, itemKey, amount });
+    }
 
     cb("ok");
 });

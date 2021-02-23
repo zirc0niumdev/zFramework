@@ -26,7 +26,7 @@ zFramework.Core.Items.Register(item);
 
 item = {
     name: "Coktail molotov",
-    price: 3900,
+    price: 3000,
     ammo: true,
     onUse: "weapon"
 };
@@ -34,7 +34,7 @@ zFramework.Core.Items.Register(item);
 
 item = {
     name: "Bombe collante",
-    price: 19500,
+    price: 20000,
     ammo: true,
     onUse: "weapon"
 };
@@ -42,7 +42,7 @@ zFramework.Core.Items.Register(item);
 
 item = {
     name: "Grenade",
-    price: 9000,
+    price: 10000,
     ammo: true,
     onUse: "weapon"
 };

@@ -95,9 +95,9 @@ zFramework.Functions.SetKeepInputMode = bool => {
 zFramework.Functions.GetClosestPlayer = (d = 1.5, addVector) => {
 	const { pedId } = zFramework.LocalPlayer;
 	const playerForward = GetEntityForwardVector(pedId);
-	let playerPos = GetEntityCoords(pedId);
 	let closestPlayer;
-
+	
+	let playerPos = GetEntityCoords(pedId);
 	playerPos[0] += (addVector || playerForward[0] * 0.5);
 	playerPos[1] += (addVector || playerForward[1] * 0.5);
 	playerPos[2] += (addVector || playerForward[2] * 0.5);
