@@ -243,6 +243,8 @@ zFramework.Functions.AttachObjectPedHand = async function(prop, time, isFixRot, 
 
     if (entityToAttach && DoesEntityExist(entityToAttach)) DeleteEntity(entityToAttach);
 
+	await Delay(500);
+
     entityToAttach = CreateObject(GetHashKey(prop), getLocation(), !isLocal);
     SetNetworkIdCanMigrate(ObjToNet(entityToAttach), false);
     AttachEntityToEntity(

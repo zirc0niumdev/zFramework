@@ -144,8 +144,5 @@ zFramework.Core.Needs.Eat = async (item, name) => {
         }
     }
 
-    if (item.hunger || item.thirst) {
-        // send hunger
-        // send thirst
-    }
+    if (item.hunger || item.thirst) serverEvent("Server.Needs.Add", item.hunger && true || false, item.hunger || item.thirst || 0);
 }
