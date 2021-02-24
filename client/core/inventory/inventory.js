@@ -128,8 +128,7 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
 
     if (eventName == "weaponOne" || eventName == "weaponTwo" || eventName == "weaponThree") changeWeaponSlot(eventName, name);
     else if (eventName == "useInventory") {
-        if (itemData.money || itemData.dirtyMoney) return;
-        inventoryAction(1,  { name, itemKey, amount });
+        if (!itemData.money && !itemData.dirtyMoney) inventoryAction(1, { name, itemKey, amount });
     } else if (eventName == "giveInventory") {
         if (itemData.money || itemData.dirtyMoney) transferMoney(true, name, amount);
         else inventoryAction(2, { name, itemKey, amount });
@@ -137,11 +136,9 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
         if (itemData.money || itemData.dirtyMoney) transferMoney(false, name, amount);
         else inventoryAction(3, { name, itemKey, amount });
     } else if (eventName == "infoInventory") {
-        if (itemData.money || itemData.dirtyMoney) return;
-        inventoryAction(5, { name, itemKey, amount });
+        if (!itemData.money && !itemData.dirtyMoney) inventoryAction(5, { name, itemKey, amount });
     } else if (eventName == "renameInventory") {
-        if (itemData.money || itemData.dirtyMoney) return;
-        inventoryAction(4, { name, itemKey, amount });
+        if (!itemData.money && !itemData.dirtyMoney) inventoryAction(4, { name, itemKey, amount });
     }
 
     cb("ok");
@@ -158,8 +155,17 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
 
     for (const [itemName, itemTbl] of Object.entries(inv)) {
         let itemsTbl = { 0: { keys: [] } };
-    
-        // TODO: check clothes
+
+        if (zFramework.Core.Inventory.ClothesItems.find(item => item === itemName)) {
+            for (const [itemIndex, itemData] of Object.entries(itemTbl)) {
+                clothes.push({
+                    name: itemData.name || itemName,
+                    qty: 1,
+                    itemKey: [itemIndex],
+                    base: itemData.name && itemName || null
+                });
+            }
+        }
 
         if (typeof(itemTbl) == "object") {
             for (const [itemIndex, itemData] of Object.entries(itemTbl)) {
@@ -307,7 +313,8 @@ zFramework.Core.Inventory.Thread = function() {
 
 function takeWeapon(slot) {
     const weapon = zFramework.LocalPlayer.inventory[zFramework.Core.Inventory.WeaponSlot[slot]];
-    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon) && zFramework.LocalPlayer.inventory.items[weapon]) inventoryAction(1, { name: weapon, itemKey: [0], amount: 1 });
+    if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon) && zFramework.LocalPlayer.inventory.items[weapon])
+        inventoryAction(1, { name: weapon, itemKey: [0], amount: 1 });
 }
 
 zFramework.Core.Inventory.Initialize = function() {
