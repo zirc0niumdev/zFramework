@@ -31,8 +31,9 @@ const animsSettings = [
 
 async function createProp(prop, anim){
     const { pedId, getLocation } = zFramework.LocalPlayer;
+    const playerPos = getLocation();
     const anims = animsSettings[anim];
-
+    
     await zFramework.Functions.RequestModel(prop);
     await zFramework.Functions.RequestDict(anims.dict);
 
@@ -40,7 +41,7 @@ async function createProp(prop, anim){
 
     await Delay(50);
 
-    const handle = CreateObjectNoOffset(GetHashKey(prop), getLocation(), false, false, false);
+    const handle = CreateObjectNoOffset(GetHashKey(prop), playerPos.x, playerPos.y, playerPos.z, false, false, false);
     AttachEntityToEntity(
         handle,
         pedId,
@@ -130,8 +131,9 @@ zFramework.Core.Needs.Eat = async (item, name) => {
     if (typeof(itemAnim.anim) === "number") createProp(itemAnim.prop || "prop_cs_burger_01", itemAnim.anim);
     else {
         const time = !itemAnim.time && 6000 || itemAnim.time > 0 && itemAnim || null;
-        zFramework.Functions.PlayAnim(itemAnim.anim, time, 48);
 
+        zFramework.Functions.PlayAnim(itemAnim.anim, time, 48);
+        
         if (itemAnim.prop) {
             await Delay(750);
             zFramework.Functions.AttachObjectPedHand(itemAnim.prop, 4000);
