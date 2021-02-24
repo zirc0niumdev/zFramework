@@ -17,12 +17,9 @@ onUseFunc["weapon"] = (localPlayer, data, num, amount, item) => {
     // send /me
 }
 
-onUseFunc["eatItem"] = (localPlayer, data, num, amount, item) => {
-    
-}
+onUseFunc["eatItem"] = (localPlayer, data, num, amount, item) => zFramework.Core.Needs.Eat(item, item.name);
 
-onUseFunc["drinkItem"] = (localPlayer, data, num, amount, item) => {
-    
-}
+
+onUseFunc["drinkItem"] = (localPlayer, data, num, amount, item) => zFramework.Core.Needs.Eat(item, item.name);
 
 GetUseItemFromName = _ => onUseFunc[_];

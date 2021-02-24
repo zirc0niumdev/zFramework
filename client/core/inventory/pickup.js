@@ -38,9 +38,8 @@ async function spawnPickup(object) {
             if (pos.h) SetEntityHeading(handle, pos.h + 0.0);
 
             const time = GetGameTimer();
-            while (DoesEntityExist(handle) && !IsEntityStatic(handle) && time + 2000 > GetGameTimer()) {
+            while (DoesEntityExist(handle) && !IsEntityStatic(handle) && time + 2000 > GetGameTimer())
                 await Delay(100);
-            }
             
             if (DoesEntityExist(handle)) {
                 SetEntityDynamic(handle, false);

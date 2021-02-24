@@ -160,7 +160,7 @@ zFramework.Functions.GetClosestPlayer = function(d = 1.5) {
 
 	for (const num of GetActivePlayers()) {
 		const otherPed = GetPlayerPed(num);
-		console.log(otherPed);
+		
 		if (otherPed && otherPed != pedId && IsEntityVisible(otherPed) && this.GetDistance(otherPed, pedId) <= d && (!closestPlayer || this.GetDistance(otherPed, pedId)))
 			closestPlayer = num;
 	}
@@ -209,7 +209,7 @@ zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) 
 		ClearAreaOfObjects(LocalPlayer.getLocation(), 1.0);
 		TaskStartScenarioInPlace(ped, anims[0], -1, !animBug.find(anim => anim === anims[0]));
 	} else {
-		if (!animPos) {TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, false, false, false);}
+		if (!animPos) TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, false, false, false);
 		else TaskPlayAnimAdvanced(ped, anims[0], anims[1], animPos.x, animPos.y, animPos.z, animRot.x, animRot.y, animRot.z, 8.0, -8.0, -1, flag || 44, -1, 0, 0);
 	}
 
@@ -219,6 +219,57 @@ zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) 
 	}
 
 	if (!args.dict) RemoveAnimDict(anims[0]);
+}
+
+zFramework.Functions.TaskSynchronizedTasks = async function(ped, animData, clearTasks = false) {
+	for (const v of animData) this.RequestDict(v.anim[0]);
+
+	const [_, sequence] = OpenSequenceTask(0);
+	for (const v of animData) TaskPlayAnim(0, v.anim[0], v.anim[1], 2.0, -2.0, Math.floor(v.time || -1), v.flag || 48, 0, 0, 0, 0);
+
+	CloseSequenceTask(sequence);
+	if (clearTasks) ClearPedTasks(ped);
+	TaskPerformSequence(ped, sequence);
+	ClearSequenceTask(sequence);
+
+	for (const v of animData) RemoveAnimDict(v.anim[10])
+
+	return sequence;
+}
+
+const entityToAttach = null;
+zFramework.Functions.AttachObjectPedHand = async function(prop, time, isFixRot, isLeftHand, isLocal) {
+	const { pedId, getLocation } = zFramework.LocalPlayer;
+
+    if (entityToAttach && DoesEntityExist(entityToAttach)) DeleteEntity(entityToAttach);
+
+    entityToAttach = CreateObject(GetHashKey(prop), getLocation(), !isLocal);
+    SetNetworkIdCanMigrate(ObjToNet(entityToAttach), false);
+    AttachEntityToEntity(
+        entityToAttach,
+        pedId,
+        GetPedBoneIndex(pedId, isLeftHand && 60309 || 28422),
+        .0,
+        .0,
+        .0,
+        .0,
+        .0,
+        .0,
+        true,
+        true,
+        false,
+        true,
+        1,
+        !isFixRot
+    );
+
+    if (time) {
+        await Delay(time);
+        if (entityToAttach && DoesEntityExist(entityToAttach)) DeleteEntity(entityToAttach);
+        ClearPedTasks(pedId);
+    }
+
+    return entityToAttach;
 }
 
 zFramework.Functions.RegisterControlKey = (strKeyName, strDescription, strKey, onPress, onRelease) => {

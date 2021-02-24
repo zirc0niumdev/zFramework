@@ -89,7 +89,7 @@ async function inventoryAction(action, it) {
         const useFunc = GetUseItemFromName(item.onUse);
         useFunc(zFramework.LocalPlayer, itemData, itemNum, it.amount, item);
 
-        if (!item.keep && item.onUse != "weapon") zFramework.Core.Inventory.AddItem(it.name, [itemNum]);
+        if (!item.keep && item.onUse != "weapon") zFramework.Core.Inventory.AddItem(it.name, [1]);
     } else if (action == 2) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, false);
     else if (action == 3) transferItem({ name: it.name, itemKey: it.itemKey, amount: it.amount }, true);
     else if (action == 4) {
