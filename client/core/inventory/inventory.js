@@ -154,11 +154,10 @@ onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
         if (item && item.ammo) {
             for (const [name, _] of Object.entries(inventory.items)) {
                 const weaponName = zFramework.Functions.GetJsonConfig("weapons", name);
-                console.log(HasPedGotWeapon(pedId, GetHashKey(weaponName), false));
-                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName), false)) {
+                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName))) {
                     console.log("test");
+                    AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
                 }
-                    //AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
             }
         }
     }
