@@ -23,7 +23,6 @@ onNet("Server.Pickup.Management", async (action, item) => {
                 model,
                 value: { name: item.name, data: datas }
             };
-            
             emitNet('Client.Pickup.Management', -1, action, { id, model, pos: item.pos });
             player.notify(`~g~Vous avez laché ~b~${item.amount.length}x ${item.name}~s~.`);
 

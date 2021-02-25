@@ -144,6 +144,28 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
     cb("ok");
 });
 
+onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
+    if (inv) zFramework.LocalPlayer.inventory = inv;
+
+    if (itemName) {
+        const { pedId, inventory } = zFramework.LocalPlayer;
+        const item = zFramework.Core.Items.Get(itemName);
+
+        if (item && item.ammo) {
+            for (const [name, _] of Object.entries(inventory.items)) {
+                const weaponName = zFramework.Functions.GetJsonConfig("weapons", name);
+                console.log(HasPedGotWeapon(pedId, GetHashKey(weaponName), false));
+                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName), false)) {
+                    console.log("test");
+                }
+                    //AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
+            }
+        }
+    }
+
+    zFramework.Core.Inventory.OnUpdated();
+});
+
 zFramework.Core.Inventory.OnUpdated = function() {
     if (!this.Opened) return;
 
@@ -165,45 +187,45 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
                     base: itemData.name && itemName || null
                 });
             }
-        }
-
-        if (typeof(itemTbl) == "object") {
-            for (const [itemIndex, itemData] of Object.entries(itemTbl)) {
-                let added = false;
-
-                if (itemData.name && itemData.name.length > 0) {
-                    if (!itemsTbl[itemData.name]) itemsTbl[itemData.name] = { name: itemData.name, keys: [] };
-
-                    itemsTbl[itemData.name].keys.push(itemIndex);
-
-                    added = true;
-                } else {
-                    for (const [keyData, _] of Object.entries(itemData)) {
-                        const prefix = keyData == "uid" && itemData[keyData];
-                        if (prefix) {
-                            if (!itemsTbl[prefix]) itemsTbl[prefix] = { keys: [] };
-
-                            itemsTbl[prefix].keys.push(itemIndex);
-                            added = true;
-
-                            break;
+        } else {
+            if (typeof(itemTbl) == "object") {
+                for (const [itemIndex, itemData] of Object.entries(itemTbl)) {
+                    let added = false;
+    
+                    if (itemData.name && itemData.name.length > 0) {
+                        if (!itemsTbl[itemData.name]) itemsTbl[itemData.name] = { name: itemData.name, keys: [] };
+    
+                        itemsTbl[itemData.name].keys.push(itemIndex);
+    
+                        added = true;
+                    } else {
+                        for (const [keyData, _] of Object.entries(itemData)) {
+                            const prefix = keyData == "uid" && itemData[keyData];
+                            if (prefix) {
+                                if (!itemsTbl[prefix]) itemsTbl[prefix] = { keys: [] };
+    
+                                itemsTbl[prefix].keys.push(itemIndex);
+                                added = true;
+    
+                                break;
+                            }
                         }
                     }
+    
+                    if (!added) itemsTbl[0].keys.push(itemIndex);
                 }
-
-                if (!added) itemsTbl[0].keys.push(itemIndex);
-            }
-
-            for (const [itemIndex, itemData] of Object.entries(itemsTbl)) {
-                if (itemData.keys.length > 0) {
-                    if (!isNaN(itemIndex)) itemIndex = Number(itemIndex);
-                    items.push({
-                        name: itemData.name && itemIndex || itemName,
-                        base: itemData.name && itemName || null,
-                        qty: itemData.keys.length,
-                        itemKey: itemData.keys,
-                        suffix: !itemData.name && typeof(itemIndex) === "string" && itemIndex || null
-                    });
+    
+                for (const [itemIndex, itemData] of Object.entries(itemsTbl)) {
+                    if (itemData.keys.length > 0) {
+                        if (!isNaN(itemIndex)) itemIndex = Number(itemIndex);
+                        items.push({
+                            name: itemData.name && itemIndex || itemName,
+                            base: itemData.name && itemName || null,
+                            qty: itemData.keys.length,
+                            itemKey: itemData.keys,
+                            suffix: !itemData.name && typeof(itemIndex) === "string" && itemIndex || null
+                        });
+                    }
                 }
             }
         }
@@ -295,17 +317,18 @@ zFramework.Core.Inventory.Thread = function() {
         const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
         if (selectedWeapon && selectedWeapon != defaultWeap) {
             let currentWeapon;
-            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) if (GetHashKey(weaponHash) == selectedWeapon)currentWeapon = weaponName;
-            
-            if (!zFramework.LocalPlayer.inventory.items[currentWeapon]) RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
+            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig))
+                if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
+
+            if (!zFramework.LocalPlayer.inventory.items[currentWeapon])
+                RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
             else {
                 const ammo = ammoConfig[currentWeapon];
-                if (!ammo) return;
                 const itemAmount = zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, ammo);
-                const ammoCount = itemAmount && (GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) != itemAmount && GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) > itemAmount && itemAmount || GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) || 0);
+                const ammoCount = ammo && itemAmount && (GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) != itemAmount && GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) > itemAmount && itemAmount || GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) || 0;
 
                 SetPedAmmo(zFramework.LocalPlayer.pedId, selectedWeapon, ammoCount);
-                if (itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) zFramework.Core.Inventory.AddItem(ammo, [1]);
+                if (ammo && itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) zFramework.Core.Inventory.AddItem(ammo, [1]);
             }
         }
     }, 150);

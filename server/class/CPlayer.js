@@ -273,8 +273,8 @@ export default class CPlayer {
     
         // weight management
         this._inventory.weight += (item.weight || zFramework.Core.Inventory.DefaultWeight) * num;
-            
-        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+
+        this.clientEvent('Client.UpdateInventory', this.inventory, name);
     }
 
     getItemData = (name, num) => {
@@ -292,8 +292,8 @@ export default class CPlayer {
 
         // data management
         this.inventory.items[name][num] = data;
-            
-        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+    
+        this.clientEvent('Client.UpdateInventory', this.inventory, name);
     }
 
     changeWeaponSlot = (key, value) => {
@@ -309,19 +309,14 @@ export default class CPlayer {
         if (!this.inventory.items[name]) return;
 
         // stack management
-        if (typeof(num) === "object") {
-            for (const key of num) {
-                if (!this.inventory.items[name][key]) break;
-                this.inventory.items[name].splice(key, 1);
-            }
-        } else this.inventory.items[name].splice(0, num);
+        this.inventory.items[name].splice(0, typeof(num) === "object" && num.length || num);
 
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management
-        if (item.weight) this._inventory.weight -= (item.weight || zFramework.Core.Inventory.DefaultWeight) * num;
+        if (item.weight) this._inventory.weight -= (item.weight || zFramework.Core.Inventory.DefaultWeight) * (typeof(num) === "object" && num.length || num);
 
-        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
+        this.clientEvent('Client.UpdateInventory', this.inventory, name);
     }
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
