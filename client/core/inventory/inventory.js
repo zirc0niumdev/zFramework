@@ -144,27 +144,6 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
     cb("ok");
 });
 
-onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
-    if (inv) zFramework.LocalPlayer.inventory = inv;
-
-    if (itemName) {
-        const { pedId, inventory } = zFramework.LocalPlayer;
-        const item = zFramework.Core.Items.Get(itemName);
-
-        if (item && item.ammo) {
-            for (const [name, _] of Object.entries(inventory.items)) {
-                const weaponName = zFramework.Functions.GetJsonConfig("weapons", name);
-                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName))) {
-                    console.log("test");
-                    AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
-                }
-            }
-        }
-    }
-
-    zFramework.Core.Inventory.OnUpdated();
-});
-
 zFramework.Core.Inventory.OnUpdated = function() {
     if (!this.Opened) return;
 
@@ -316,8 +295,12 @@ zFramework.Core.Inventory.Thread = function() {
         const selectedWeapon = GetSelectedPedWeapon(zFramework.LocalPlayer.pedId);
         if (selectedWeapon && selectedWeapon != defaultWeap) {
             let currentWeapon;
-            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig))
-                if (GetHashKey(weaponHash) == selectedWeapon) currentWeapon = weaponName;
+            for (const [weaponName, weaponHash] of Object.entries(weaponsConfig)) {
+                if (GetHashKey(weaponHash) == selectedWeapon) {
+                    currentWeapon = weaponName;
+                    break;
+                }
+            }
 
             if (!zFramework.LocalPlayer.inventory.items[currentWeapon])
                 RemoveWeaponFromPed(zFramework.LocalPlayer.pedId, selectedWeapon);
@@ -327,7 +310,8 @@ zFramework.Core.Inventory.Thread = function() {
                 const ammoCount = ammo && itemAmount && (GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) != itemAmount && GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon) > itemAmount && itemAmount || GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) || 0;
 
                 SetPedAmmo(zFramework.LocalPlayer.pedId, selectedWeapon, ammoCount);
-                if (ammo && itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon)) zFramework.Core.Inventory.AddItem(ammo, [1]);
+                if (ammo && itemAmount && itemAmount != GetAmmoInPedWeapon(zFramework.LocalPlayer.pedId, selectedWeapon))
+                    zFramework.Core.Inventory.AddItem(ammo, [1]);
             }
         }
     }, 150);
