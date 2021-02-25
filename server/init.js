@@ -96,19 +96,21 @@ onNet("Server.onPlayerSpawned", async () => {
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
 	if (player.firstSpawn) {
+		player.addItem("Pain", 4);
 		// add telephone
 		// add carte identité
-		// add carte bancaire
-		player.addItem("Pain", 4);
 		player.addItem("Eau de source", 8);
 	}
 
-	player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
+	// Load Pickups
+	if  (Object.keys(zFramework.Core.Inventory.Pickups).length > 0)
+		player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
 
 	player.initialized = true;
 
-	// try move that to client side
-	for (const command in zFramework.Commands) player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
+	// move this to client side
+	for (const command in zFramework.Commands)
+		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 });
 
 on("playerDropped", async reason => {

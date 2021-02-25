@@ -31,4 +31,6 @@ files {
 	'config/**/*.json'
 }
 
+webpack_config 'client.config.js'
+
 dependency 'yarn'
