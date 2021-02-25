@@ -51,13 +51,13 @@ onNet("Server.Inventory.GiveMoney", async (type, isDrop, amount, pos) => {
         };
 
         player.clientEvent("Client.Pickup.Management", 1, { id, model, pos });
-        player.notify(`~g~Vous avez laché ~b~${amount}$~s~.`);
+        player.notify(`~g~Vous avez laché ~b~$${amount}~s~.`);
     } else {    
         const target = await zFramework.Functions.GetPlayerFromId(isDrop);
 
         target[type] += amount;
 
-        target.notify(`~g~Quelqu'un vous à donné ~b~${amount}$~s~.`);
-        player.notify(`~g~Vous avez donné ~b~${amount}$~s~.`);
+        target.notify(`~g~Quelqu'un vous à donné ~b~$${amount}~s~.`);
+        player.notify(`~g~Vous avez donné ~b~$${amount}~s~.`);
     }
 });

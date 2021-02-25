@@ -42,7 +42,7 @@ onNet("Server.Pickup.Management", async (action, item) => {
 
             emitNet('Client.Pickup.Management', -1, action, item.id);
 
-            player.notify(`~g~Vous avez ramassé ~b~${pickup.value.amount && typeof(pickup.value.amount) === "number" ? `${pickup.value.amount}$` : `${Object.keys(pickup.value.data).length}x ${pickup.value.name}`}~s~.`);
+            player.notify(`~g~Vous avez ramassé ~b~${pickup.value.amount && typeof(pickup.value.amount) === "number" ? `$${pickup.value.amount}` : `${Object.keys(pickup.value.data).length}x ${pickup.value.name}`}~s~.`);
 
             break;
     }
