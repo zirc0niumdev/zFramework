@@ -95,7 +95,8 @@ onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
-	if (player.firstSpawn) {
+	if (player.firstSpawn)
+	{
 		player.addItem("Pain", 4);
 		// add telephone
 		player.addItem("Carte d'identité", 8);

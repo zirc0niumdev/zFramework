@@ -5,6 +5,7 @@
   "author": "zirconiium",
   "private": true,
   "scripts": {
+    "dev": "webpack --watch --mode development --config client.config.js",
     "build": "webpack --mode production --config client.config.js"
   },
   "dependencies": {
