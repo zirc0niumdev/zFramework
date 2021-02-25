@@ -3,7 +3,7 @@ zFramework.Functions.GetPlayerFromId = id => {
 	
 	return new Promise((resolve, reject) => {
 		const player = zFramework.Players[id];
-		if (!player) reject(console.error("can't get player with id: " + id));
+		if (!player) reject(console.error("Can't get player from id: " + id));
 		
 		resolve(player);
 	});

@@ -98,7 +98,7 @@ onNet("Server.onPlayerSpawned", async () => {
 	if (player.firstSpawn) {
 		player.addItem("Pain", 4);
 		// add telephone
-		// add carte identité
+		player.addItem("Carte d'identité", 8);
 		player.addItem("Eau de source", 8);
 	}
 

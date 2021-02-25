@@ -23,6 +23,7 @@ onNet("Server.Pickup.Management", async (action, item) => {
                 model,
                 value: { name: item.name, data: datas }
             };
+            
             emitNet('Client.Pickup.Management', -1, action, { id, model, pos: item.pos });
             player.notify(`~g~Vous avez laché ~b~${item.amount.length}x ${item.name}~s~.`);
 
@@ -41,7 +42,6 @@ onNet("Server.Pickup.Management", async (action, item) => {
             delete zFramework.Core.Inventory.Pickups[item.id];
 
             emitNet('Client.Pickup.Management', -1, action, item.id);
-
             player.notify(`~g~Vous avez ramassé ~b~${pickup.value.amount && typeof(pickup.value.amount) === "number" ? `$${pickup.value.amount}` : `${Object.keys(pickup.value.data).length}x ${pickup.value.name}`}~s~.`);
 
             break;

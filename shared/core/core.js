@@ -8,7 +8,7 @@ zFramework.Core.Initialize = function() {
 }
 
 zFramework.Core.Think = function() {
-	for (const moduleName in this.List) {
-		if (this[moduleName] && this[moduleName]["Think"]) this[moduleName].Think();
-	}
+	for (const moduleName in this.List)
+		if (this[moduleName] && this[moduleName]["Think"])
+			this[moduleName].Think();
 }
