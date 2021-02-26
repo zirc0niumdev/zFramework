@@ -285,13 +285,14 @@ zFramework.Functions.Notify = (message, color) => {
 
 onNet('Client.Notify', zFramework.Functions.Notify);
 
-onNet('Client.ShowId', (type, identity) => {
+onNet('Client.ShowId', (type, card) => {
+	const { identity } = card;
 	let data = null;
 
 	switch (type) {
 		// Carte identité
 		case 1:
-			data = { showID: true, name: identity.name, data: `${identity.birthdate} | ${identity.birthcity}`, city: "Los Santos", date: identity.exp, number: identity.uuid };
+			data = { showID: true, name: `${identity.lastname} ${identity.firstname}`, data: `${identity.birthday} | ${identity.birthplace}`, city: "Los Santos", date: card.exp, number: card.uid };
 			break;
 
 		// Permis

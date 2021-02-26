@@ -29,12 +29,49 @@ zFramework.Functions.CheckIdentifiers = id => {
 	});
 }
 
+zFramework.Functions.GenerateExpDate = () => {
+    const today = new Date();
+
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 2;
+    let dd = today.getDate();
+
+    if (dd < 10){
+        dd = '0' + dd;
+    } 
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    return `${dd}/${mm}/${yyyy}`;
+}
+
 zFramework.Functions.GenerateUUID = () => `667${Date.now() + Math.floor(Math.random() * 100)}`;
 
-onNet("Server.AskId", async (target, name, num) => {
+onNet("Server.AskId", async (targetId, name, num) => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	const item = player.inventory.items[name][num];
 	if (!item) return;
 
-	console.log(item);
+	let type = 1;
+
+	switch (name) {
+		case "Carte d'identité":
+			type = 1;
+			break;
+		case "Carte d":
+			type = 2;
+			break;
+		case "Car":
+			type = 3;
+			break;
+	}
+	
+	if (targetId) {
+		const target = await zFramework.Functions.GetPlayerFromId(targetId);
+		return target.clientEvent("Client.ShowId", type, item);
+	}
+	
+	return player.clientEvent("Client.ShowId", type, item);
 });
