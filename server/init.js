@@ -95,16 +95,16 @@ onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	console.log(`[${global.source}] ${player.name} spawned!`);
 
-	if (player.firstSpawn)
+	//if (player.firstSpawn)
 	{
 		player.addItem("Pain", 4);
 		player.addItem("Eau de source", 8);
-		player.addItem("Carte d'identité", 1);
+		player.addItem("Carte d'identité", 1, { identity: player.identity, uid: "164646465465" });
 		// add telephone
 	}
 
 	// Load Pickups
-	if  (Object.keys(zFramework.Core.Inventory.Pickups).length > 0)
+	if (Object.keys(zFramework.Core.Inventory.Pickups).length > 0)
 		player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
 
 	// move this to client side

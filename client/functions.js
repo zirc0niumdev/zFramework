@@ -289,17 +289,20 @@ onNet('Client.ShowId', (type, identity) => {
 	let data = null;
 
 	switch (type) {
+		// Carte identité
 		case 1:
-			data = { showID: true, name: identity.name, data: "3 Janvier 1990 | Paris", city: "Los Santos", date: "03/13/21", number: identity.uuid, userID: "aaaaaaaaaa" };
+			data = { showID: true, name: identity.name, data: `${identity.birthdate} | ${identity.birthcity}`, city: "Los Santos", date: identity.exp, number: identity.uuid };
 			break;
 
-		case 2:
-			data = { showPermis: true, name: identity.name, userID: "zz", data: "aa" };
-			break;
+		// Permis
+		// case 2:
+		// 	data = { showPermis: true, name: identity.name, userID: "zz", data: "aa" };
+		// 	break;
 
-		case 3:
-			data = { showCardBank: true, name: identity.name, date: "aa", number: "55", gamme: "aa" };
-			break;
+		// Carte bancaire
+		// case 3:
+		// 	data = { showCardBank: true, name: identity.name, date: "aa", number: "55", gamme: "aa" };
+		// 	break;
 	}
 
 	TriggerEvent('Client.ToggleNui', data);

@@ -30,3 +30,11 @@ zFramework.Functions.CheckIdentifiers = id => {
 }
 
 zFramework.Functions.GenerateUUID = () => `667${Date.now() + Math.floor(Math.random() * 100)}`;
+
+onNet("Server.AskId", async (target, name, num) => {
+	const player = await zFramework.Functions.GetPlayerFromId(global.source);
+	const item = player.inventory.items[name][num];
+	if (!item) return;
+
+	console.log(item);
+});

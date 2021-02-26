@@ -179,6 +179,7 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
                     } else {
                         for (const [keyData, _] of Object.entries(itemData)) {
                             const prefix = keyData == "uid" && itemData[keyData];
+                            console.log(keyData, prefix);
                             if (prefix) {
                                 if (!itemsTbl[prefix]) itemsTbl[prefix] = { keys: [] };
     
@@ -195,7 +196,7 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
     
                 for (const [itemIndex, itemData] of Object.entries(itemsTbl)) {
                     if (itemData.keys.length > 0) {
-                        if (!isNaN(itemIndex)) itemIndex = Number(itemIndex);
+                        if (!isNaN(itemIndex) && itemIndex.length <= 3) itemIndex = Number(itemIndex);
                         items.push({
                             name: itemData.name && itemIndex || itemName,
                             base: itemData.name && itemName || null,

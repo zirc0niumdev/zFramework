@@ -19,6 +19,12 @@ onUseFunc["weapon"] = async (localPlayer, data, num, amount, item) => {
 }
 
 onUseFunc["eatItem"] = (localPlayer, data, num, amount, item) => zFramework.Core.Needs.Eat(item, item.name);
+
 onUseFunc["drinkItem"] = (localPlayer, data, num, amount, item) => zFramework.Core.Needs.Eat(item, item.name);
+
+onUseFunc["idItem"] = (localPlayer, data, num, amount, item) => {
+    const closestPlayer = zFramework.Functions.GetClosestPlayer();
+    serverEvent("Server.AskId", closestPlayer && GetPlayerServerId(closestPlayer) || false, item.name, num);
+};
 
 global.GetUseItemFromName = _ => onUseFunc[_];
