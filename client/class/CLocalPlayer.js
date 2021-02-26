@@ -331,6 +331,8 @@ export default class CLocalPlayer {
 
         this.tick();
         this.utils();
+
+        TriggerEvent('Client.ShowId', 1, { name: "Lorenzo Moristocratte", uuid: "6468464646874684" });
     }
 
     // Is Ready To Play

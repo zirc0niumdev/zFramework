@@ -1,7 +1,7 @@
 {
   "name": "zframework",
   "version": "1.0.0",
-  "description": "A Roleplay framework for FiveM written in node.JS",
+  "description": "A Roleplay framework for FiveM written in NodeJS",
   "author": "zirconiium",
   "private": true,
   "scripts": {

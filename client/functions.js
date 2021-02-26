@@ -132,28 +132,6 @@ zFramework.Functions.RequestDict = dict => {
 	});
 };
 
-zFramework.UI = {};
-zFramework.UI.KeepFocus = false;
-let threadCreated = false;
-
-const controlsDisabled = [1, 2, 3, 4, 5, 6, 18, 24, 25, 37, 69, 70, 182, 199, 200, 257];
-
-zFramework.Functions.SetKeepInputMode = bool => {
-	zFramework.UI.KeepFocus = bool;
-
-	if (!threadCreated && bool) {
-		threadCreated = true;
-
-		const timer = setTick(() => {
-			if (zFramework.UI.KeepFocus) for (const control of controlsDisabled) DisableControlAction(0, control, true);
-			else {
-				threadCreated = false;
-				clearTick(timer);
-			}
-		});
-	}
-}
-
 zFramework.Functions.GetClosestPlayer = function(d = 1.5) {
 	const { pedId } = zFramework.LocalPlayer;
 	let closestPlayer;
@@ -286,10 +264,6 @@ zFramework.Functions.RegisterControlKey = (strKeyName, strDescription, strKey, o
     }, false);
 }
 
-zFramework.Functions.SendToNUI = data => {
-	SendNuiMessage(JSON.stringify(data));
-}
-
 zFramework.Functions.RepairVehicle = () => {
 	const vehicle = GetVehiclePedIsUsing(zFramework.LocalPlayer.pedId);
 	if (!vehicle) return;
@@ -310,3 +284,23 @@ zFramework.Functions.Notify = (message, color) => {
 };
 
 onNet('Client.Notify', zFramework.Functions.Notify);
+
+onNet('Client.ShowId', (type, identity) => {
+	let data = null;
+
+	switch (type) {
+		case 1:
+			data = { showID: true, name: identity.name, data: "3 Janvier 1990 | Paris", city: "Los Santos", date: "03/13/21", number: identity.uuid, userID: "aaaaaaaaaa" };
+			break;
+
+		case 2:
+			data = { showPermis: true, name: identity.name, userID: "zz", data: "aa" };
+			break;
+
+		case 3:
+			data = { showCardBank: true, name: identity.name, date: "aa", number: "55", gamme: "aa" };
+			break;
+	}
+
+	TriggerEvent('Client.ToggleNui', data);
+});

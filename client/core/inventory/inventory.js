@@ -230,13 +230,13 @@ function getInventoryWeapons() {
 
 function openInventory() {
     SetNuiFocus(true, true);
-    zFramework.Functions.SetKeepInputMode(true);
+    zFramework.UI.SetKeepInputMode(true);
 
     const { items, weight } = zFramework.LocalPlayer.inventory;
     const { inv, clothes } = formatInventoryForNUI(items, zFramework.LocalPlayer.money, zFramework.LocalPlayer.dirtyMoney);
     const weapons = getInventoryWeapons();
 
-    zFramework.Functions.SendToNUI(
+    zFramework.UI.SendToNui(
         {
             eventName: "showInventory",
             eventData: {
@@ -254,14 +254,14 @@ function openInventory() {
 function closeInventory() {
     zFramework.Core.Inventory.Opened = false;
     SetNuiFocus(false, false);
-    zFramework.Functions.SendToNUI({ eventName: "hideInventory" });
+    zFramework.UI.SendToNui({ eventName: "hideInventory" });
     Wait(50);
 }
 
 RegisterNuiCallbackType('hideInventory');
 on('__cfx_nui:hideInventory', (data, cb) => {
     SetNuiFocus(false, false);
-    zFramework.Functions.SetKeepInputMode(false);
+    zFramework.UI.SetKeepInputMode(false);
     zFramework.Core.Inventory.Opened = false;
 
     cb("ok");

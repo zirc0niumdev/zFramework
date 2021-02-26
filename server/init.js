@@ -98,20 +98,20 @@ onNet("Server.onPlayerSpawned", async () => {
 	if (player.firstSpawn)
 	{
 		player.addItem("Pain", 4);
-		// add telephone
-		player.addItem("Carte d'identité", 8);
 		player.addItem("Eau de source", 8);
+		player.addItem("Carte d'identité", 1);
+		// add telephone
 	}
 
 	// Load Pickups
 	if  (Object.keys(zFramework.Core.Inventory.Pickups).length > 0)
 		player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
 
-	player.initialized = true;
-
 	// move this to client side
 	for (const command in zFramework.Commands)
 		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
+
+	player.initialized = true;
 });
 
 on("playerDropped", async reason => {

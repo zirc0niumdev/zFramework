@@ -20,9 +20,7 @@ server_scripts {
 	'dist/server/*.js'
 }
 
-ui_page {
-	'ui/index.html'
-}
+ui_page 'ui/index.html'
 
 files {
 	'ui/index.html',
