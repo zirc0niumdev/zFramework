@@ -1,7 +1,7 @@
 let NPCs = [];
 let myNPCs = [];
 
-zFramework.NPC.Register = (data, next) => {
+zFramework.Core.NPC.Register = (data, next) => {
     data.next = next;
     NPCs.push(data);
 }
@@ -30,12 +30,12 @@ async function CreateNPC(data) {
     });
 }
 
-
-zFramework.Core.NPC.Thread = () => {
+zFramework.Core.NPC.Initialize = function() {
     setInterval(() => {
         const { getLocation } = zFramework.LocalPlayer;
     
-        for ([id, data] of Object.entries(NPCs)) {
+        for (const [id, data] of NPCs.entries()) {
+            console.log(id, data);
             const closeFromNPC = zFramework.Functions.GetDistanceByCoords(getLocation(), data.pos) < 30;
     
             if (!myNPCs[id] && closeFromNPC)
@@ -46,8 +46,4 @@ zFramework.Core.NPC.Thread = () => {
             }
         }
     }, 2000);
-}
-
-zFramework.Core.NPC.Initialize = function() {
-    this.Thread();
 }

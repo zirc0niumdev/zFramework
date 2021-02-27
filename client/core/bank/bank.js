@@ -1,7 +1,6 @@
 import * as NativeUI from "../../class/menu/nativeui.js";
 
 zFramework.Core.Bank.RegisterMenu = () => {
-    console.log("teeeest");
     // Simple menu with default banner
     const menu = new NativeUI.Menu("Bank", "aaaaa", new NativeUI.Point(50, 50));
     const buyCardItem = new NativeUI.UIMenuItem("Acheter une carte bancaire", "aaaaaaaaa");
@@ -17,9 +16,9 @@ zFramework.Core.Bank.RegisterMenu = () => {
 }
 
 zFramework.Core.Bank.Initialize = function() {
-    for (const npc of this.NPCs) {
+    for (const [county, npc] of Object.entries(this.NPCs)) {
         const { model, pos, name } = npc;
-        zFramework.NPC.Register({ model, name, pos, text: [name] });
+        zFramework.Core.NPC.Register({ model, name, pos, text: [name] });
     }
 
     this.RegisterMenu();

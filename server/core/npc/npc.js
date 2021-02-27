@@ -1,1 +1,0 @@
-zFramework.NPC = {};
