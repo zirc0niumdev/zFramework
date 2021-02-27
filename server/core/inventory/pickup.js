@@ -5,9 +5,9 @@ onNet("Server.Pickup.Management", async (action, item) => {
 
     switch (action) {
         case 1:
-            const model = "v_serv_abox_02";
-
+            const model = zFramework.Core.Inventory.DefaultPickupModel;
             let datas = {};
+
             for (const num of item.amount) {
                 const data = player.getItemData(item.name, num);
                 datas[num] = data;

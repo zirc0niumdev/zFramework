@@ -38,9 +38,14 @@ onNet("Server.Inventory.GiveMoney", async (type, isDrop, amount, pos) => {
 
     player[type] -= amount;
     
-    if (isDrop && typeof(isDrop) === "boolean") {
-        const model = "v_serv_abox_02";
+    if (!isDrop) {
+        const target = await zFramework.Functions.GetPlayerFromId(isDrop);
 
+        target[type] += amount;
+
+        target.notify(`~g~Quelqu'un vous à donné ~b~$${amount}~s~.`);
+    } else {
+        const model = zFramework.Core.Inventory.DefaultPickupModel;
         const id = Object.keys(zFramework.Core.Inventory.Pickups).length + 1;
 
         zFramework.Core.Inventory.Pickups[id] = 
@@ -51,13 +56,7 @@ onNet("Server.Inventory.GiveMoney", async (type, isDrop, amount, pos) => {
         };
 
         player.clientEvent("Client.Pickup.Management", 1, { id, model, pos });
-        player.notify(`~g~Vous avez laché ~b~$${amount}~s~.`);
-    } else {    
-        const target = await zFramework.Functions.GetPlayerFromId(isDrop);
-
-        target[type] += amount;
-
-        target.notify(`~g~Quelqu'un vous à donné ~b~$${amount}~s~.`);
-        player.notify(`~g~Vous avez donné ~b~$${amount}~s~.`);
     }
+
+    player.notify(`~g~Vous avez ${!isDrop ? "donné" : "laché"} ~b~$${amount}~s~.`);
 });

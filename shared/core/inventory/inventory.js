@@ -1,5 +1,6 @@
 zFramework.Core.Inventory = {};
 zFramework.Core.Inventory.Opened = false;
+zFramework.Core.Inventory.DefaultPickupModel = "v_serv_abox_02";
 zFramework.Core.Inventory.DefaultWeight = 1.0;
 zFramework.Core.Inventory.PlayerWeight = 45.0;
 zFramework.Core.Inventory.WeaponSlot = { 1: "weaponOne", 2: "weaponTwo", 3: "weaponThree" };

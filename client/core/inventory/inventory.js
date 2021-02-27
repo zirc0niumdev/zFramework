@@ -144,6 +144,23 @@ on('__cfx_nui:inventoryInteraction', (data, cb) => {
     cb("ok");
 });
 
+onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
+    if (inv) zFramework.LocalPlayer.inventory = inv;
+    if (itemName) {
+        const { pedId, inventory } = zFramework.LocalPlayer;
+        const item = zFramework.Core.Items.Get(itemName);
+        if (item && item.ammo) {
+            for (const [name, _] of Object.entries(inventory.items)) {
+                const weaponName = zFramework.Functions.GetJsonConfig("weapons", name);
+                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName))) {
+                    console.log("test");
+                    AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
+                }
+            }
+        }
+    }
+});
+
 zFramework.Core.Inventory.OnUpdated = function() {
     if (!this.Opened) return;
 

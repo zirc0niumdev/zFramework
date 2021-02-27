@@ -60,17 +60,17 @@ onNet("Server.AskId", async (targetId, name, num) => {
 		case "Carte d'identité":
 			type = 1;
 			break;
-		case "Carte d":
+		case "Permis":
 			type = 2;
 			break;
-		case "Car":
+		case "Carte bancaire":
 			type = 3;
 			break;
 	}
 	
 	if (targetId) {
 		const target = await zFramework.Functions.GetPlayerFromId(targetId);
-		return target.clientEvent("Client.ShowId", type, item);
+		target.clientEvent("Client.ShowId", type, item);
 	}
 	
 	return player.clientEvent("Client.ShowId", type, item);
