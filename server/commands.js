@@ -7,10 +7,16 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     if (car === "fix") return player.clientEvent("Client.RepairVehicle");
 
     const veh = CreateVehicle(GetHashKey(car), player.getLocation().x, player.getLocation().y, player.getLocation().z, GetEntityHeading(player.pedId), true, false);
-    
+
+    const timer = GetGameTimer();
+    while (!DoesEntityExist(veh)) {
+        if (GetGameTimer() - timer > 2000) return player.notify("~r~Model invalide.");
+        await Delay(0);
+    }
+
     SetPedIntoVehicle(player.pedId, veh, -1);
 
-    player.notify(`~g~${car}~w~ spawn !`);
+    player.notify(`~b~${car}~w~ spawn !`);
 }, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } }, true);
 
 new CCommands("goto", zFramework.Groups.ADMIN, async (player, args) => {
