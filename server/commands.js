@@ -7,6 +7,7 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     if (car === "fix") return player.clientEvent("Client.RepairVehicle");
 
     const veh = CreateVehicle(GetHashKey(car), player.getLocation().x, player.getLocation().y, player.getLocation().z, GetEntityHeading(player.pedId), true, false);
+    
     SetPedIntoVehicle(player.pedId, veh, -1);
 
     player.notify(`~g~${car}~w~ spawn !`);

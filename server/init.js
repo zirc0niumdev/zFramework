@@ -107,7 +107,7 @@ onNet("Server.onPlayerSpawned", async () => {
 	if (Object.keys(zFramework.Core.Inventory.Pickups).length > 0)
 		player.clientEvent("Client.Pickup.Management", 2, zFramework.Core.Inventory.Pickups);
 
-	// move this to client side
+	// Load Commands Suggestions
 	for (const command in zFramework.Commands)
 		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 
