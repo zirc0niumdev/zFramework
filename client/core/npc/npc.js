@@ -21,7 +21,7 @@ async function CreateNPC(data) {
             SetPedFleeAttributes(handle, 0, false);
             SetPedKeepTask(handle, true);
     
-            if (data.text && data.text[0]) console.log("draw text 3d");
+            if (data.text && data.text[0]) zFramework.Core.HUD.Register3DText(handle, data.text[0], data.text[1]);
     
             if (data.anim) zFramework.Functions.ForceAnim(data.anim, 1, { ped: handle});
     
@@ -32,20 +32,23 @@ async function CreateNPC(data) {
     });
 }
 
+zFramework.Core.NPC.Thread = localPlayer => {
+    for (const [id, data] of Object.entries(NPCs)) {
+        const closeFromNPC = zFramework.Functions.GetDistanceByCoords(localPlayer.getLocation(), data.pos) < 30;
+
+        if (!myNPCs[id] && closeFromNPC) {
+            CreateNPC(data);
+            myNPCs[id] = data;
+        } else if (myNPCs[id] && !closeFromNPC) {
+            delete myNPCs[id];
+            if (myNPCs[id].handle) DeleteEntity(myNPCs[id].handle);
+        }
+    }
+}
+
 zFramework.Core.NPC.Initialize = function() {
     setInterval(() => {
-        const { getLocation } = zFramework.LocalPlayer;
-    
-        for (const [id, data] of Object.entries(NPCs)) {
-            const closeFromNPC = zFramework.Functions.GetDistanceByCoords(getLocation(), data.pos) < 30;
-
-            if (!myNPCs[id] && closeFromNPC) {
-                CreateNPC(data);
-                myNPCs[id] = data;
-            } else if (myNPCs[id] && !closeFromNPC) {
-                delete myNPCs[id];
-                if (myNPCs[id].handle) DeleteEntity(myNPCs[id].handle);
-            }
-        }
+        const localPlayer = zFramework.LocalPlayer;
+        this.Thread(localPlayer);
     }, 2000);
 }

@@ -4,7 +4,7 @@ item = {
   name: "Vêtement",
   weight: 0.1,
   onUse: "clothItem",
-  keep: true,
+  keep: true
 };
 zFramework.Core.Items.Register(item);
 
@@ -13,7 +13,7 @@ item = {
   price: 2,
   weight: 0.05,
   onUse: "idItem",
-  keep: true,
+  keep: true
 };
 zFramework.Core.Items.Register(item);
 
@@ -22,6 +22,13 @@ item = {
   price: 2,
   weight: 0.05,
   onUse: "idItem",
-  keep: true,
+  keep: true
+};
+zFramework.Core.Items.Register(item);
+
+item = {
+  name: "GPS",
+  price: 60,
+  weight: 0.2
 };
 zFramework.Core.Items.Register(item);

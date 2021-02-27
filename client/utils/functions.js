@@ -22,31 +22,6 @@ zFramework.Functions.GetEntityLocation = (entity) => {
 	return new Vector3(GetEntityCoords(entity)[0].toFixed(2), GetEntityCoords(entity)[1].toFixed(2), GetEntityCoords(entity)[2].toFixed(2));
 }
 
-zFramework.Functions.DrawText3D = function(x, y, z, text, size, scale) {
-	const ihKb = size || 7;
-
-    size = this.GetDistanceByCoords(new Vector3(GetGameplayCamCoords()[0], GetGameplayCamCoords()[1], GetGameplayCamCoords()[2]), { x, y, z });
-
-	const textDistance = this.GetDistanceByCoords(zFramework.LocalPlayer.getLocation(), { x, y, z }) - 1.65;
-    const DHPxI = ((1 / size) * (ihKb * .7)) * (1 / GetGameplayCamFov()) * 100;
-	let dx = 255;
-
-    if (textDistance < ihKb) dx = Math.floor(255 * ((ihKb - textDistance) / ihKb));
-    else if (textDistance >= ihKb) dx = 0;
-
-    dx = scale || dx;
-
-	SetTextFont(0);
-    SetTextScale(0.0 * DHPxI, .1 * DHPxI);
-    SetTextColour(255, 255, 255, Math.max(0, Math.min(255, dx)));
-    SetTextCentre(1);
-    SetDrawOrigin(x, y, z, 0);
-    SetTextEntry("STRING");
-    AddTextComponentString(text);
-    DrawText(0.0, 0.0);
-    ClearDrawOrigin();
-}
-
 zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
 	const timeout = 0;
 	AddTextEntry('FMMC_KEY_TIP8', TextEntry);

@@ -161,6 +161,20 @@ export default class CLocalPlayer {
     }
 
     /**
+    * @param {Boolean} toggle
+    */
+    set spectateMode(toggle) {
+        this._spectateMode = toggle;
+    }
+
+    /**
+    * @param {Boolean} toggle
+    */
+    set cinemaMode(toggle) {
+        this._cinemaMode = toggle;
+    }
+
+    /**
     * @param {Object} job
     */
     set job(job) {
@@ -244,6 +258,14 @@ export default class CLocalPlayer {
 
     get ko() {
         return this._ko;
+    }
+
+    get spectateMode() {
+        return this._spectateMode;
+    }
+
+    get cinemaMode() {
+        return this._cinemaMode;
     }
 
     get level() {

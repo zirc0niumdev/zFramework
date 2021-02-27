@@ -12,6 +12,7 @@ zFramework.Modules.List = {
 
 zFramework.Core.List = {
 	CharacterCreator: false,
+	HUD: true,
 	NPC: true,
 	Inventory: true,
 	Needs: true,

@@ -25,7 +25,7 @@ zFramework.Database.Query = (q, args) => {
 				resolve(result);
 			});
 		});
-	} catch (err) {
+	} catch(err) {
 		console.log(err);
 	}
 }

@@ -1,5 +1,3 @@
-
-
 zFramework.Core.Needs.Initialize = function() {
     setInterval(() => {
         const localPlayer = zFramework.LocalPlayer;
@@ -19,10 +17,10 @@ zFramework.Core.Needs.Think = function() {
     if (!zFramework.LocalPlayer.cinemaMode) {
         const { hunger, thirst } = zFramework.LocalPlayer.needs;
         
-        DrawNeedsBar(0.016 - .001, 0.792 - 0.015, 0.14, .014, [247, 197, 59, 75]);
-        DrawNeedsBar(0.016 - .001, 0.792 - 0.015, (hunger / 100) * .14, .014, [247, 197, 59, 155]);
-        DrawNeedsBar(0.016 - .001, 0.792, .14, .014, [31, 162, 255, 75]);
-        DrawNeedsBar(0.016 - .001, 0.792, (thirst / 100) * .14, .014, [31, 162, 255, 155]);
+        DrawNeedsBar(0.016 - .001, this.Y - 0.015, 0.14, .014, [247, 197, 59, 75]);
+        DrawNeedsBar(0.016 - .001, this.Y - 0.015, (hunger / 100) * .14, .014, [247, 197, 59, 155]);
+        DrawNeedsBar(0.016 - .001, this.Y, .14, .014, [31, 162, 255, 75]);
+        DrawNeedsBar(0.016 - .001, this.Y, (thirst / 100) * .14, .014, [31, 162, 255, 155]);
     }
 }
 

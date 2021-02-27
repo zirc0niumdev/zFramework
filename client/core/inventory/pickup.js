@@ -102,7 +102,7 @@ zFramework.Core.Inventory.PickupThread = function() {
 
                 const objPos = object.handle && zFramework.Functions.GetEntityLocation(object.handle) || object.pos;
                 if (IsPedOnFoot(pedId) && zFramework.Functions.GetDistanceByCoords(objPos, playerPos) < 2) {
-                    zFramework.Functions.DrawText3D(objPos.x, objPos.y, objPos.z + 0.25, "~b~[E]~s~ pour ramasser", 6);
+                    Draw3DText(objPos.x, objPos.y, objPos.z + 0.25, "~b~[E]~s~ pour ramasser", 6);
 
                     if (zFramework.Functions.GetDistanceByCoords(objPos, playerPos) < 1.2) {
                         DisableControlAction(0, 51, true);
