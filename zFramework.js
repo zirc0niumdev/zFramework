@@ -8,11 +8,14 @@ zFramework.Modules.List = {
 	Discord: true,
 	Whitelist: true,
 	Ban: true
-}
+};
 
 zFramework.Core.List = {
-    Inventory: true,
-    Needs: true
+	CharacterCreator: false,
+	NPC: true,
+	Inventory: true,
+	Needs: true,
+	Bank: true
 };
 
 if (IsDuplicityVersion()) {

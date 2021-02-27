@@ -323,11 +323,8 @@ export default class CLocalPlayer {
     onInitialized = () => {
         this.applyDefaultOutfit();
 
-        if (!this._identity && !this._skin) {
-            emit('Client.OpenCharacterCreator');
-        } else {
-            this.loadSkin();
-        }
+        if (!this._identity && !this._skin) emit('Client.OpenCharacterCreator');
+        else this.loadSkin();
 
         this.tick();
         this.utils();

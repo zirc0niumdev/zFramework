@@ -1,4 +1,4 @@
-import Vector3 from "../shared/class/CVector3";
+import Vector3 from "../../shared/class/CVector3";
 
 global.serverEvent = (eventName, ...args) => emitNet(eventName, ...args);
 

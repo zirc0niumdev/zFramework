@@ -1,4 +1,4 @@
-import CCommands from './class/CCommands.js';
+import CCommands from '../class/CCommands.js';
 
 new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     const car = args[0];
@@ -15,7 +15,7 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     }
 
     SetPedIntoVehicle(player.pedId, veh, -1);
-
+    
     player.notify(`~b~${car}~w~ spawn !`);
 }, { help: "haha", arguments: { name: "vehicle name", help: "hahad" } }, true);
 
