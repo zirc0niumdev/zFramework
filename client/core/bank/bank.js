@@ -1,7 +1,6 @@
 import * as NativeUI from "../../class/menu/nativeui.js";
 
 zFramework.Core.Bank.RegisterMenu = () => {
-    // Simple menu with default banner
     const menu = new NativeUI.Menu("Bank", "aaaaa", new NativeUI.Point(50, 50));
     const buyCardItem = new NativeUI.UIMenuItem("Acheter une carte bancaire", "aaaaaaaaa");
     const identityItem = new NativeUI.UIMenuItem("Sortir de l'argent", "aaaaaaaaa");
