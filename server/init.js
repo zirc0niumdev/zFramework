@@ -101,6 +101,7 @@ onNet('Server.GeneratePlayer', async () => {
 
 onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
+	console.log(`[${global.source}] ${player.name} spawned!`);
 
 	player.setLocation(player.spawnLocation);
 
@@ -121,14 +122,7 @@ onNet("Server.onPlayerSpawned", async () => {
 		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 
 	player.initialized = true;
-
-	console.log(`[${global.source}] ${player.name} spawned!`);
 });
-
-RegisterCommand("save", async () => {
-	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-	player.savePlayer();
-})
 
 on("playerDropped", async reason => {
 	console.log(`[${global.source}] ${GetPlayerName(global.source)} disconnected - Reason: ${reason}`);

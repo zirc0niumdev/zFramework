@@ -78,7 +78,7 @@ zFramework.Functions.GetJsonConfig = (varName, inValue) => {
 zFramework.Functions.RequestModel = model => {
 	model = GetHashKey(model);
 	return new Promise(async resolve => {
-		if (!IsModelInCdimage(model) || !IsModelValid(model)) reject(false);
+		if (!IsModelInCdimage(model) || !IsModelValid(model)) reject(console.error("Model invalide."));
 		
 		RequestModel(model);
 		while (!HasModelLoaded(model))
@@ -282,19 +282,14 @@ onNet('Client.ShowId', (type, card) => {
 });
 
 
-zFramework.Functions.SetModel = function(model) {
-	return new Promise(async (resolve, reject) => {
-		await this.RequestModel(model)
-		.then(hasLoaded => {
-			if (!hasLoaded) return reject(console.error("Model invalid."));
-			if (hasLoaded) {
-				SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
-				zFramework.LocalPlayer.model = model;
-
-				resolve();
-			}
-		});
-	})
+zFramework.Functions.SetModel = async function(model) {
+	await this.RequestModel(model)
+	.then(hasLoaded => {
+		if (hasLoaded) {
+			SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
+			zFramework.LocalPlayer.model = model;
+		}
+	});
 };
 
 onNet("Client.SetModel", zFramework.Functions.SetModel);

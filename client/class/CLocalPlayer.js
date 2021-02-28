@@ -346,12 +346,9 @@ export default class CLocalPlayer {
 
         this.tick();
         this.utils();
-    }
-
-    // Is Ready To Play
-    onReady = () => {
-	    zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
+        
         PlaySoundFrontend(-1, "CHARACTER_SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
+	    zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
 
     isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
@@ -391,8 +388,6 @@ export default class CLocalPlayer {
         SetPedHeadOverlayColor(this._pedId, 5, 2, parseInt(this._skin.colors.blushColor), 0);
         SetPedHeadOverlayColor(this._pedId, 8, 2, parseInt(this._skin.colors.lipstickColor), 0);
         SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
-        
-        this.onReady();
     }
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
