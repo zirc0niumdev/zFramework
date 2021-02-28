@@ -86,8 +86,8 @@ onNet('Server.GeneratePlayer', async () => {
 			playerNeeds: res[0] && JSON.parse(res[0].needs) || { hunger: 100, thirst: 100, health: 100 },
 			licenseId: res[0] && res[0].license || identifiers.license,
 			discordId: res[0] && res[0].discord || identifiers.discord,
-			dead: (res[0] && res[0].dead) || false,
-			firstSpawn: (res[0] && false) || true,
+			dead: res[0] && res[0].dead || false,
+			firstSpawn: !res[0] && true || false,
 			playerSkin: res[0] && JSON.parse(res[0].skin) || null,
 			playerIdentity: res[0] && JSON.parse(res[0].identity) || null
 		}

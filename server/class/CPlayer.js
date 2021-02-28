@@ -341,7 +341,7 @@ export default class CPlayer {
         if (!this.canSave()) return;
 
         let playerData = [this._money, this._dirtyMoney, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
-        console.log(this._firstSpawn);
+
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin, this._uuid));
             return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
