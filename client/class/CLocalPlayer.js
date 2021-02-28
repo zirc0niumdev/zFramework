@@ -28,7 +28,7 @@ export default class CLocalPlayer {
         this._cinemaMode     = false;
         this._initialized    = false;
 
-        this.spawnPlayer();
+        this.onSpawned();
     }
     
     // Setters
@@ -60,7 +60,7 @@ export default class CLocalPlayer {
     */
     set model(name) {
         this._model = name;
-        this.setPlayerModel(this._model);
+        this._pedId = PlayerPedId();
     }
 
     /**
@@ -317,36 +317,32 @@ export default class CLocalPlayer {
     }
 
     //Functions
-    spawnPlayer = async () => {
-        await Delay(2500); // need to find an alternative
-        exports.spawnmanager.spawnPlayer({
-            x: this._spawnLocation.x,
-            y: this._spawnLocation.y,
-            z: this._spawnLocation.z,
-            heading: this._spawnLocation.heading,
-            model: GetHashKey(this._model)
-        });
+    onSpawned = async () => {
+        await zFramework.Functions.SetModel(this._model);
+
+        for (let i = 1; i <= 15; i++) EnableDispatchService(i, false);
+        DisablePlayerVehicleRewards(this._pedId);
+        N_0x170f541e1cadd1de(false); // Related to displaying cash on the HUD
+        NetworkSetFriendlyFireOption(true); 
+        SetPoliceIgnorePlayer(this._pedId, true);
+        SetMaxWantedLevel(0);
+        SetCreateRandomCops(false);
+        SetCreateRandomCopsOnScenarios(false);
+        SetCreateRandomCopsNotOnScenarios(false);
+    
+        zFramework.Modules.Initialize();
+        zFramework.Core.Initialize();
+        
+        serverEvent("Server.onPlayerSpawned");
     }
 
-    setPlayerModel = async (model) => {
-        await zFramework.Functions.RequestModel(model)
-        .then(hasLoaded => {
-            if (hasLoaded) {
-                SetPlayerModel(this._id, GetHashKey(model));
-                this._pedId = PlayerPedId();
-
-                emit('Client.OnPlayerModelChanged', GetHashKey(model));
-            }
-        });
-    }
-
-    isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
-
-    onInitialized = () => {
+    onInitialized = async () => {
         this.applyDefaultOutfit();
 
         if (!this._identity && !this._skin) emit('Client.OpenCharacterCreator');
         else this.loadSkin();
+
+        DoScreenFadeIn(2000);
 
         this.tick();
         this.utils();
@@ -354,9 +350,11 @@ export default class CLocalPlayer {
 
     // Is Ready To Play
     onReady = () => {
-        // Start HUD
 	    zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
+        PlaySoundFrontend(-1, "CHARACTER_SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
     }
+
+    isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
 
     applyDefaultOutfit = () => {
         SetPedDefaultComponentVariation(this._pedId);

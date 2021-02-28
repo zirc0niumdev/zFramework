@@ -35,8 +35,10 @@ export default class CPlayer {
     */
     set model(name) {
         this._model = name;
+        this._pedId = GetPlayerPed(this._serverId);
 
         this.clientEvent('Client.UpdateVar', "model", this._model);
+        this.clientEvent('Client.OnPlayerModelChanged', this._model);
     }
 
     /**
@@ -63,7 +65,6 @@ export default class CPlayer {
     set skin(data) {
         this._skin = data;
 
-        this.clientEvent('Client.UpdateSkin', this._skin);
         this.clientEvent('Client.UpdateVar', "skin", this._skin);
     }
 
@@ -321,7 +322,10 @@ export default class CPlayer {
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
-    setLocation = (location) => SetEntityCoords(this._pedId, location.x, location.y, location.z);
+    setLocation = (location) => {
+        SetEntityCoords(this._pedId, location.x, location.y, location.z)
+        if (location.heading || location.h) SetEntityHeading(this._pedId, location.heading);
+    };
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
@@ -337,6 +341,7 @@ export default class CPlayer {
         if (!this.canSave()) return;
 
         let playerData = [this._money, this._dirtyMoney, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
+        console.log(this._firstSpawn);
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin, this._uuid));
             return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {

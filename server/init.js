@@ -86,11 +86,12 @@ onNet('Server.GeneratePlayer', async () => {
 			playerNeeds: res[0] && JSON.parse(res[0].needs) || { hunger: 100, thirst: 100, health: 100 },
 			licenseId: res[0] && res[0].license || identifiers.license,
 			discordId: res[0] && res[0].discord || identifiers.discord,
-			dead: res[0] && res[0].dead || false,
-			firstSpawn: res[0] && false || true,
+			dead: (res[0] && res[0].dead) || false,
+			firstSpawn: (res[0] && false) || true,
 			playerSkin: res[0] && JSON.parse(res[0].skin) || null,
 			playerIdentity: res[0] && JSON.parse(res[0].identity) || null
 		}
+
 		console.log("passed tempPlayerData");
 
 		zFramework.Players[playerId] = new CPlayer(tempPlayerData);	
@@ -100,13 +101,14 @@ onNet('Server.GeneratePlayer', async () => {
 
 onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-	console.log(`[${global.source}] ${player.name} spawned!`);
+
+	player.setLocation(player.spawnLocation);
 
 	if (player.firstSpawn)
 	{
 		player.addItem("Pain", 4);
 		player.addItem("Eau de source", 8);
-		//player.addItem("Carte d'identité", 1, { identity: player.identity, uid: "164646465465", exp: zFramework.Functions.GenerateExpDate() });
+		// player.addItem("Carte d'identité", 1, { identity: player.identity, uid: "164646465465", exp: zFramework.Functions.GenerateExpDate() });
 		// add telephone
 	}
 
@@ -119,7 +121,14 @@ onNet("Server.onPlayerSpawned", async () => {
 		player.clientEvent('chat:addSuggestion', `/${command}`, zFramework.Commands[command].help, zFramework.Commands[command].arguments);
 
 	player.initialized = true;
+
+	console.log(`[${global.source}] ${player.name} spawned!`);
 });
+
+RegisterCommand("save", async () => {
+	const player = await zFramework.Functions.GetPlayerFromId(global.source);
+	player.savePlayer();
+})
 
 on("playerDropped", async reason => {
 	console.log(`[${global.source}] ${GetPlayerName(global.source)} disconnected - Reason: ${reason}`);

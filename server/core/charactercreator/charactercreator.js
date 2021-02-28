@@ -1,10 +1,8 @@
 onNet("Server.ChangeGender", async genderIndex => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
+    const genderSkin = genderIndex == 1 && "mp_f_freemode_01" || "mp_m_freemode_01";
 
-    let genderSkin = "mp_m_freemode_01";
-    if (genderIndex == 1) genderSkin = "mp_f_freemode_01";
-
-    player.model = genderSkin;
+    player.clientEvent("Client.SetModel", genderSkin);
 });
 
 onNet("Server.SaveCharacter", async data => {

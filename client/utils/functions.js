@@ -77,18 +77,15 @@ zFramework.Functions.GetJsonConfig = (varName, inValue) => {
 
 zFramework.Functions.RequestModel = model => {
 	model = GetHashKey(model);
-	return new Promise(resolve => {
-		if (!IsModelInCdimage(model) || !IsModelValid(model)) resolve(false);
+	return new Promise(async resolve => {
+		if (!IsModelInCdimage(model) || !IsModelValid(model)) reject(false);
 		
 		RequestModel(model);
-		const start = GetGameTimer();
-		const interval = setTick(() => {
-			if (HasModelLoaded(model) || GetGameTimer() - start >= 1000) {
-				clearTick(interval);
-				SetModelAsNoLongerNeeded(model);
-				resolve(HasModelLoaded(model));
-		  	}
-		});
+		while (!HasModelLoaded(model))
+			await Delay(150);
+
+		SetModelAsNoLongerNeeded(model);
+		resolve(HasModelLoaded(model));
 	});
 };
 
@@ -283,3 +280,21 @@ onNet('Client.ShowId', (type, card) => {
 
 	TriggerEvent('Client.ToggleNui', data);
 });
+
+
+zFramework.Functions.SetModel = function(model) {
+	return new Promise(async (resolve, reject) => {
+		await this.RequestModel(model)
+		.then(hasLoaded => {
+			if (!hasLoaded) return reject(console.error("Model invalid."));
+			if (hasLoaded) {
+				SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
+				zFramework.LocalPlayer.model = model;
+
+				resolve();
+			}
+		});
+	})
+};
+
+onNet("Client.SetModel", zFramework.Functions.SetModel);
