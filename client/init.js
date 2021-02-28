@@ -4,11 +4,8 @@ const waitingForPlayer = setInterval(async () => {
 	while (!NetworkIsPlayerActive(PlayerId()))
 		await Delay(0);
 
-	console.log("DEBUG: PLAYER IS ACTIVE");
 	serverEvent('Server.GeneratePlayer');
-	console.log("DEBUG: STARTED GeneratePlayer EVENT");
 	clearInterval(waitingForPlayer);
-	console.log("DEBUG: CLEARED TICK");
 }, 150);
 
 onNet('Client.CreatePlayer', tempPlayerData => {
