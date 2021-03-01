@@ -6,3 +6,5 @@ zFramework.Core.Bank.NPCs = {
         name: "Patrick"
     }
 };
+
+zFramework.Core.Bank.GenerateUID = playerUUID => `${playerUUID}-${RandomInt(1000, 9000)}-${RandomInt(1000, 9000)}`;

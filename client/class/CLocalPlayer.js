@@ -19,6 +19,7 @@ export default class CLocalPlayer {
         this._identity       = data.playerIdentity;
         this._skin           = data.playerSkin;
         this._dead           = data.dead;
+        this._uuid           = data.playerUUID;
         this._invincible     = false;
         this._invisible      = false;
         this._freeze         = false;
@@ -228,6 +229,10 @@ export default class CLocalPlayer {
         return this._serverId;
     }
 
+    get UUID() {
+        return this._uuid;
+    }
+
     get money() {
         return this._money;
     }
@@ -340,13 +345,18 @@ export default class CLocalPlayer {
         this.applyDefaultOutfit();
 
         if (!this._identity && !this._skin) emit('Client.OpenCharacterCreator');
-        else this.loadSkin();
+        else {
+            this.loadSkin();
+            /// Load Clothes (PUT ON READY IN LOAD CLOTHES!!!)
+        }
 
         DoScreenFadeIn(2000);
 
         this.tick();
         this.utils();
-        
+    }
+
+    onReady = () => {
         PlaySoundFrontend(-1, "CHARACTER_SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
         zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
@@ -388,6 +398,8 @@ export default class CLocalPlayer {
         SetPedHeadOverlayColor(this._pedId, 5, 2, parseInt(this._skin.colors.blushColor), 0);
         SetPedHeadOverlayColor(this._pedId, 8, 2, parseInt(this._skin.colors.lipstickColor), 0);
         SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
+
+        this.onReady();
     }
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));

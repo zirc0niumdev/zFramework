@@ -149,15 +149,15 @@ onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
     if (itemName) {
         const { pedId, inventory } = zFramework.LocalPlayer;
         const item = zFramework.Core.Items.Get(itemName);
+
         if (item && item.ammo) {
             for (const [name, _] of Object.entries(inventory.items)) {
                 const weaponName = zFramework.Functions.GetJsonConfig("weapons", name);
-                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName))) {
-                    console.log("test");
+                if (weaponName && (zFramework.Functions.GetJsonConfig("ammo", name) || "") == itemName && HasPedGotWeapon(pedId, GetHashKey(weaponName)))
                     AddAmmoToPed(pedId, GetHashKey(weaponName), zFramework.Core.Inventory.GetItemAmount(inventory, itemName) || 1);
-                }
+
             }
-        }
+        } else if (item && item.name === "Carte bancaire") zFramework.Core.Bank.FetchCBFromInv();
     }
 });
 
@@ -196,11 +196,11 @@ function formatInventoryForNUI(inv, money, dirtyMoney) {
                     } else {
                         for (const [keyData, _] of Object.entries(itemData)) {
                             const prefix = keyData == "uid" && itemData[keyData];
-                            console.log(keyData, prefix);
+
                             if (prefix) {
                                 if (!itemsTbl[prefix]) itemsTbl[prefix] = { keys: [] };
-    
                                 itemsTbl[prefix].keys.push(itemIndex);
+
                                 added = true;
     
                                 break;

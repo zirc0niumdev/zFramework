@@ -24,8 +24,8 @@ zFramework.Functions.GetEntityLocation = (entity) => {
 
 zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
 	const timeout = 0;
+
 	AddTextEntry('FMMC_KEY_TIP8', TextEntry);
-	
 	return new Promise((resolve, reject) => {
 		DisplayOnscreenKeyboard(false, "FMMC_KEY_TIP8", "", DefaultText, "", "", "", MaxStringLenght);
 		
@@ -35,7 +35,7 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 				ForceCloseTextInputBox()
 
 				clearInterval(timer);
-				reject("timeout");
+				resolve(false);
 			}
 
 			switch (UpdateOnscreenKeyboard()) {
@@ -47,18 +47,18 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 						result = result.trim();
 
 					if (!result || result.length === 0) {
-						reject("empty");
+						resolve(false);
 					} else {
 						resolve(result);
 					}
 					break;
 				case 2:
 					clearInterval(timer);
-					reject("cancelled");
+					resolve(false);
 					break;
 				case 3:
 					clearInterval(timer);
-					reject("keyboard_not_active");
+					resolve(false);
 					break;
 			}
 		}, 100);
@@ -78,7 +78,7 @@ zFramework.Functions.GetJsonConfig = (varName, inValue) => {
 zFramework.Functions.RequestModel = model => {
 	model = GetHashKey(model);
 	return new Promise(async resolve => {
-		if (!IsModelInCdimage(model) || !IsModelValid(model)) reject(console.error("Model invalide."));
+		if (!IsModelInCdimage(model) || !IsModelValid(model)) resolve(false);
 		
 		RequestModel(model);
 		while (!HasModelLoaded(model))
