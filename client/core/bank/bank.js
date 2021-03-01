@@ -4,12 +4,15 @@ let cards = [new NativeUI.ListItem("Aucune")];
 const myCardsItem = new NativeUI.UIMenuListItem("Cartes", "", new NativeUI.ItemsCollection(cards));
 
 zFramework.Core.Bank.FetchCBFromInv = () => {
+    cards = [];
+
     for (const [name, obj] of Object.entries(zFramework.LocalPlayer.inventory.items)) {
-        cards = [];
         if (name === "Carte bancaire") {
             for (const [index, data] of Object.entries(obj)) cards.push(new NativeUI.ListItem(data.name || `CB (${data.uid})`, { index, data }));
         }
     }
+
+    console.log(cards);
 
     if (cards.length == 0) {
         cards = [new NativeUI.ListItem("Aucune")];
