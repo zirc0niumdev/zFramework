@@ -348,7 +348,7 @@ export default class CLocalPlayer {
         this.utils();
         
         PlaySoundFrontend(-1, "CHARACTER_SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
-	    zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
+        zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
 
     isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
