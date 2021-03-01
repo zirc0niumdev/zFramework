@@ -12,8 +12,6 @@ zFramework.Core.Bank.FetchCBFromInv = () => {
         }
     }
 
-    console.log(cards);
-
     if (cards.length == 0) {
         cards = [new NativeUI.ListItem("Aucune")];
         myCardsItem.Enabled = false;

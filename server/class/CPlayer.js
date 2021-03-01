@@ -310,11 +310,7 @@ export default class CPlayer {
         if (!this.inventory.items[name]) return;
 
         // stack management
-        if (typeof(num) === "object") {
-            for (const key of num) {
-                this.inventory.items[name].splice(key, 1);
-            }
-        } else this.inventory.items[name].splice(0, num);
+        this.inventory.items[name].splice(typeof(num) === "object" && num[0] || 0, typeof(num) === "object" && num.length || num);
 
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
