@@ -9,16 +9,19 @@ const mysql = createConnection({
 	database: process.env.DB_DATABASE
 });
 
-const connect = mysql.connect(err => {
-	if (err) return console.error(err);
-  
-	console.log("\x1b[33m[zFramework MySQL] \x1b[32mConnected to Database!\x1b[37m");
-	zFramework.Functions.onReady();
-});
-
-mysql.on('error', err => {
-	if (err.code === 'PROTOCOL_CONNECTION_LOST') connect();
-});
+const recreateConnection = () => {
+	mysql.connect(err => {
+		if (err) return console.error(err);
+	  
+		console.log("\x1b[33m[zFramework MySQL] \x1b[32mConnected to Database!\x1b[37m");
+		zFramework.Functions.onReady();
+	});
+	
+	mysql.on('error', err => {
+		if (err.code === 'PROTOCOL_CONNECTION_LOST') recreateConnection();
+	});
+}
+recreateConnection();
 
 zFramework.Database.Query = (q, args) => {
 	try {

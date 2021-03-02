@@ -3,15 +3,12 @@ zFramework.Core.Inventory.Pickups = {};
 onNet("Server.Pickup.Management", async (action, item) => {
     const player = await zFramework.Functions.GetPlayerFromId(global.source);
 
-    console.log(item.amount);
-
     switch (action) {
         case 1:
             const model = zFramework.Core.Inventory.DefaultPickupModel;
             let datas = {};
 
             for (const num of item.amount) {
-                console.log(num);
                 const data = player.getItemData(item.name, num);
                 datas[num] = data;
             }
@@ -26,8 +23,6 @@ onNet("Server.Pickup.Management", async (action, item) => {
                 model,
                 value: { name: item.name, data: datas }
             };
-
-            console.log(datas);
             
             emitNet('Client.Pickup.Management', -1, action, { id, model, pos: item.pos });
             player.notify(`~g~Vous avez laché ~b~${item.amount.length}x ${item.name}~s~.`);
