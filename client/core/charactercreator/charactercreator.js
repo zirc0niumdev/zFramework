@@ -113,6 +113,7 @@ creatorMainMenu.ListChange.on((item, listIndex) => {
     if (item == genderItem) {
         currentGender = listIndex;
         serverEvent("Server.ChangeGender", listIndex);
+        refreshMenu();
     } else if (item == angleItem) {
         SetEntityHeading(zFramework.LocalPlayer.pedId, parseFloat(angleItem.SelectedValue));
         ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
@@ -126,6 +127,8 @@ on('Client.OnPlayerModelChanged', () => {
     creatorHairMenu.Clear();
     fillHairMenu();
     creatorHairMenu.RefreshIndex();
+
+    zFramework.LocalPlayer.applyDefaultOutfit();
 });
 
 creatorMainMenu.ItemSelect.on((item, index) => {
@@ -173,7 +176,7 @@ creatorMainMenu.ItemSelect.on((item, index) => {
 
         creatorMainMenu.Close();
         DeleteCamera();
-        zFramework.LocalPlayer.freeze = false;
+        
         zFramework.LocalPlayer.invincible = false;
         zFramework.LocalPlayer.blockInput = false;
         zFramework.LocalPlayer.onReady();
@@ -417,9 +420,7 @@ let creatorCamera = null;
 function CreateCamera() {
     if (creatorCamera) return;
 
-    if (!creatorCamera) {
-        creatorCamera = CreateCam('DEFAULT_SCRIPTED_CAMERA', true);
-    }
+    if (!creatorCamera) creatorCamera = CreateCam('DEFAULT_SCRIPTED_CAMERA', true);
 
     SetCamActive(creatorCamera, true);
     RenderScriptCams(true, true, 500, true, true);
@@ -446,9 +447,9 @@ function CreateCamera() {
 
         let angleToLook = angleItem.SelectedValue - 140.0;
         if (angleToLook > 360)
-            angleToLook = angleToLook - 360;
+            angleToLook -= 360;
         else if (angleToLook < 0)
-		    angleToLook = angleToLook + 360;
+		    angleToLook += 360;
 
         angleToLook = angleToLook * Math.PI / 180.0;
         const thetaToLook = {
@@ -494,7 +495,7 @@ on('Client.OpenCharacterCreator', () => {
         creatorMainMenu.Open();
         refreshMenu();
         CreateCamera();
-        zFramework.LocalPlayer.freeze = true;
+        
         zFramework.LocalPlayer.invincible = true;
         zFramework.LocalPlayer.blockInput = true;
     }
