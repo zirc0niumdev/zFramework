@@ -381,7 +381,6 @@ export default class CLocalPlayer {
         SetPedComponentVariation(this._pedId, 8, 15, 0, 2);
         SetPedComponentVariation(this._pedId, 11, 15, 0, 2);
 
-        if (!this._identity) return emit('Client.OpenCharacterCreator');
         if (this._model == "mp_m_freemode_01") {
             SetPedComponentVariation(this._pedId, 4, 21, 0, 2);
             SetPedComponentVariation(this._pedId, 6, 34, 0, 2);
