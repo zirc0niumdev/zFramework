@@ -382,10 +382,10 @@ export default class CLocalPlayer {
         SetPedComponentVariation(this._pedId, 11, 15, 0, 2);
 
         if (!this._identity) return emit('Client.OpenCharacterCreator');
-        if (this._identity.sex == "Homme") {
+        if (this._model == "mp_m_freemode_01") {
             SetPedComponentVariation(this._pedId, 4, 21, 0, 2);
             SetPedComponentVariation(this._pedId, 6, 34, 0, 2);
-        } else if (this._identity.sex == "Femme") {
+        } else if (this._model == "mp_f_freemode_01") {
             SetPedComponentVariation(this._pedId, 4, 10, 0, 2);
             SetPedComponentVariation(this._pedId, 6, 35, 0, 2);
         }
