@@ -9,7 +9,7 @@ const mysql = createConnection({
 	database: process.env.DB_DATABASE
 });
 
-const recreateConnection = () => {
+const connect = () => {
 	mysql.connect(err => {
 		if (err) return console.error(err);
 	  
@@ -18,10 +18,10 @@ const recreateConnection = () => {
 	});
 	
 	mysql.on('error', err => {
-		if (err.code === 'PROTOCOL_CONNECTION_LOST') recreateConnection();
+		if (err.code === 'PROTOCOL_CONNECTION_LOST') connect();
 	});
 }
-recreateConnection();
+connect();
 
 zFramework.Database.Query = (q, args) => {
 	try {
