@@ -193,7 +193,7 @@ export default class CPlayer {
         return this._bank;
     }
 
-    get uuid() {
+    get UUID() {
         return this._uuid;
     }
 
