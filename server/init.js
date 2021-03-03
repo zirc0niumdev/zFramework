@@ -56,16 +56,10 @@ on("playerConnecting", async (_, __, deferrals) => {
 });
 
 onNet('Server.GeneratePlayer', async () => {
-	console.log("GeneratePlayer STARTING");
 	const playerId = global.source;
-	console.log("PLAYERID " + playerId);
 	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
 
-	console.log("passed zFramework.Players");
 	const identifiers = zFramework.Functions.GetIdentifiersFromId(playerId);
-	console.log(identifiers);
-	console.log("passed identifiers");
-
 	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license)
 	.then(async res => {
 		const tempPlayerData = {
@@ -93,10 +87,7 @@ onNet('Server.GeneratePlayer', async () => {
 			playerIdentity: res[0] && JSON.parse(res[0].identity) || null
 		}
 
-		console.log("passed tempPlayerData");
-
 		zFramework.Players[playerId] = new CPlayer(tempPlayerData);	
-		console.log("passed CPlayer");
 	});
 });
 
