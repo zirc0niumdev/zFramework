@@ -177,6 +177,7 @@ creatorMainMenu.ItemSelect.on((item, index) => {
         creatorMainMenu.Close();
         DeleteCamera();
         
+        zFramework.LocalPlayer.freeze = false;
         zFramework.LocalPlayer.invincible = false;
         zFramework.LocalPlayer.blockInput = false;
         zFramework.LocalPlayer.onReady();
@@ -489,14 +490,19 @@ function refreshMenu() {
     }
 }
 
-on('Client.OpenCharacterCreator', () => {
+on('Client.OpenCharacterCreator', async () => {
     if (!creatorMainMenu.Visible) {
-        ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
         creatorMainMenu.Open();
         refreshMenu();
-        CreateCamera();
-        
+
         zFramework.LocalPlayer.invincible = true;
         zFramework.LocalPlayer.blockInput = true;
+
+        await Delay(1000);
+
+        CreateCamera();
+        
+        ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
+        zFramework.LocalPlayer.freeze = true;
     }
 });
