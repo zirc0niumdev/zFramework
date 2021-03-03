@@ -157,9 +157,8 @@ export default class CLocalPlayer {
                 DisableControlAction(2, 44, true);
                 DisableControlAction(0, 25, true);
                 DisableControlAction(0, 24, true);
-            } else {
-                clearTick(blockInputTick);
-            }
+                DisableControlAction(0, 140, true);
+            } else clearTick(blockInputTick);
         });
     }
 

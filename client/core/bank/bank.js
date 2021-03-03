@@ -59,7 +59,7 @@ function registerCentralMenu() {
             const check = checkPIN(pin);
             if (!check) return;
             
-            serverEvent("Server.CreateCard", pin);
+            serverEvent("Server.Bank.CreateCard", pin);
         }
     });
 
@@ -76,17 +76,20 @@ function registerCentralMenu() {
             const check = checkPIN(pin);
             if (!check) return;
 
-            serverEvent("Server.UpdateCard", myCardsItem.SelectedItem.Data.index, pin);
+            serverEvent("Server.Bank.UpdateCard", myCardsItem.SelectedItem.Data.index, pin);
             zFramework.Functions.Notify(`Votre nouveau PIN est: ~g~${pin}~w~.`);
             myCardsMenu.GoBack();
         } else if (item == blockCardItem) {
             if (owner.uuid != zFramework.LocalPlayer.UUID) return zFramework.Functions.Notify("~r~Seul le propriétaire peut bloquer la carte.");
             
-            serverEvent("Server.UpdateCard", myCardsItem.SelectedItem.Data.index, true);
+            serverEvent("Server.Bank.UpdateCard", myCardsItem.SelectedItem.Data.index, true);
             zFramework.Functions.Notify(`~r~Vous avez bloqué la carte ${myCardsItem.SelectedItem.DisplayText}`);
             myCardsMenu.GoBack();
         }
     });
+
+    centralMenu.MenuOpen.on(() => zFramework.LocalPlayer.blockInput = true);
+    centralMenu.MenuClose.on(() => zFramework.LocalPlayer.blockInput = false);
 }
 
 zFramework.Core.Bank.OpenBank = () => centralMenu.Open();
@@ -110,6 +113,34 @@ function registerATMMenu() {
     atmMenu.AddItems([retraitItem, depotItem, transfertItem]);
     
     zFramework.Core.Bank.SetSolde();
+
+    atmMenu.ItemSelect.on(async (item, index) => {
+        if (item == retraitItem) {
+            const amount = await zFramework.Functions.KeyboardInput("Entrez un montant à retirer", "", 8);
+            if (!amount) return;
+            if (zFramework.LocalPlayer.bank - amount < 0) return zFramework.Functions.Notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
+            
+            serverEvent("Server.Bank.UpdateSolde", 1, amount);
+        } else if (item == depotItem) {
+            const amount = await zFramework.Functions.KeyboardInput("Entrez un montant à déposer", "", 8);
+            if (!amount) return;
+            if (zFramework.LocalPlayer.money - amount < 0) return zFramework.Functions.Notify("~r~Vous n'avez pas assez d'argent.");
+            
+            serverEvent("Server.Bank.UpdateSolde", 2, amount);
+        } else if (item == transfertItem) {
+            const amount = await zFramework.Functions.KeyboardInput("Entrez un montant à transférer", "", 8);
+            if (!amount) return;
+            if (zFramework.LocalPlayer.bank - amount < 0) return zFramework.Functions.Notify("~r~Vous n'avez pas assez d'argent.");
+            const uuid = await zFramework.Functions.KeyboardInput("Entrez un numéro de compte", "", 13);
+            if (!uuid) return;
+            
+            serverEvent("Server.Bank.UpdateSolde", 3, amount, uuid);
+        }
+    });
+
+    
+    atmMenu.MenuOpen.on(() => zFramework.LocalPlayer.blockInput = true);
+    atmMenu.MenuClose.on(() => zFramework.LocalPlayer.blockInput = false);
 }
 
 zFramework.Core.Bank.SetSolde = () => atmMenu.SubTitle = `Solde: ~b~$${zFramework.LocalPlayer.bank}~w~`;
