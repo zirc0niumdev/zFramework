@@ -315,7 +315,7 @@ export default class CPlayer {
         if (this.inventory.items[name].length <= 0) delete this.inventory.items[name];
 
         // weight management
-        if (item.weight) this._inventory.weight -= (item.weight || zFramework.Core.Inventory.DefaultWeight) * (typeof(num) === "object" && num.length || num);
+        this._inventory.weight -= (item.weight || zFramework.Core.Inventory.DefaultWeight) * (typeof(num) === "object" && num.length || num);
         
         this.clientEvent('Client.UpdateInventory', this.inventory, name);
     }
