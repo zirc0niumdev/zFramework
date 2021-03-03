@@ -1,31 +1,21 @@
+// https://docs.fivem.net/docs/game-references/blips/
 export default class CBlip {
-    constructor(data) {
-        this._coords = data.coords;
-        this._scale = data.scale;
-        this._color = data.color;
-        this._alpha = data.alpha;
-        this._shortRange = data.shortRange;
-        this._sprite = data.sprite; // https://docs.fivem.net/docs/game-references/blips/
+    constructor(vector3Pos, intSprite, intColor, stringText, boolRoad, floatScale, intDisplay, intAlpha) {
+        const blip = AddBlipForCoord(vector3Pos.x, vector3Pos.y, vector3Pos.z);
+        
+        SetBlipSprite(blip, intSprite);
+        SetBlipAsShortRange(blip, true);
+        if (intColor) SetBlipColour(blip, intColor);
+        if (floatScale) SetBlipScale(blip, floatScale);
+        if (boolRoad) SetBlipRoute(blip, boolRoad);
+        if (intDisplay) SetBlipDisplay(blip, intDisplay);
+        if (intAlpha) SetBlipAlpha(blip, intAlpha);
+        if (stringText && !intDisplay || intDisplay != 8) {
+            BeginTextCommandSetBlipName("STRING");
+            AddTextComponentString(stringText);
+            EndTextCommandSetBlipName(blip);
+        }
 
-        const blip = AddBlipForCoord(this._coords);
-        this._blip = {
-            blip,
-            data: {
-                coords: this._coords,
-                scale: this._scale,
-                color: this._color,
-                alpha: this._alpha,
-                shortRange: this._shortRange,
-                sprite: this._sprite,
-            }
-        };
-
-        SetBlipAlpha(blip, this._alpha);
-        SetBlipAsShortRange(blip, this._shortRange);
-        SetBlipColour(blip, this._color);
-        SetBlipScale(blip, this._scale);
-        SetBlipSprite(blip, this._sprite);
-
-        return this._blip;
+        return blip;
     }
 }
