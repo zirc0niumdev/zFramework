@@ -47,7 +47,7 @@ zFramework.Functions.GenerateExpDate = () => {
     return `${dd}/${mm}/${yyyy}`;
 }
 
-zFramework.Functions.GenerateUUID = () => `667${Date.now() + Math.floor(Math.random() * 100)}`;
+zFramework.Functions.GenerateUUID = () => `${Date.now() + Math.floor(Math.random() * 100)}`;
 
 onNet("Server.AskId", async (targetId, name, num) => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
