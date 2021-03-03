@@ -9,6 +9,20 @@ zFramework.Functions.GetPlayerFromId = id => {
 	});
 }
 
+zFramework.Functions.GetPlayerFromUuid = uuid => {
+	return new Promise((resolve, reject) => {
+		for (let i=0; i <= zFramework.Players.length; i++) {
+			const player = zFramework.Players[id];
+			if (player.UUID == uuid) {
+				resolve(player);
+				break;
+			}
+		}
+
+		reject(console.error("Can't get player from uuid: " + uuid));
+	});
+}
+
 zFramework.Functions.GetIdentifiersFromId = (id, minimal = false) => {
 	const identifiers = global.getPlayerIdentifiers(id);
 	if (minimal) return identifiers;
