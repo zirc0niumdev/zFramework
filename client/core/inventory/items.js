@@ -27,4 +27,9 @@ onUseFunc["idItem"] = (localPlayer, data, num, amount, item) => {
     serverEvent("Server.AskId", closestPlayer && GetPlayerServerId(closestPlayer) || false, item.name, num);
 };
 
+onUseFunc["cbItem"] = (localPlayer, data, num, amount, item) => {
+    if (zFramework.Core.Bank.IsNearATM(localPlayer))
+        zFramework.Core.Bank.OpenATM(data);
+};
+
 global.GetUseItemFromName = _ => onUseFunc[_];

@@ -1,3 +1,4 @@
+import CBlip from "../../class/CBlip.js";
 import * as NativeUI from "../../class/menu/nativeui.js";
 
 let cards = [new NativeUI.ListItem("Aucune")];
@@ -23,11 +24,11 @@ zFramework.Core.Bank.FetchCBFromInv = () => {
     myCardsItem.Index = 0;
 }
 
-zFramework.Core.Bank.RegisterCentralMenu = () => {
-    const menu = new NativeUI.Menu("Banque centrale", "Menu banque", new NativeUI.Point(50, 50));
+const centralMenu = new NativeUI.Menu("Banque centrale", "Menu banque", new NativeUI.Point(50, 50));
+function registerCentralMenu() {
     const buyCardItem = new NativeUI.UIMenuItem("Demander une nouvelle carte");
 
-    menu.AddItems([myCardsItem, buyCardItem]);
+    centralMenu.AddItems([myCardsItem, buyCardItem]);
 
     const myCardsMenu = new NativeUI.Menu(myCardsItem.Text, "Default", new NativeUI.Point(50, 50));
     const cardInfoItem = new NativeUI.UIMenuItem("Voir les infos");
@@ -36,25 +37,27 @@ zFramework.Core.Bank.RegisterCentralMenu = () => {
 
     myCardsMenu.AddItems([cardInfoItem, changePINItem, blockCardItem]);
 
-    menu.AddSubMenu(myCardsMenu, myCardsItem);
+    centralMenu.AddSubMenu(myCardsMenu, myCardsItem);
 
-    menu.ItemSelect.on(async (item, index) => {
+    centralMenu.ItemSelect.on(async (item, index) => {
         if (item == myCardsItem) {
             myCardsMenu.SubTitle = myCardsItem.SelectedItem.DisplayText;
             const pin = await zFramework.Functions.KeyboardInput(`Entrez le PIN de ${myCardsItem.SelectedItem.DisplayText}`, "", 4);
             if (!pin || pin !== myCardsItem.SelectedItem.Data.data.card.pin) {
                 myCardsMenu.GoBack();
                 return zFramework.Functions.Notify("~r~Le code PIN est incorrect.");
-            } else zFramework.Functions.Notify("~g~Code PIN bon !");
+            }
 
             if (myCardsItem.SelectedItem.Data.data.blocked) {
                 myCardsMenu.GoBack();
                 return zFramework.Functions.Notify("~r~Cette carte est inutilisable car elle à été bloqué par son propriétaire.");
             }
+
+            zFramework.Functions.Notify("~g~Code PIN bon !");
         } else if (item == buyCardItem) {
             const pin = await zFramework.Functions.KeyboardInput("Choisissez un PIN pour votre nouvelle carte", "", 4);
-            if (!pin || pin === "1234" || pin === "0000" || pin === "AAAA") return;
-            if (pin.length < 4) return zFramework.Functions.Notify("~r~Votre PIN doit faire 4 caractères.");
+            const check = checkPIN(pin);
+            if (!check) return;
             
             serverEvent("Server.CreateCard", pin);
         }
@@ -70,9 +73,9 @@ zFramework.Core.Bank.RegisterCentralMenu = () => {
         } else if (item == changePINItem) {
             if (owner.uuid != zFramework.LocalPlayer.UUID) return zFramework.Functions.Notify("~r~Seul le propriétaire peut changer le PIN.");
             const pin = await zFramework.Functions.KeyboardInput("Choisissez un nouveau PIN pour votre carte", "", 4);
-            if (!pin || pin === "1234" || pin === "0000" || pin === "AAAA") return;
-            if (pin.length < 4) return zFramework.Functions.Notify("~r~Votre PIN doit faire 4 caractères.");
-            
+            const check = checkPIN(pin);
+            if (!check) return;
+
             serverEvent("Server.UpdateCard", myCardsItem.SelectedItem.Data.index, pin);
             zFramework.Functions.Notify(`Votre nouveau PIN est: ~g~${pin}~w~.`);
             myCardsMenu.GoBack();
@@ -84,10 +87,52 @@ zFramework.Core.Bank.RegisterCentralMenu = () => {
             myCardsMenu.GoBack();
         }
     });
+}
 
-    RegisterCommand("bank", () => {
-        menu.Open();
-    })
+zFramework.Core.Bank.OpenBank = () => centralMenu.Open();
+
+function checkPIN(pin) {
+    if (!pin || pin === "1234" || pin === "0000" || pin === "AAAA") return false;
+    if (pin.length < 4) {
+        zFramework.Functions.Notify("~r~Votre PIN doit faire 4 caractères.");
+        return false;
+    }
+
+    return true;
+}
+
+const atmMenu = new NativeUI.Menu("ATM", "Default", new NativeUI.Point(50, 50));
+function registerATMMenu() {
+    const retraitItem = new NativeUI.UIMenuItem("Retrait");
+    const depotItem = new NativeUI.UIMenuItem("Dépot");
+    const transfertItem = new NativeUI.UIMenuItem("Transfert");
+
+    atmMenu.AddItems([retraitItem, depotItem, transfertItem]);
+    
+    zFramework.Core.Bank.SetSolde();
+}
+
+zFramework.Core.Bank.SetSolde = () => atmMenu.SubTitle = `Solde: ~b~$${zFramework.LocalPlayer.bank}~w~`;
+
+zFramework.Core.Bank.OpenATM = async cb => {
+    if (cb.owner.uuid != zFramework.LocalPlayer.UUID) return zFramework.Functions.Notify("~r~Vous n'êtes pas propriétaire de la carte.");
+
+    const pin = await zFramework.Functions.KeyboardInput(`Entrez le PIN de la carte`, "", 4);
+    if (!pin || pin !== cb.card.pin) return zFramework.Functions.Notify("~r~Le code PIN est incorrect.");
+    if (cb.blocked) return zFramework.Functions.Notify("~r~Cette carte est inutilisable car elle à été bloqué par son propriétaire.");
+
+    zFramework.Functions.Notify("~g~Code PIN bon !");
+
+    atmMenu.Open();
+}
+
+zFramework.Core.Bank.IsNearATM = function(player) {
+    for (const pos of this.ATMs) {
+        if (zFramework.Functions.GetDistanceByCoords(player.getLocation(), pos) <= 2.5)
+            return true;
+    }
+
+    return false;
 }
 
 zFramework.Core.Bank.Initialize = function() {
@@ -96,6 +141,20 @@ zFramework.Core.Bank.Initialize = function() {
         zFramework.Core.NPC.Register({ model, name, pos, text: [name] });
     }
 
-    zFramework.Core.Bank.FetchCBFromInv();
-    this.RegisterCentralMenu();
+    for (const pos of this.ATMs)
+        new CBlip(pos, 434, 2, null, null, null, 5);
+
+    this.FetchCBFromInv();
+    registerCentralMenu();
+    registerATMMenu();
+}
+
+zFramework.Core.Bank.Think = function() {
+    for (const [county, npc] of Object.entries(this.NPCs)) {
+        if (zFramework.Functions.GetDistanceByCoords(zFramework.LocalPlayer.getLocation(), npc.pos) <= 4.0) {
+            zFramework.Functions.TopNotify("Appuyez sur ~INPUT_CONTEXT~ pour parler avec le banquier.");
+            if (IsControlJustPressed(0, 51))
+                this.OpenBank();
+        }
+    }
 }

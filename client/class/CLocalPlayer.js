@@ -7,6 +7,7 @@ export default class CLocalPlayer {
         this._pedId          = PlayerPedId();
         this._money          = data.playerMoney;
         this._dirtyMoney     = data.playerDirtyMoney;
+        this._bank           = data.playerBank;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
         this._group          = data.playerGroup;
@@ -54,6 +55,14 @@ export default class CLocalPlayer {
     set dirtyMoney(amount) {
         this._dirtyMoney = amount;
         zFramework.Core.Inventory.OnUpdated();
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set bank(amount) {
+        this._bank = amount;
+        zFramework.Core.Bank.SetSolde();
     }
 
     /**
@@ -239,6 +248,10 @@ export default class CLocalPlayer {
 
     get dirtyMoney() {
         return this._dirtyMoney;
+    }
+
+    get bank() {
+        return this._bank;
     }
 
     get spawnLocation() {

@@ -20,7 +20,7 @@ zFramework.Core.Items.Register(item);
 item = {
   name: "Carte bancaire",
   weight: 0.05,
-  onUse: "idItem",
+  onUse: "cbItem",
   keep: true
 };
 zFramework.Core.Items.Register(item);

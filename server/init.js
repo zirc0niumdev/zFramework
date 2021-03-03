@@ -73,6 +73,7 @@ onNet('Server.GeneratePlayer', async () => {
 			pedId: GetPlayerPed(playerId),
 			playerMoney: res[0] && res[0].money || 250,
 			playerDirtyMoney: res[0] && res[0].dirtyMoney || 0,
+			playerBank: res[0] && res[0].bank || 500,
 			playerUUID: res[0] && res[0].uuid || zFramework.Functions.GenerateUUID(),
 			playerName: GetPlayerName(playerId),
 			spawnLocation: res[0] && JSON.parse(res[0].location) || { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },

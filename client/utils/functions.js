@@ -257,6 +257,14 @@ zFramework.Functions.Notify = (message, color) => {
 
 onNet('Client.Notify', zFramework.Functions.Notify);
 
+zFramework.Functions.TopNotify = (message, beep) => {
+	SetTextComponentFormat("jamyfafi");
+	AddTextComponentString(message);
+	DisplayHelpTextFromStringLabel(0, 0, beep, -1);
+};
+
+onNet('Client.TopNotify', zFramework.Functions.TopNotify);
+
 onNet('Client.ShowId', (type, card) => {
 	const { identity } = card;
 	let data = null;

@@ -7,6 +7,7 @@ export default class CPlayer {
         this._name           = data.playerName;
         this._money          = data.playerMoney;
         this._dirtyMoney     = data.playerDirtyMoney;
+        this._bank           = data.playerBank;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.playerModel;
         this._group          = data.playerGroup;
@@ -57,6 +58,15 @@ export default class CPlayer {
         this._dirtyMoney = amount;
 
         this.clientEvent('Client.UpdateVar', "dirtyMoney", this._dirtyMoney);
+    }
+
+    /**
+    * @param {Number} amount
+    */
+    set bank(amount) {
+        this._bank = amount;
+
+        this.clientEvent('Client.UpdateVar', "bank", this._bank);
     }
 
     /**
@@ -177,6 +187,10 @@ export default class CPlayer {
 
     get dirtyMoney() {
         return this._dirtyMoney;
+    }
+
+    get bank() {
+        return this._bank;
     }
 
     get uuid() {
@@ -340,16 +354,16 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
-        let playerData = [this._money, this._dirtyMoney, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
+        let playerData = [this._money, this._dirtyMoney, this._bank, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
 
         if (this._firstSpawn) {
             playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin), this._uuid);
-            return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
+            return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, bank, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
 				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
 			});
         }
         
-        return await zFramework.Database.Query('UPDATE players SET money = ?, dirtyMoney = ?, model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
+        return await zFramework.Database.Query('UPDATE players SET money = ?, dirtyMoney = ?, bank = ?, model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
             console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
         });
     }
