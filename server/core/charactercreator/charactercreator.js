@@ -7,7 +7,7 @@ onNet("Server.ChangeGender", async genderIndex => {
 
 onNet("Server.SaveCharacter", async data => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    if (player.firstSpawn || player.identity && player.skin) return;
+    if (!player.firstSpawn || player.identity && player.skin) return;
 
     player.identity = data[0];
     player.skin = data[1];
