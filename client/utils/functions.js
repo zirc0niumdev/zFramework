@@ -296,8 +296,9 @@ zFramework.Functions.SetModel = async function(model) {
 		if (hasLoaded) {
 			SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
 			zFramework.LocalPlayer.model = model;
+			emit("Client.OnPlayerModelChanged");
 		}
 	});
 };
 
-onNet("Client.SetModel", zFramework.Functions.SetModel);
+onNet("Client.SetModel", model => zFramework.Functions.SetModel(model));
