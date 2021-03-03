@@ -4,7 +4,7 @@ onNet("Server.Bank.CreateCard", async pin => {
     const data = {
         owner: {
             name: `${player.identity.lastname} ${player.identity.firstname}`,
-            uuid: player.uuid
+            uuid: player.UUID
         },
         card: {
             pin,
@@ -23,7 +23,6 @@ onNet("Server.Bank.CreateCard", async pin => {
 onNet("Server.Bank.UpdateCard", async (num, value) => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
     let item = player.inventory.items["Carte bancaire"][num];
-    console.log(item);
     if (!item) return;
 
     if (typeof(value) === "boolean") item.blocked = value;
