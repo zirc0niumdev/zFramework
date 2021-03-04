@@ -3,29 +3,20 @@ zFramework.Jobs = {}
 const citizen = {
     id: 1,
     name: "Citoyen",
-    salary: 100,
+    salary: 10,
     perks: { Open: true }
 };
 
 zFramework.Jobs[citizen.id] = citizen;
 
-const taxi = {
+const lsms = {
     id: 2,
-    name: "Taxi",
-    salary: 50,
-    perks: { Invoice: true, Open: true }
+    name: "LSMS",
+    salary: 120,
+    perks: { Invoice: true }
 };
 
-zFramework.Jobs[taxi.id] = taxi;
-
-const livreur = {
-    id: 3,
-    name: "Livreur",
-    salary: 50,
-    perks: { Invoice: true, Open: true }
-};
-
-zFramework.Jobs[livreur.id] = livreur;
+zFramework.Jobs[lsms.id] = lsms;
 
 zFramework.Jobs.GetJobFromId = id => {
 	return new Promise((resolve, reject) => {
@@ -38,6 +29,5 @@ zFramework.Jobs.GetJobFromId = id => {
 
 zFramework.Jobs.GetJobNameFromId = async id => {
     const job = await this.GetJobFromId(id);
-
     return job.name;
 }
