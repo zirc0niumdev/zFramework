@@ -121,22 +121,20 @@ zFramework.Functions.PlayAnim = function(anims, time, flag = false, ped, pos) {
 	ped = ped || pedId;
 
 	if (!anims || !anims[0] || anims[0].length < 1) return;
-
-	if (IsPedRunningRagdollTask(ped) || !can || IsEntityPlayingAnim(ped, anims[0], anims[1], 3) || IsPedActiveInScenario(ped) || isInVehicle())
-		return ClearPedTasks(ped);
+	if (IsPedRunningRagdollTask(ped) || !can() || IsEntityPlayingAnim(ped, anims[0], anims[1], 3) || IsPedActiveInScenario(ped) || isInVehicle()) return ClearPedTasks(ped);
 
 	this.ForceAnim(anims, flag, { ped, time, pos });
 }
 
 const animBug = ["WORLD_HUMAN_MUSICIAN", "WORLD_HUMAN_CLIPBOARD"];
 const femaleFix = {
-	["WORLD_HUMAN_BUM_WASH"]: ["amb@world_human_bum_wash@male@high@idle_a", "idle_a"],
-	["WORLD_HUMAN_SIT_UPS"]: ["amb@world_human_sit_ups@male@idle_a", "idle_a"],
-	["WORLD_HUMAN_PUSH_UPS"]: ["amb@world_human_push_ups@male@base", "base"],
-	["WORLD_HUMAN_BUM_FREEWAY"]: ["amb@world_human_bum_freeway@male@base", "base"],
-	["WORLD_HUMAN_CLIPBOARD"]: ["amb@world_human_clipboard@male@base", "base"],
-	["WORLD_HUMAN_VEHICLE_MECHANIC"]: ["amb@world_human_vehicle_mechanic@male@base", "base"]
-}
+	WORLD_HUMAN_BUM_WASH: ["amb@world_human_bum_wash@male@high@idle_a", "idle_a"],
+	WORLD_HUMAN_SIT_UPS: ["amb@world_human_sit_ups@male@idle_a", "idle_a"],
+	WORLD_HUMAN_PUSH_UPS: ["amb@world_human_push_ups@male@base", "base"],
+	WORLD_HUMAN_BUM_FREEWAY: ["amb@world_human_bum_freeway@male@base", "base"],
+	WORLD_HUMAN_CLIPBOARD: ["amb@world_human_clipboard@male@base", "base"],
+	WORLD_HUMAN_VEHICLE_MECHANIC: ["amb@world_human_vehicle_mechanic@male@base", "base"]
+};
 
 zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) {
 	flag = flag && parseInt(flag);
@@ -152,7 +150,7 @@ zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) 
 	if (anims[1]) await this.RequestDict(anims[0]);
 
 	if (!anims[1]) {
-		ClearAreaOfObjects(LocalPlayer.getLocation(), 1.0);
+		ClearAreaOfObjects(LocalPlayer.getLocation().x, LocalPlayer.getLocation().y, LocalPlayer.getLocation().z, 1.0);
 		TaskStartScenarioInPlace(ped, anims[0], -1, !animBug.find(anim => anim === anims[0]));
 	} else {
 		if (!animPos) TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, false, false, false);
@@ -178,7 +176,7 @@ zFramework.Functions.TaskSynchronizedTasks = async function(ped, animData, clear
 	TaskPerformSequence(ped, sequence);
 	ClearSequenceTask(sequence);
 
-	for (const v of animData) RemoveAnimDict(v.anim[10])
+	for (const v of animData) RemoveAnimDict(v.anim[0])
 
 	return sequence;
 }
