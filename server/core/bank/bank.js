@@ -1,6 +1,5 @@
 onNet("Server.Bank.CreateCard", async pin => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-
     const data = {
         owner: {
             name: `${player.identity.lastname} ${player.identity.firstname}`,
@@ -22,22 +21,20 @@ onNet("Server.Bank.CreateCard", async pin => {
 
 onNet("Server.Bank.UpdateCard", async (num, value) => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-    let item = player.inventory.items["Carte bancaire"][num];
+    const item = player.inventory.items["Carte bancaire"][num];
     if (!item) return;
 
     if (typeof(value) === "boolean") item.blocked = value;
-    else {
-        item.card.pin = value;
-        if (item.card.tries < 5) item.card.tries = 5;
-    }
+    else item.card.pin = value;
+    //if (item.card.tries < 5) item.card.tries = 5;
     
     player.clientEvent('Client.UpdateInventory', player.inventory, "Carte bancaire");
 });
 
 onNet("Server.Bank.UpdateSolde", async (type, amount, targetUuid) => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-
     amount = parseInt(amount);
+
     switch (type) {
         case 1:
             if (player.bank - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
