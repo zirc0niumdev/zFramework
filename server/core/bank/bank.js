@@ -43,15 +43,16 @@ onNet("Server.Bank.UpdateSolde", async (type, amount, targetUuid) => {
             if (player.bank - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
             player.bank -= amount;
             player.money += amount;
-            player.notify(`~g~Vous~s~ avez retiré ~b~$${amount}.`);
+            player.notify(`Vous avez retiré ~b~$${amount}.`);
             break;
         case 2:
             if (player.money - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent.");
             player.money -= amount;
             player.bank += amount;
-            player.notify(`~g~Vous~s~ avez déposé ~b~$${amount}.`);
+            player.notify(`Vous avez déposé ~b~$${amount}.`);
             break;
         case 3:
+            if (targetUuid == player.UUID) return;
             const target = await zFramework.Functions.GetPlayerFromUuid(targetUuid);
             if (player.bank - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
             player.bank -= amount;
