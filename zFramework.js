@@ -16,7 +16,8 @@ zFramework.Core.List = {
 	NPC: true,
 	Inventory: true,
 	Needs: true,
-	Bank: true
+	Bank: true,
+	LSMS: true
 };
 
 if (IsDuplicityVersion()) {
