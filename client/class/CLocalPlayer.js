@@ -443,11 +443,11 @@ export default class CLocalPlayer {
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
                 const modelEntering = GetEntityModel(enteringVeh);
                 if (!IsEntityAMissionEntity(enteringVeh) && !GetVehicleDoorsLockedForPlayer(enteringVeh, this._Id) &&
-                    (IsThisModelACar(modelEntering) || IsThisModelABike(modelEntering) || IsThisModelAHeli(modelEntering) || IsThisModelAPlane(modelEntering)) && !IsThisModelABicycle(modelEntering)) {
-                        const pedInSeatCount = GetPedInVehicleSeat(enteringVeh, -1);
-                        if (pedInSeatCount && !IsPedAPlayer(pedInSeatCount)) ClearPedTasks(this._pedId);
-                        else if (pedInSeatCount == 0) SetVehicleDoorsLockedForPlayer(enteringVeh, this._Id, true);
-                    }
+                (IsThisModelACar(modelEntering) || IsThisModelABike(modelEntering) || IsThisModelAHeli(modelEntering) || IsThisModelAPlane(modelEntering)) && !IsThisModelABicycle(modelEntering)) {
+                    const pedInSeatCount = GetPedInVehicleSeat(enteringVeh, -1);
+                    if (pedInSeatCount && !IsPedAPlayer(pedInSeatCount)) ClearPedTasks(this._pedId);
+                    else if (pedInSeatCount == 0) SetVehicleDoorsLockedForPlayer(enteringVeh, this._Id, true);
+                }
             }
     
             SetSomeVehicleDensityMultiplierThisFrame(0.7);
