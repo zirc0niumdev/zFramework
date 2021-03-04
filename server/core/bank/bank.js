@@ -11,7 +11,7 @@ onNet("Server.Bank.CreateCard", async pin => {
             tries: 5,
             creation: getDate(),
         },
-        uid: zFramework.Core.Bank.GenerateUID(player.uuid)
+        uid: zFramework.Core.Bank.GenerateUID(player.UUID)
     }
 
     if (!zFramework.Core.Inventory.CanCarryItem(player.inventory, "Carte bancaire", 1, zFramework.Core.Inventory.PlayerWeight)) return player.notify("~r~Vous ne pouvez pas porter plus d'objet.");
