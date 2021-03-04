@@ -66,7 +66,7 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
 
     target.job = parseInt(args[1]);
 
-    const jobName = zFramework.Jobs.GetJobNameFromId(args[1]);
+    const jobName = await zFramework.Jobs.GetJobNameFromId(args[1]);
     target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
     if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
     console.log(`${target.name} à été ajouté au job ${jobName} !`);

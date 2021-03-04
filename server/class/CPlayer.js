@@ -128,12 +128,14 @@ export default class CPlayer {
     /**
     * @param {Number} id
     */
-    set job(id) {
-        const job = zFramework.Jobs.GetJobFromId(id);
-        
-        this._job = job;
-
-        this.clientEvent('Client.UpdateVar', "job", this._job);
+    set job(id)  {
+        return (async () => {
+            const job = await zFramework.Jobs.GetJobFromId(id);
+            
+            this._job = job;
+    
+            this.clientEvent('Client.UpdateVar', "job", this._job);
+        })();
     }
 
     /**
