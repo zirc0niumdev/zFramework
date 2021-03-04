@@ -17,6 +17,7 @@ zFramework.Core.List = {
 	Inventory: true,
 	Needs: true,
 	Bank: true,
+	Job: true,
 	LSMS: true
 };
 
