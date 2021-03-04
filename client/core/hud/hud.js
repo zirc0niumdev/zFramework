@@ -47,12 +47,14 @@ zFramework.Core.HUD.Think = () => {
 
 zFramework.Core.HUD.Thread = localPlayer => {
     const { getLocation } = localPlayer;
-    for (const [id, textData] of Object.entries(texts)) {
+
+    texts.forEach((textData, id) => {
+        if (!DoesEntityExist(textData[0])) return texts.splice(id, 1);
         const pos = typeof(textData[0]) === "object" && textData[0] || zFramework.Functions.GetEntityLocation(textData[0]);
 
-        if (zFramework.Functions.GetDistanceByCoords(pos, getLocation()) <= (textData[2] || 8)) myTexts[id] = true;
+        if (zFramework.Functions.GetDistanceByCoords(pos, getLocation()) <= textData[2]) myTexts[id] = true;
         else myTexts[id] = null;
-    }
+    });
 
     const { inventory, cinemaMode } = localPlayer;
     if (!inventory.items["GPS"] || (cinemaMode && cinemaMode == 2)) {
@@ -69,4 +71,4 @@ onNet("Client.DrawMe", (id, text) => {
     
 });
 
-zFramework.Core.HUD.Register3DText = (handle, text, size) => texts.push([handle, text, size]);
+zFramework.Core.HUD.Register3DText = (handle, text, size = 8) => texts.push([handle, text, size]);
