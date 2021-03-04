@@ -11,15 +11,14 @@ zFramework.Functions.GetPlayerFromId = id => {
 
 zFramework.Functions.GetPlayerFromUuid = uuid => {
 	return new Promise((resolve, reject) => {
-		for (let i=0; i <= zFramework.Players.length; i++) {
+		for (const id of global.getPlayers()) {
 			const player = zFramework.Players[id];
 			if (player.UUID == uuid) {
-				resolve(player);
-				break;
+				return resolve(player);
 			}
 		}
 
-		reject(console.error("Can't get player from uuid: " + uuid));
+		return reject(console.error("Can't get player from uuid: " + uuid));
 	});
 }
 
