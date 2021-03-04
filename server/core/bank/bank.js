@@ -56,8 +56,8 @@ onNet("Server.Bank.UpdateSolde", async (type, amount, targetUuid) => {
             if (player.bank - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
             player.bank -= amount;
             target.bank += amount;
-            player.notify(`~g~Vous~s~ avez transféré ~b~$${amount} sur le compte de ${target.identity.lastname} ${target.identity.firstname}.`);
-            target.notify(`${player.identity.lastname} ${player.identity.firstname} à transféré ~b~$${amount} sur votre compte.`);
+            player.notify(`Vous avez transféré ~b~$${amount}~s~ sur le compte de ~g~${target.identity.lastname} ${target.identity.firstname}.`);
+            target.notify(`~g~${player.identity.lastname} ${player.identity.firstname}~s~ à transféré ~b~$${amount}~s~ sur votre compte.`);
             break;
     }
 });
