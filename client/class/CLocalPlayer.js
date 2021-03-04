@@ -395,10 +395,22 @@ export default class CLocalPlayer {
         for (const feature in this._skin.features) SetPedFaceFeature(this._pedId, parseInt(feature), parseFloat(this._skin.features[feature]));
 
         // Appearance
-        for (let i = 0; i < 11; i++) SetPedHeadOverlay(this._pedId, i, this._skin.appearance[i].value, this._skin.appearance[i].opacity);
+        for (const [index, overlay] of Object.entries(this._skin.appearance)) SetPedHeadOverlay(this._pedId, index, overlay.value, overlay.opacity);
 
         // Parents
-        SetPedHeadBlendData(this._pedId, parseInt(this._skin.parents.mother), parseInt(this._skin.parents.father), 0, parseInt(this._skin.parents.mother), parseInt(this._skin.parents.father), 0, parseFloat(this._skin.parents.similarity) * 0.01, parseFloat(this._skin.parents.skinSimilarity) * 0.01, 0.0, false);
+        SetPedHeadBlendData(
+          this._pedId,
+          parseInt(this._skin.parents.mother),
+          parseInt(this._skin.parents.father),
+          0,
+          parseInt(this._skin.parents.mother),
+          parseInt(this._skin.parents.father),
+          0,
+          parseFloat(this._skin.parents.similarity),
+          parseFloat(this._skin.parents.skinSimilarity),
+          0.0,
+          false
+        );
 
         // Colors
         SetPedComponentVariation(this._pedId, 2, this._skin.colors.hair, 0, 2);
