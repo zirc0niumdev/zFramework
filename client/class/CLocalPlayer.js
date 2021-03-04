@@ -26,6 +26,7 @@ export default class CLocalPlayer {
         this._freeze         = false;
         this._blockInput     = false;
         this._ko             = false;
+        this._ragdoll        = false;
         this._spectateMode   = false;
         this._cinemaMode     = false;
         this._initialized    = false;
@@ -167,6 +168,13 @@ export default class CLocalPlayer {
     */
     set ko(toggle) {
         this._ko = toggle;
+    }
+
+    /**
+    * @param {Boolean} toggle
+    */
+    set ragdoll(toggle) {
+        this._ragdoll = toggle;
     }
 
     /**
@@ -439,6 +447,11 @@ export default class CLocalPlayer {
 
     tick = () => {
         setTick(() => {
+            if (this._ragdoll) {
+                SetPedToRagdoll(this._pedId, 1000, 1000, 0, 0, 0, 0);
+                ResetPedRagdollTimer(this._pedId);
+            }
+
             const enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
                 const modelEntering = GetEntityModel(enteringVeh);
