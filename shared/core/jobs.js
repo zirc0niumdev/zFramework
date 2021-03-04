@@ -1,4 +1,5 @@
-zFramework.Jobs = {}
+zFramework.Jobs = {};
+zFramework.Jobs.List = {};
 
 const citizen = {
     id: 1,
@@ -7,7 +8,7 @@ const citizen = {
     perks: { Open: true }
 };
 
-zFramework.Jobs[citizen.id] = citizen;
+zFramework.Jobs.List[citizen.id] = citizen;
 
 const lsms = {
     id: 2,
@@ -16,18 +17,18 @@ const lsms = {
     perks: { Invoice: true }
 };
 
-zFramework.Jobs[lsms.id] = lsms;
+zFramework.Jobs.List[lsms.id] = lsms;
 
-zFramework.Jobs.GetJobFromId = id => {
+zFramework.Jobs.GetJobFromId = function(id) {
 	return new Promise((resolve, reject) => {
-        const job = zFramework.Jobs[id];
+        const job = this.List[id];
 		if (!job) reject(console.error("can't get job with id: " + id));
-		
-		resolve(job);
+
+        resolve(job);
 	});
 }
 
-zFramework.Jobs.GetJobNameFromId = async id => {
+zFramework.Jobs.GetJobNameFromId = async function(id) {
     const job = await this.GetJobFromId(id);
     return job.name;
 }
