@@ -40,8 +40,8 @@ zFramework.Core.NPC.Thread = localPlayer => {
             CreateNPC(data);
             myNPCs[id] = data;
         } else if (myNPCs[id] && !closeFromNPC) {
-            delete myNPCs[id];
             if (myNPCs[id].handle) DeleteEntity(myNPCs[id].handle);
+            delete myNPCs[id];
         }
     }
 }
