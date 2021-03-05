@@ -125,7 +125,7 @@ export default class CLocalPlayer {
     */
     set invincible(toggle) {
         this._invincible = toggle;
-        SetEntityInvincible(this._pedId, toggle);
+        SetPlayerInvincible(this._id, toggle);
     }
 
     /**
@@ -489,7 +489,6 @@ export default class CLocalPlayer {
 
     can = () => {
         if (this._busy != 0 || this._dead || this._ko) return false;
-
         return true;
     }
 
