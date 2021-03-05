@@ -29,7 +29,9 @@ export default class CLocalPlayer {
         this._ragdoll        = false;
         this._spectateMode   = false;
         this._cinemaMode     = false;
-        this._busy           = false;
+        this._wounded        = false;
+        this._cantRun        = false;
+        this._busy           = 0;
         this._afk            = false;
         this._initialized    = false;
 
@@ -196,8 +198,22 @@ export default class CLocalPlayer {
     /**
     * @param {Boolean} toggle
     */
-    set busy(toggle) {
-        this._busy = toggle;
+    set wounded(toggle) {
+        this._wounded = toggle;
+    }
+
+    /**
+    * @param {Boolean} toggle
+    */
+    set cantRun(toggle) {
+        this._cantRun = toggle;
+    }
+
+    /**
+    * @param {Number} int
+    */
+    set busy(int) {
+        this._busy = int;
     }
 
     /**
@@ -307,6 +323,14 @@ export default class CLocalPlayer {
 
     get cinemaMode() {
         return this._cinemaMode;
+    }
+
+    get wounded() {
+        return this._wounded;
+    }
+
+    get cantRun() {
+        return this._cantRun;
     }
 
     get level() {
@@ -464,7 +488,7 @@ export default class CLocalPlayer {
     getFront = () => this.getLocation().add(this.getForwardVector().multiply(0.5));
 
     can = () => {
-        if (this._dead || this._ko) return false;
+        if (this._busy != 0 || this._dead || this._ko) return false;
 
         return true;
     }
