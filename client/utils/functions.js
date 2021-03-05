@@ -100,6 +100,19 @@ zFramework.Functions.RequestDict = dict => {
 	});
 };
 
+zFramework.Functions.RequestAnimSet = animSet => {
+	return new Promise(resolve => {
+		RequestAnimSet(animSet);
+		const start = GetGameTimer();
+		const interval = setTick(() => {
+			if (HasAnimSetLoaded(animSet) || GetGameTimer() - start >= 1000) {
+				clearTick(interval);
+				resolve(HasAnimSetLoaded(animSet));
+		  	}
+		});
+	});
+};
+
 zFramework.Functions.GetClosestPlayer = function(d = 1.5) {
 	const { pedId } = zFramework.LocalPlayer;
 	let closestPlayer;
