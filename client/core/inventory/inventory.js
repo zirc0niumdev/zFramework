@@ -27,7 +27,7 @@ zFramework.Core.Inventory.UpdatePlayerSpeed = function() {
     const { inventory } = zFramework.LocalPlayer;
     let isCarryingHeavyItem = false;
     
-    for (const [itemName, itemTbl] of Object.values(inventory.items)) {
+    for (const [itemName, itemTbl] of Object.entries(inventory.items)) {
         const item = zFramework.Core.Items.Get(itemName);
         if (item.weight && item.weight >= 10) {
             isCarryingHeavyItem = true;
