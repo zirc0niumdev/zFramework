@@ -34,6 +34,43 @@ zFramework.Core.HUD.RemoveTimerBar = () => {
 	SetStreamedTextureDictAsNoLongerNeeded("timerbars");
 }
 
+let progressBarExists = null;
+
+zFramework.Core.HUD.DoesAnyProgressBarExists = () => progressBarExists;
+
+const barLoading = [".", "..", "...", ""];
+const barX = .5, barY = .975, barW = .15, barH = .03;
+zFramework.Core.HUD.CreateProgressBar = async function(text, time) {
+    if (!time) return;
+
+    this.KillProgressBar();
+    progressBarExists = true;
+
+    let timer = .0, unk1 = "", unk2 = null;
+    const newTimer = GetGameTimer() + time;
+
+    while (progressBarExists && timer < 1) {
+        await Delay(0);
+        if (timer < 1) timer = 1 - ((newTimer - GetGameTimer()) / time);
+        if (zFramework.LocalPlayer.cinemaMode == 0) {
+            if (!unk2 || GetGameTimer() >= unk2) {
+                unk2 = GetGameTimer() + 500;
+                unk1 = barLoading[unk1.length] || "";
+            }
+
+            DrawRect(barX, barY, barW, barH, 0, 0, 0, 100);
+            const y = barW - .0025, cR6rJlAl = barH - .005;
+            const M6ilzGJ = Math.max(0, Math.min(y, y * timer));
+            DrawRect((barX - y / 2) + M6ilzGJ / 2, barY, M6ilzGJ, cR6rJlAl, 29, 191, 219, 150);
+            this.DrawText(0, `${(text || "Action en cours")}${unk1}`, .3, barX, barY - .0125, [255, 255, 255], false, 0);
+        }
+    }
+
+    this.KillProgressBar();
+}
+
+zFramework.Core.HUD.KillProgressBar = () => progressBarExists = null;
+
 zFramework.Core.HUD.DrawText = (intFont, stringText, floatScale, intPosX, intPosY, color, boolShadow, intAlign, addWarp) => {
 	SetTextFont(intFont);
 	SetTextScale(floatScale, floatScale);
@@ -43,7 +80,6 @@ zFramework.Core.HUD.DrawText = (intFont, stringText, floatScale, intPosX, intPos
 		SetTextEdge(0, 0, 0, 0, 0);
     }
 
-    console.log(color);
 	SetTextColour(color[0], color[1], color[2], 255);
 	if (intAlign == 0) SetTextCentre(true);
 	else {
