@@ -452,6 +452,11 @@ export default class CLocalPlayer {
                 ResetPedRagdollTimer(this._pedId);
             }
 
+            if (this._ragdoll && !this._ko && !this._dead && !IsEntityAttached(this._pedId)) {
+                zFramework.Functions.TopNotify("Appuyez sur ~INPUT_CONTEXT~ ou ~INPUT_JUMP~ pour ~b~vous relever~w~.");
+                if (IsControlJustPressed(1, 51) || IsControlJustPressed(1, 22)) this._ragdoll = false;
+            }
+
             const enteringVeh = GetVehiclePedIsTryingToEnter(this._pedId);
             if (enteringVeh && DoesEntityExist(enteringVeh)) {
                 const modelEntering = GetEntityModel(enteringVeh);
@@ -472,6 +477,8 @@ export default class CLocalPlayer {
             RemoveAllPickupsOfType(14);
 
             DisableControlAction(2, 47, true);
+
+            SetPlayerHealthRechargeMultiplier(this._id, .0)
 
             zFramework.Core.Think();
         });
