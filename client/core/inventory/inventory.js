@@ -39,8 +39,7 @@ zFramework.Core.Inventory.UpdatePlayerSpeed = function() {
     else if (!zFramework.LocalPlayer.wounded) zFramework.LocalPlayer.cantRun = false;
     
     if (localCantRun != zFramework.LocalPlayer.cantRun) {
-        if (zFramework.LocalPlayer.wounded || zFramework.LocalPlayer.cantRun)
-            zFramework.Functions.Notify(`~g~PERSONNAGE~w~${zFramework.LocalPlayer.wounded && "\nVous êtes blessé." || ""} ${zFramework.LocalPlayer.cantRun && "\nVous êtes trop lourd." || ""}`)
+        if (zFramework.LocalPlayer.wounded || zFramework.LocalPlayer.cantRun) zFramework.Functions.Notify(`~g~PERSONNAGE~w~${zFramework.LocalPlayer.wounded && "\nVous êtes blessé." || ""} ${zFramework.LocalPlayer.cantRun && "\nVous êtes trop lourd." || ""}`);
         localCantRun = zFramework.LocalPlayer.cantRun;
     }
 }
