@@ -5,10 +5,10 @@ zFramework.Core.Needs.Initialize = function() {
     }, 100000);
 }
 
-zFramework.Core.Needs.Reset = function(kill) {
-    zFramework.LocalPlayer.needs.hunger = 100;
-    zFramework.LocalPlayer.needs.thirst = 100;
-    if (kill) ApplyDamageToPed(zFramework.LocalPlayer.pedId, 500);
+zFramework.Core.Needs.Reset = function(shouldKill) {
+    serverEvent("Server.Needs.Add", true, 150);
+    serverEvent("Server.Needs.Add", false, 150);
+    if (shouldKill) ApplyDamageToPed(zFramework.LocalPlayer.pedId, 500);
 }
 
 DrawNeedsBar = (x, y, width, height, color) => DrawRect(x + width / 2, y + height / 2, width, height, color[0], color[1], color[2], color[3]);
