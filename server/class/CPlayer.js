@@ -93,7 +93,7 @@ export default class CPlayer {
     set dead(toggle) {
         this._dead = toggle;
 
-        this.clientEvent('Client.UpdateVar', "dead", this._isDead);
+        this.clientEvent('Client.UpdateVar', "dead", this._dead);
     }
 
     /**
