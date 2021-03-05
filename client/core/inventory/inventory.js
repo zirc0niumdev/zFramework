@@ -22,6 +22,29 @@ zFramework.Core.Inventory.UpdateItem = function(name, num, data = {}) {
     serverEvent("Server.Inventory.UpdateItem", name, num, data);
 }
 
+let localCantRun = false;
+zFramework.Core.Inventory.UpdatePlayerSpeed = function() {
+    const { inventory } = zFramework.LocalPlayer;
+    let isCarryingHeavyItem = false;
+    
+    for (const [itemName, itemTbl] of Object.values(inventory.items)) {
+        const item = zFramework.Core.Items.Get(itemName);
+        if (item.weight && item.weight >= 10) {
+            isCarryingHeavyItem = true;
+            break;
+        }
+    }
+    const invWeight = this.GetWeight(inventory.items);
+    if (invWeight > 32 || isCarryingHeavyItem) zFramework.LocalPlayer.cantRun = true;
+    else if (!zFramework.LocalPlayer.wounded) zFramework.LocalPlayer.cantRun = false;
+    
+    if (localCantRun != zFramework.LocalPlayer.cantRun) {
+        if (zFramework.LocalPlayer.wounded || zFramework.LocalPlayer.cantRun)
+            zFramework.Functions.Notify(`~g~PERSONNAGE~w~${zFramework.LocalPlayer.wounded && "\nVous êtes blessé." || ""} ${zFramework.LocalPlayer.cantRun && "\nVous êtes trop lourd." || ""}`)
+        localCantRun = zFramework.LocalPlayer.cantRun;
+    }
+}
+
 function transferItem(item, isDrop) {
     if (!item.amount || zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, item.name) - item.amount < 0) return zFramework.Functions.Notify(`~r~Vous n'avez pas autant de ${item.name}.`);
 
@@ -159,6 +182,8 @@ onNet("Client.UpdateInventory", (inv = null, itemName = null) => {
             }
         } else if (item && item.name === "Carte bancaire") zFramework.Core.Bank.FetchCBFromInv();
     }
+
+    zFramework.Core.Inventory.UpdatePlayerSpeed();
 });
 
 zFramework.Core.Inventory.OnUpdated = function() {
