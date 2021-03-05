@@ -4,5 +4,6 @@ zFramework.Modules.Discord.Initialize = function() {
 	SetDiscordRichPresenceAssetText("SantosRP");
 	SetDiscordRichPresenceAssetSmall("discord_512");
 	SetDiscordRichPresenceAssetSmallText("discord.santosrp.fr");
-	SetRichPresence(`[${GetPlayerServerId(zFramework.LocalPlayer.playerId)}] ${`${zFramework.LocalPlayer.identity.firstname} ${zFramework.LocalPlayer.identity.lastname}` || zFramework.LocalPlayer.name}`);
+	SetDiscordRichPresenceAction(0, "Rejoindre le discord", "https://discord.santosrp.fr/");
+	SetRichPresence(`[${zFramework.LocalPlayer.serverId}] ${`${zFramework.LocalPlayer.identity.firstname} ${zFramework.LocalPlayer.identity.lastname}` || zFramework.LocalPlayer.name}`);
 };
