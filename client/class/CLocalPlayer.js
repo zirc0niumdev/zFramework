@@ -29,6 +29,8 @@ export default class CLocalPlayer {
         this._ragdoll        = false;
         this._spectateMode   = false;
         this._cinemaMode     = false;
+        this._busy           = false;
+        this._afk            = false;
         this._initialized    = false;
 
         this.onSpawned();
@@ -192,6 +194,20 @@ export default class CLocalPlayer {
     }
 
     /**
+    * @param {Boolean} toggle
+    */
+    set busy(toggle) {
+        this._busy = toggle;
+    }
+
+    /**
+    * @param {Boolean} toggle
+    */
+    set afk(toggle) {
+        this._afk = toggle;
+    }
+
+    /**
     * @param {Object} job
     */
     set job(job) {
@@ -319,6 +335,14 @@ export default class CLocalPlayer {
 
     get blockInput() {
         return this._blockInput;
+    }
+
+    get busy() {
+        return this._busy;
+    }
+
+    get afk() {
+        return this._afk;
     }
 
     get job() {
