@@ -113,14 +113,16 @@ zFramework.Functions.RequestAnimSet = animSet => {
 	});
 };
 
-zFramework.Functions.GetClosestPlayer = function(d = 1.5) {
-	const { pedId } = zFramework.LocalPlayer;
+zFramework.Functions.GetClosestPlayer = function(d = 1.5, addVector) {
+	const { pedId, getLocation, getForwardVector } = zFramework.LocalPlayer;
+	const playerPos = getLocation().add((addVector || getForwardVector()).multiply(0.5));
 	let closestPlayer;
 
 	for (const num of GetActivePlayers()) {
 		const otherPed = GetPlayerPed(num);
-		
-		if (otherPed && otherPed != pedId && IsEntityVisible(otherPed) && this.GetDistance(otherPed, pedId) <= d && (!closestPlayer || this.GetDistance(otherPed, pedId)))
+		const otherPedPos = otherPed != pedId && IsEntityVisible(otherPed) && this.GetEntityLocation(otherPed);
+
+		if (otherPed && this.GetDistanceByCoords(otherPedPos, playerPos) <= d && (!closestPlayer || this.GetDistanceByCoords(otherPedPos, playerPos)))
 			closestPlayer = num;
 	}
 
