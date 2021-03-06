@@ -49,11 +49,13 @@ zFramework.Core.LSMS.RevivePlayer = async function(target) {
     serverEvent("Server.LSMS.Action", 2, GetPlayerServerId(target));
 }
 
+let initiedDeath = false;
 zFramework.Core.LSMS.PostRevive = function() {
     const { getLocation } = zFramework.LocalPlayer;
     let pedId = zFramework.LocalPlayer.pedId;
 
     serverEvent("Server.LSMS.SetDead", false);
+    initiedDeath = false;
     zFramework.LocalPlayer.invincible = false;
     if (IsEntityDead(pedId)) this.Revive();
     pedId = zFramework.LocalPlayer.pedId;
@@ -112,7 +114,7 @@ on("EntityDeath", (victim, instigator, weapon) => {
         zFramework.LocalPlayer.ragdoll = true;
         zFramework.LocalPlayer.invincible = true;
 
-        if (!dead) {
+        if (!dead || !initiedDeath) {
             serverEvent("Server.LSMS.SetDead", true);
             zFramework.Functions.Notify("~r~COMA~w~\nVoulez-vous contacter une ambulance ?");
             zFramework.Functions.Notify("Appeler: ~g~E~w~ ou ~r~Y");
@@ -121,6 +123,7 @@ on("EntityDeath", (victim, instigator, weapon) => {
             ShakeGameplayCam("DEATH_FAIL_IN_EFFECT_SHAKE", 1.0);
             SetTimecycleModifier("rply_vignette");
             zFramework.Core.HUD.AddTimerBar("TEMPS RESTANT", { endTime: GetGameTimer() + deathTime });
+            initiedDeath = true;
         }
 
         victim = GetPlayerPed(-1);
@@ -246,6 +249,16 @@ zFramework.Core.LSMS.Initialize = function() {
     registerJobMenu();
     zFramework.Core.Job.RegisterMenu(2, zFramework.Core.LSMS.OpenMenu, true, true);
     DecorRegister("Player_Dead", 2);
+    this.Thread();
+}
+
+zFramework.Core.LSMS.Thread = function() {
+    setInterval(async () => {
+        await Delay(4000);
+        const { dead, ko } = zFramework.LocalPlayer;
+        if (IsEntityDead(PlayerPedId()) && !dead && !ko)
+            TriggerEvent("EntityDeath", PlayerPedId());
+    }, 4000);
 }
 
 zFramework.Core.LSMS.Think = function() {
