@@ -4,11 +4,16 @@ zFramework.Modules.Whitelist.Initialize = function() {
     // ADD COMMAND
     new CCommands("wla", zFramework.Groups.ADMIN, async (player, args) => {
         const discordId = args[0];
-            
+        const foundUser = this.Users.find(discord => discord === discordId);
+        if (foundUser) {
+            player && player.notify(`~b~ID:~s~ ${discordId} est déjà whitelist.`);
+            return console.log(`ID: ${discordId} est déjà whitelist.`);
+        }
+        
         await zFramework.Database.Query('INSERT INTO `whitelist` (discord) VALUE (?)', discordId).then(async () => {
             await this.Refresh();
 
-            if (player) player.notify(`~b~ID Discord:~s~ ${discordId}\nWHITELIST.`);
+            player && player.notify(`~b~ID Discord:~s~ ${discordId}\nWHITELIST.`);
             console.log(`ID Discord: ${discordId}\nWHITELIST.`);
         });
     
@@ -21,13 +26,13 @@ zFramework.Modules.Whitelist.Initialize = function() {
 
         if (foundUser) {
             await zFramework.Database.Query('DELETE FROM `whitelist` WHERE `discord` = ?', discordId).then(async () => {
-                if (player) player.notify(`~b~ID Discord:~s~ ${discordId}\nUNWHITELIST.`);
+                player && player.notify(`~b~ID Discord:~s~ ${discordId}\nUNWHITELIST.`);
                 console.log(`ID Discord: ${discordId}\nUNWHITELIST.`);
 
                 await this.Refresh();
             });
         } else {
-            if (player) player.notify("~r~Cet utilisateur n'est pas whitelist.");
+            player && player.notify("~r~Cet utilisateur n'est pas whitelist.");
             console.log("Cet utilisateur n'est pas whitelist.");
         }
     }, {help: "haha"});
