@@ -133,8 +133,6 @@ on("EntityDeath", (victim, instigator, weapon) => {
     }
 });
 
-RegisterCommand("revive", () => zFramework.Core.LSMS.PostRevive());
-
 async function endKO() {
     if (zFramework.LocalPlayer.ko) {
         serverEvent("Server.LSMS.SetDead", false);

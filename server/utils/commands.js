@@ -5,7 +5,6 @@ new CCommands("car", zFramework.Groups.ADMIN, async (player, args) => {
     if (!car) return;
 
     if (car === "fix") return player.clientEvent("Client.RepairVehicle");
-
     const veh = CreateVehicle(GetHashKey(car), player.getLocation().x, player.getLocation().y, player.getLocation().z, GetEntityHeading(player.pedId), true, false);
 
     const timer = GetGameTimer();
@@ -82,14 +81,10 @@ new CCommands("give", zFramework.Groups.SUPERADMIN, async (player, args) => {
     target.addItem(itemName, amount);
 }, {help: "haha"});
 
-new CCommands("delete", zFramework.Groups.SUPERADMIN, async (player, args) => {
+new CCommands("revive", zFramework.Groups.ADMIN, async (player, args) => {
+    if (!args[0]) args[0] = player.serverId;
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
-    const amount = args[1];
-    if (!amount) return;
-
-    const itemName = args.slice(2).join(' ');
-    
-    target.deleteItem(itemName, parseInt(amount));
+    target.clientEvent("Client.LSMS.Action", 1);
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {
