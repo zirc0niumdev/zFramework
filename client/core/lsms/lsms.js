@@ -23,6 +23,7 @@ zFramework.Core.LSMS.OnEntityDamage = function(victim, instigator, isFatal, weap
 }
 
 zFramework.Core.LSMS.HealPlayer = async function(targetId, amount) {
+    if (!targetId) return;
     if (zFramework.Core.HUD.DoesAnyProgressBarExists()) return zFramework.Functions.Notify("~r~Vous êtes déjà entrain de réaliser quelque chose.");
     const { pedId } = zFramework.LocalPlayer;
 
@@ -32,12 +33,12 @@ zFramework.Core.LSMS.HealPlayer = async function(targetId, amount) {
     await Delay(10000);
     ClearPedTasks(pedId);
     zFramework.LocalPlayer.busy = 0;
-    serverEvent("Server.LSMS.Action", 1, {targetId: GetPlayerServerId(targetId), amount});
+    serverEvent("Server.LSMS.Action", 2, {targetId: GetPlayerServerId(targetId), amount});
 }
 
-zFramework.Core.LSMS.RevivePlayer = async function(target) {
-    target = target || zFramework.Functions.GetClosestPlayer(4.0, new Vector3(.0, .0, -1.0));
-    if (!target) return;
+zFramework.Core.LSMS.RevivePlayer = async function(targetId) {
+    targetId = targetId || zFramework.Functions.GetClosestPlayer(4.0, new Vector3(.0, .0, -1.0));
+    if (!targetId) return;
 
     if (zFramework.Core.HUD.DoesAnyProgressBarExists()) return zFramework.Functions.Notify("~r~Vous êtes déjà entrain de réaliser quelque chose.");
     const { pedId } = zFramework.LocalPlayer;
@@ -46,7 +47,7 @@ zFramework.Core.LSMS.RevivePlayer = async function(target) {
     zFramework.Functions.PlayAnim(["missheistfbi3b_ig8_2", "cpr_loop_paramedic"], true);
     await Delay(10000);
     ClearPedTasks(pedId);
-    serverEvent("Server.LSMS.Action", 2, GetPlayerServerId(target));
+    serverEvent("Server.LSMS.Action", 1, GetPlayerServerId(targetId));
 }
 
 let initiedDeath = false;
@@ -90,11 +91,12 @@ function canRevive() {
 }
 
 onNet("Client.LSMS.Action", (action, value) => {
-    const { pedId } = zFramework.LocalPlayer;
+    const { pedId, dead } = zFramework.LocalPlayer;
     switch (action) {
         case 1:
-            if (zFramework.LocalPlayer.dead || IsEntityDead(pedId) && canRevive())
+            if ((dead || IsEntityDead(pedId)) && canRevive()) {
                 zFramework.Core.LSMS.PostRevive();
+            }
             break;
         case 2:
             if (!IsPedRagdoll(pedId)) {
