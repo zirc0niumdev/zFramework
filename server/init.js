@@ -97,11 +97,10 @@ onNet("Server.onPlayerSpawned", async () => {
 
 	player.setLocation(player.spawnLocation);
 
-	if (player.firstSpawn)
-	{
+	if (player.firstSpawn) {
 		player.addItem("Pain", 4);
 		player.addItem("Eau de source", 8);
-		// player.addItem("Carte d'identité", 1, { identity: player.identity, uid: "164646465465", exp: zFramework.Functions.GenerateExpDate() });
+		// player.addItem("Carte d'identité", 1, { identity: player.identity, uid: player.UUID, exp: zFramework.Functions.GenerateExpDate() });
 		// add telephone
 	}
 
