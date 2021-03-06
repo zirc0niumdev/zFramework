@@ -45,7 +45,7 @@ new CCommands("setgroup", zFramework.Groups.SUPERADMIN, async (player, args) => 
     target.group = parseInt(args[1]);
 
     target.notify(`~g~Vous~w~ avez été ajouté au groupe ${args[1]} !`);
-    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au groupe ${args[1]} !`);
+    player && player.notify(`~g~${target.name}~w~ à été ajouté au groupe ${args[1]} !`);
     console.log(`${target.name} à été ajouté au groupe ${args[1]} !`);
 }, {help: "haha"});
 
@@ -56,7 +56,7 @@ new CCommands("setrank", zFramework.Groups.SUPERADMIN, async (player, args) => {
     target.rank = parseInt(args[1]);
 
     target.notify(`~g~Vous~w~ avez été ajouté au rank ${args[1]} !`);
-    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au rank ${args[1]} !`);
+    player && player.notify(`~g~${target.name}~w~ à été ajouté au rank ${args[1]} !`);
     console.log(`${target.name} à été ajouté au rank ${args[1]} !`);
 }, { help: "haha" });
 
@@ -67,7 +67,7 @@ new CCommands("setjob", zFramework.Groups.SUPERADMIN, async (player, args) => {
 
     const jobName = await zFramework.Jobs.GetJobNameFromId(args[1]);
     target.notify(`~g~Vous~w~ avez été ajouté au job ${jobName} !`);
-    if (player) player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
+    player && player.notify(`~g~${target.name}~w~ à été ajouté au job ${jobName} !`);
     console.log(`${target.name} à été ajouté au job ${jobName} !`);
 }, {help: "haha"});
 
@@ -77,7 +77,6 @@ new CCommands("give", zFramework.Groups.SUPERADMIN, async (player, args) => {
     if (!amount) return;
 
     const itemName = args.slice(2).join(' ');
-    
     target.addItem(itemName, amount);
 }, {help: "haha"});
 
@@ -85,6 +84,9 @@ new CCommands("revive", zFramework.Groups.ADMIN, async (player, args) => {
     if (!args[0]) args[0] = player.serverId;
     const target = await zFramework.Functions.GetPlayerFromId(args[0]);
     target.clientEvent("Client.LSMS.Action", 1);
+    
+    player && player.notify(`~g~Vous~w~ avez revive ~b~${target.name}~w~ !`);
+    console.log(`${(player && player.name) || "Console"} à revive ${target.name} !`);
 }, {help: "haha"});
 
 new CCommands("test", zFramework.Groups.DEV, (player, args) => {
