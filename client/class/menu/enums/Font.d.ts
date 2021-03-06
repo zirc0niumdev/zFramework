@@ -3,6 +3,7 @@ declare enum Font {
     HouseScript = 1,
     Monospace = 2,
     CharletComprimeColonge = 4,
+    ChaletLondonFixedWidthNumbers = 5,
     Pricedown = 7
 }
 export default Font;

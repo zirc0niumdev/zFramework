@@ -24,6 +24,7 @@ import MidsizedMessage from './modules/MidsizedMessage';
 import UIMenuDynamicListItem from './items/UIMenuDynamicListItem';
 export default class NativeUI {
     private _visible;
+    private _opened;
     private _counterPretext;
     private _counterOverride;
     private _spriteLibrary;
@@ -97,6 +98,8 @@ export default class NativeUI {
     get GetSubTitle(): ResText;
     get SubTitle(): string;
     set SubTitle(text: string);
+    get Opened(): boolean;
+    set Opened(toggle: boolean);
     get Visible(): boolean;
     set Visible(toggle: boolean);
     get CurrentSelection(): number;
