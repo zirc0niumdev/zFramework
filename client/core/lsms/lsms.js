@@ -243,8 +243,8 @@ function registerJobMenu() {
 }
 
 zFramework.Core.LSMS.OpenMenu = function() {
-    if (emsMenu.Opened) return emsMenu.Close();
-    emsMenu.Open();
+    if (!emsMenu.Opened) return emsMenu.Open();
+    emsMenu.Close();
 }
 
 zFramework.Core.LSMS.Initialize = function() {
