@@ -356,6 +356,7 @@ export default class CPlayer {
     savePlayer = async () => {
         if (!this.canSave()) return;
 
+        this._needs.health = GetEntityHealth(this._pedId);
         let playerData = [this._money, this._dirtyMoney, this._bank, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
 
         if (this._firstSpawn) {
