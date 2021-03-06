@@ -59,7 +59,7 @@ zFramework.Core.LSMS.PostRevive = function() {
     zFramework.LocalPlayer.invincible = false;
     if (IsEntityDead(pedId)) this.Revive();
     pedId = zFramework.LocalPlayer.pedId;
-    zFramework.Functions.Notify("~g~REANIMMATION~w~\nVous venez d'être réanimé, vous êtes blessé.");
+    zFramework.Functions.Notify("~g~REANIMATION~w~\nVous venez d'être réanimé, vous êtes blessé.");
     zFramework.Core.Needs.Reset(false);
     ClearTimecycleModifier();
     zFramework.Core.HUD.RemoveTimerBar();
