@@ -418,7 +418,8 @@ export default class CLocalPlayer {
             /// Load Clothes (PUT ON READY IN LOAD CLOTHES!!!)
         }
 
-        SetEntityHealth(this._pedId, this._needs.health);
+        if (this._dead && !IsEntityDead(this._pedId)) ApplyDamageToPed(this._pedId, 500);
+        else SetEntityHealth(this._pedId, this._needs.health);
 
         DoScreenFadeIn(2000);
 
