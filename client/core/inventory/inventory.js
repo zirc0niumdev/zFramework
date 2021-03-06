@@ -98,6 +98,7 @@ async function inventoryAction(action, it) {
     const playerPed = zFramework.LocalPlayer.pedId;
     const playerVehicle = zFramework.LocalPlayer.isInVehicle();
     if (playerVehicle && GetPedInVehicleSeat(playerVehicle, -1) == playerPed && GetEntitySpeed(playerVehicle) > 3) return;
+    if (zFramework.LocalPlayer.busy != 0) return zFramework.Functions.Notify("~r~Vous êtes déjà entrain de réaliser une action.");
 
     const { inventory } = zFramework.LocalPlayer;
     const item = zFramework.Core.Items.Get(it.name);
