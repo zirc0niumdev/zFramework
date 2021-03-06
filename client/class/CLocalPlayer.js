@@ -418,6 +418,8 @@ export default class CLocalPlayer {
             /// Load Clothes (PUT ON READY IN LOAD CLOTHES!!!)
         }
 
+        SetEntityHealth(this._pedId, this._needs.health);
+
         DoScreenFadeIn(2000);
 
         this.tick();
