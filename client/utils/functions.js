@@ -168,7 +168,7 @@ zFramework.Functions.ForceAnim = async function(anims, flag = false, args = {}) 
 		ClearAreaOfObjects(LocalPlayer.getLocation().x, LocalPlayer.getLocation().y, LocalPlayer.getLocation().z, 1.0);
 		TaskStartScenarioInPlace(ped, anims[0], -1, !animBug.find(anim => anim === anims[0]));
 	} else {
-		if (!animPos) TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, false, false, false);
+		if (!animPos) TaskPlayAnim(ped, anims[0], anims[1], 8.0, -8.0, -1, flag || 44, 0, 0, 0, 0, 0)
 		else TaskPlayAnimAdvanced(ped, anims[0], anims[1], animPos.x, animPos.y, animPos.z, animRot.x, animRot.y, animRot.z, 8.0, -8.0, -1, flag || 44, -1, 0, 0);
 	}
 
