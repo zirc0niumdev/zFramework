@@ -126,6 +126,7 @@ export default class CLocalPlayer {
     set invincible(toggle) {
         this._invincible = toggle;
         SetPlayerInvincible(this._id, toggle);
+        if (this._group > zFramework.Groups.PLAYER) zFramework.Functions.Notify(`Invincibilité ${toggle && "~g~ACTIVE" || "~r~DESACTIVE"}`);
     }
 
     /**
@@ -133,7 +134,8 @@ export default class CLocalPlayer {
     */
     set invisible(toggle) {
         this._invisible = toggle;
-        SetEntityVisible(this._pedId, toggle, false);
+        SetEntityVisible(this._pedId, !toggle, false);
+        if (this._group > zFramework.Groups.PLAYER) zFramework.Functions.Notify(`Invisibilité ${toggle && "~g~ACTIVE" || "~r~DESACTIVE"}`);
     }
 
     /**
@@ -480,6 +482,8 @@ export default class CLocalPlayer {
         SetPedHeadOverlayColor(this._pedId, 5, 2, parseInt(this._skin.colors.blushColor), 0);
         SetPedHeadOverlayColor(this._pedId, 8, 2, parseInt(this._skin.colors.lipstickColor), 0);
         SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
+
+        // Clothes
 
         this.onReady();
     }
