@@ -18,7 +18,9 @@ zFramework.Core.List = {
 	Needs: true,
 	Bank: true,
 	Job: true,
-	LSMS: true
+	LSMS: true,
+	Cloth: true,
+	Admin: true
 };
 
 if (IsDuplicityVersion()) {
