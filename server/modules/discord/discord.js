@@ -1,16 +1,17 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+dotenv.config({ path: path.join(GetResourcePath(GetCurrentResourceName()), './.env') });
 
 zFramework.Modules.Discord.Initialize = function() {
     this.Initialized = true;
 }
 
-zFramework.Modules.Discord.SendWebhookMessage = (username, content) => {
+zFramework.Modules.Discord.SendMessage = async (content) => {
     if (!zFramework.Modules.Discord.Initialized) return;
 	
-	// change this to proccess.env
-	fetch(Config.Logging.Webhook.URL, {
-		method: 'post',
+	fetch(process.env.WEBHOOK, {
+		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ username, content, avatar_url: Config.Logging.Webhook.IMG })
+		body: JSON.stringify({ content })
 	});
 };
