@@ -253,7 +253,6 @@ zFramework.Functions.RepairVehicle = () => {
 	SetVehicleDirtLevel(vehicle, 0.0);
 	SetVehicleFuelLevel(vehicle, 65.0);
 };
-
 onNet('Client.RepairVehicle', zFramework.Functions.RepairVehicle);
 
 zFramework.Functions.Notify = (message, color) => {
@@ -263,7 +262,6 @@ zFramework.Functions.Notify = (message, color) => {
 	DrawNotification(false, true);
 	PlaySound(-1, "NAV", "HUD_AMMO_SHOP_SOUNDSET", 0, 0, 1);
 };
-
 onNet('Client.Notify', zFramework.Functions.Notify);
 
 zFramework.Functions.TopNotify = (message, beep) => {
@@ -271,7 +269,6 @@ zFramework.Functions.TopNotify = (message, beep) => {
 	AddTextComponentString(message);
 	DisplayHelpTextFromStringLabel(0, 0, beep, -1);
 };
-
 onNet('Client.TopNotify', zFramework.Functions.TopNotify);
 
 onNet('Client.ShowId', (type, card) => {
@@ -305,7 +302,6 @@ zFramework.Functions.SetModel = async function(model) {
 		if (hasLoaded) {
 			SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
 			zFramework.LocalPlayer.model = model;
-			emit("Client.OnPlayerModelChanged");
 		}
 	});
 };
