@@ -19,8 +19,7 @@ CREATE TABLE `players` (
 	`job_rank` INT(1) NOT NULL DEFAULT '0',
 	`location` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
 	`dead` TINYINT(1) NOT NULL DEFAULT '0',
-	`skin` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-	`identity` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`character` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
 	PRIMARY KEY (`license`) USING BTREE
 )
 COLLATE='utf8_general_ci'
