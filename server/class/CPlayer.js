@@ -2,33 +2,38 @@ import Vector3 from "../../shared/class/CVector3";
 
 export default class CPlayer {
     constructor(data) {
+        data = JSON.parse(data);
+
         this._serverId       = data.serverId;
         this._pedId          = data.pedId;
-        this._name           = data.playerName;
-        this._money          = data.playerMoney;
-        this._dirtyMoney     = data.playerDirtyMoney;
-        this._bank           = data.playerBank;
+        this._uuid           = data.UUID;
+        this._name           = data.name;
         this._spawnLocation  = data.spawnLocation;
-        this._model          = data.playerModel;
-        this._group          = data.playerGroup;
-        this._level          = data.playerLevel;
-        this._rank           = data.playerRank;
-        this._job            = data.playerJob;
-        this._jobRank        = data.playerJobRank;
-        this._inventory      = data.playerInventory;
-        this._needs          = data.playerNeeds;
-        this._identity       = data.playerIdentity;
-        this._skin           = data.playerSkin;
-        this._licenseId      = data.licenseId;
-        this._discordId      = data.discordId;
+        this._model          = data.model;
+        this._money          = data.money;
+        this._dirtyMoney     = data.dirtyMoney;
+        this._bank           = data.bank;
+        this._character      = data.character;
+        this._needs          = data.needs;
+        this._inventory      = data.inventory;
+        this._licenses       = data.licenses;
         this._dead           = data.dead;
-        this._uuid           = data.playerUUID;
+        this._rank           = data.rank;
+        this._group          = data.group;
+        this._job            = data.job;
+        this._jobRank        = data.jobRank;
         this._firstSpawn     = data.firstSpawn;
         this._initialized    = false;
 
-        ExecuteCommand(`add_principal identifier.${this._licenseId} group.${this._group}`);
+        ExecuteCommand(`add_principal identifier.${this._licenses.rockstar} group.${this._group}`);
 
-        this.clientEvent('Client.CreatePlayer', data);
+        this.clientEvent('Client.CreatePlayer', JSON.stringify(data));
+    }
+
+    /**
+    */
+    set pedId(id) {
+        this._pedId = id;
     }
 
     /**
@@ -72,19 +77,28 @@ export default class CPlayer {
     /**
     * @param {Object} data
     */
-    set skin(data) {
-        this._skin = data;
+    set character(data) {
+        this._character = data;
 
-        this.clientEvent('Client.UpdateVar', "skin", this._skin);
+        this.clientEvent('Client.UpdateVar', "character", this._character);
     }
 
     /**
     * @param {Object} data
     */
-    set identity(data) {
-        this._identity = data;
+    set needs(data) {
+        for (const type in data) this._needs[type] = data[type];
+        
+        this.clientEvent('Client.UpdateVar', "needs", this._needs);
+    }
 
-        this.clientEvent('Client.UpdateVar', "identity", this._identity);
+    /**
+    * @param {Object} data
+    */
+    set inventory(data) {
+        this._inventory = data;
+
+        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
     }
 
     /**
@@ -94,15 +108,6 @@ export default class CPlayer {
         this._dead = toggle;
 
         this.clientEvent('Client.UpdateVar', "dead", this._dead);
-    }
-
-    /**
-    * @param {Number} amount
-    */
-    set level(amount) {
-        this._level = amount;
-
-        this.clientEvent('Client.UpdateVar', "level", this._level);
     }
 
     /**
@@ -131,7 +136,6 @@ export default class CPlayer {
     set job(id)  {
         return (async () => {
             const job = await zFramework.Jobs.GetJobFromId(id);
-            
             this._job = job;
     
             this.clientEvent('Client.UpdateVar', "job", this._job);
@@ -148,24 +152,6 @@ export default class CPlayer {
     }
 
     /**
-    * @param {Object} data
-    */
-    set inventory(data) {
-        this._inventory = data;
-
-        this.clientEvent('Client.UpdateVar', "inventory", this._inventory);
-    }
-
-    /**
-    * @param {Object} data
-    */
-    set needs(data) {
-        for (const type in data) this._needs[type] = data[type];
-        
-        this.clientEvent('Client.UpdateVar', "needs", this._needs);
-    }
-
-    /**
     * @param {Boolean} toggle
     */
     set initialized(toggle) {
@@ -178,9 +164,25 @@ export default class CPlayer {
     get serverId() {
         return this._serverId;
     }
+
+    get pedId() {
+        return this._pedId;
+    }
+    
+    get UUID() {
+        return this._uuid;
+    }
     
     get name() {
         return this._name;
+    }
+
+    get spawnLocation() {
+        return this._spawnLocation;
+    }
+
+    get model() {
+        return this._model;
     }
 
     get money() {
@@ -195,44 +197,24 @@ export default class CPlayer {
         return this._bank;
     }
 
-    get UUID() {
-        return this._uuid;
+    get character() {
+        return this._character;
     }
 
-    get pedId() {
-        return this._pedId;
+    get needs() {
+        return this._needs;
+    }
+    
+    get inventory() {
+        return this._inventory;
     }
 
-    get spawnLocation() {
-        return this._spawnLocation;
-    }
-
-    get model() {
-        return this._model;
-    }
-
-    get skin() {
-        return this._skin;
-    }
-
-    get identity() {
-        return this._identity;
-    }
-
-    get licenseId() {
-        return this._licenseId;
-    }
-
-    get discordId() {
-        return this._discordId;
+    get licenses() {
+        return this._licenses;
     }
 
     get dead() {
         return this._dead;
-    }
-
-    get level() {
-        return this._level;
     }
 
     get rank() {
@@ -243,10 +225,6 @@ export default class CPlayer {
         return this._group;
     }
 
-    get firstSpawn() {
-        return this._firstSpawn;
-    }
-
     get job() {
         return this._job;
     }
@@ -254,13 +232,9 @@ export default class CPlayer {
     get jobRank() {
         return this._jobRank;
     }
-    
-    get inventory() {
-        return this._inventory;
-    }
 
-    get needs() {
-        return this._needs;
+    get firstSpawn() {
+        return this._firstSpawn;
     }
 
     get initialized() {
@@ -336,8 +310,6 @@ export default class CPlayer {
         this.clientEvent('Client.UpdateInventory', this.inventory, name);
     }
 
-    getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
-
     setLocation = (location) => {
         SetEntityCoords(this._pedId, location.x, location.y, location.z)
         if (location.heading || location.h) SetEntityHeading(this._pedId, location.heading);
@@ -345,29 +317,33 @@ export default class CPlayer {
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
-    canSave = () => this._initialized;
+    getHeading = () => parseFloat(GetEntityHeading(this.pedId).toFixed(2));
+
+    getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
     kick = (reason = "Aucune raison spécifiée") => DropPlayer(this._serverId, reason);
 
-    ban = (time, reason) => ExecuteCommand(`bana ${this._serverId} ${time} ${reason}`);
+    ban = (time, reason = "Aucune raison spécifiée") => ExecuteCommand(`bana ${this._serverId} ${time} ${reason}`);
 
     notify = (text) => this.clientEvent("Client.Notify", text);
+
+    canSave = () => this._initialized && this._character;
     
     savePlayer = async () => {
         if (!this.canSave()) return;
-
         this._needs.health = GetEntityHealth(this._pedId);
-        let playerData = [this._money, this._dirtyMoney, this._bank, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: parseFloat(GetEntityHeading(this.pedId).toFixed(2))}), this._level, this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), this._licenseId];
 
+        let query = "UPDATE players SET money = ?, dirtyMoney = ?, bank = ?, model = ?, location = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ?, character = ? WHERE rockstar = ?";
+        const playerData = [this._money, this._dirtyMoney, this._bank, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: this.getHeading()}), this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), JSON.stringify(this._character), this._licenses.rockstar];
         if (this._firstSpawn) {
-            playerData.push(this._discordId, GetPlayerEndpoint(this._serverId), JSON.stringify(this._identity), JSON.stringify(this._skin), this._uuid);
-            return await zFramework.Database.Query('INSERT INTO players (money, dirtyMoney, bank, model, location, level, rank, players.group, dead, job, job_rank, inventory, needs, license, discord, ip, players.identity, skin, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', playerData).then(() => {
-				console.log(`\x1b[33m[zFramework]\x1b[37m ${this._name} created in the DB.`);
-			});
+            playerData.push(this._licenses.discord, GetPlayerEndpoint(this._serverId), this._uuid);
+            query = "INSERT INTO players (money, dirtyMoney, bank, model, location, rank, players.group, dead, job, job_rank, inventory, needs, character, rockstar, discord, ip, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
         
-        return await zFramework.Database.Query('UPDATE players SET money = ?, dirtyMoney = ?, bank = ?, model = ?, location = ?, level = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ? WHERE license = ?', playerData).then(() => {
-            console.log(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
+        return await zFramework.Database.Query(query, playerData)
+        .then(() => {
+            if (!this._firstSpawn) zFramework.Functions.Logs(`\x1b[33m[zFramework]\x1b[37m Saved ${this._name}!`);
+            else zFramework.Functions.Logs(`\x1b[33m[zFramework]\x1b[37m Created ${this._name} in the database.`);
         });
     }
 }

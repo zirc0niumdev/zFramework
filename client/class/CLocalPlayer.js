@@ -2,25 +2,25 @@ import Vector3 from "../../shared/class/CVector3";
 
 export default class CLocalPlayer {
     constructor(data) {
+        data = JSON.parse(data);
+
         this._id             = PlayerId();
         this._serverId       = data.serverId;
         this._pedId          = PlayerPedId();
-        this._money          = data.playerMoney;
-        this._dirtyMoney     = data.playerDirtyMoney;
-        this._bank           = data.playerBank;
-        this._spawnLocation  = data.spawnLocation;
-        this._model          = data.playerModel;
-        this._group          = data.playerGroup;
-        this._level          = data.playerLevel;
-        this._rank           = data.playerRank;
-        this._job            = data.playerJob;
-        this._jobRank        = data.playerJobRank;
-        this._inventory      = data.playerInventory;
-        this._needs          = data.playerNeeds;
-        this._identity       = data.playerIdentity;
-        this._skin           = data.playerSkin;
+        this._uuid           = data.UUID;
+        this._name           = data.name;
+        this._model          = data.model;
+        this._money          = data.money;
+        this._dirtyMoney     = data.dirtyMoney;
+        this._bank           = data.bank;
+        this._character      = data.character;
+        this._needs          = data.needs;
+        this._inventory      = data.inventory;
         this._dead           = data.dead;
-        this._uuid           = data.playerUUID;
+        this._rank           = data.rank;
+        this._group          = data.group;
+        this._job            = data.job;
+        this._jobRank        = data.jobRank;
         this._invincible     = false;
         this._invisible      = false;
         this._freeze         = false;
@@ -44,6 +44,14 @@ export default class CLocalPlayer {
     */
     set pedId(id) {
         this._pedId = id;
+    }
+
+    /**
+    * @param {string} name
+    */
+    set model(name) {
+        this._model = name;
+        this._pedId = PlayerPedId();
     }
 
     /**
@@ -71,25 +79,28 @@ export default class CLocalPlayer {
     }
 
     /**
-    * @param {string} name
+    * @param {Object} data
     */
-    set model(name) {
-        this._model = name;
-        this._pedId = PlayerPedId();
+    set character(data) {
+        this._character = data;
     }
 
     /**
     * @param {Object} data
     */
-    set skin(data) {
-        this._skin = data;
+    set needs(data) {
+        this._needs = data;
+
+        zFramework.Core.Needs.OnUpdated();
     }
 
     /**
     * @param {Object} data
     */
-    set identity(data) {
-        this._identity = data;
+    set inventory(data) {
+        this._inventory = data;
+
+        zFramework.Core.Inventory.OnUpdated();
     }
 
     /**
@@ -97,13 +108,6 @@ export default class CLocalPlayer {
     */
     set dead(toggle) {
         this._dead = toggle;
-    }
-
-    /**
-    * @param {number} amount
-    */
-    set level(amount) {
-        this._level = amount;
     }
 
     /**
@@ -118,6 +122,20 @@ export default class CLocalPlayer {
     */
     set group(type) {
         this._group = type;
+    }
+
+    /**
+    * @param {Object} job
+    */
+    set job(job) {
+        this._job = job;
+    }
+
+    /**
+    * @param {number} id
+    */
+    set jobRank(id) {
+        this._jobRank = id;
     }
 
     /**
@@ -144,6 +162,7 @@ export default class CLocalPlayer {
     set freeze(toggle) {
         this._freeze = toggle;
         FreezeEntityPosition(this._pedId, toggle);
+        if (this._group > zFramework.Groups.PLAYER) zFramework.Functions.Notify(`Freeze ${toggle && "~g~ACTIVE" || "~r~DESACTIVE"}`);
     }
 
     /**
@@ -226,38 +245,6 @@ export default class CLocalPlayer {
     }
 
     /**
-    * @param {Object} job
-    */
-    set job(job) {
-        this._job = job;
-    }
-
-    /**
-    * @param {number} id
-    */
-    set jobRank(id) {
-        this._jobRank = id;
-    }
-
-    /**
-    * @param {Object} data
-    */
-    set inventory(data) {
-        this._inventory = data;
-
-        zFramework.Core.Inventory.OnUpdated();
-    }
-
-    /**
-    * @param {Object} data
-    */
-    set needs(data) {
-        this._needs = data;
-
-        zFramework.Core.Needs.OnUpdated();
-    }
-
-    /**
     * @param {boolean} toggle
     */
     set initialized(toggle) {
@@ -271,16 +258,24 @@ export default class CLocalPlayer {
         return this._id;
     }
 
-    get pedId() {
-        return this._pedId;
-    }
-
     get serverId() {
         return this._serverId;
     }
 
+    get pedId() {
+        return this._pedId;
+    }
+
     get UUID() {
         return this._uuid;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get model() {
+        return this._model;
     }
 
     get money() {
@@ -295,24 +290,36 @@ export default class CLocalPlayer {
         return this._bank;
     }
 
-    get spawnLocation() {
-        return this._spawnLocation;
+    get character() {
+        return this._character;
     }
-
-    get model() {
-        return this._model;
+    
+    get needs() {
+        return this._needs;
     }
-
-    get skin() {
-        return this._skin;
-    }
-
-    get identity() {
-        return this._identity;
+    
+    get inventory() {
+        return this._inventory;
     }
 
     get dead() {
         return this._dead;
+    }
+
+    get rank() {
+        return this._rank;
+    }
+
+    get group() {
+        return this._group;
+    }
+
+    get job() {
+        return this._job;
+    }
+    
+    get jobRank() {
+        return this._jobRank;
     }
 
     get ko() {
@@ -333,18 +340,6 @@ export default class CLocalPlayer {
 
     get cantRun() {
         return this._cantRun;
-    }
-
-    get level() {
-        return this._level;
-    }
-
-    get rank() {
-        return this._rank;
-    }
-
-    get group() {
-        return this._group;
     }
 
     get invincible() {
@@ -369,22 +364,6 @@ export default class CLocalPlayer {
 
     get afk() {
         return this._afk;
-    }
-
-    get job() {
-        return this._job;
-    }
-    
-    get jobRank() {
-        return this._jobRank;
-    }
-    
-    get inventory() {
-        return this._inventory;
-    }
-    
-    get needs() {
-        return this._needs;
     }
 
     get initialized() {
@@ -412,9 +391,9 @@ export default class CLocalPlayer {
     }
 
     onInitialized = async () => {
-        this.applyDefaultOutfit();
+        //this.applyDefaultOutfit();
 
-        if (!this._identity && !this._skin) emit('Client.OpenCharacterCreator');
+        if (!this._character) zFramework.Core.CharacterCreator.Open();
         else {
             this.loadSkin();
             /// Load Clothes (PUT ON READY IN LOAD CLOTHES!!!)
@@ -423,13 +402,12 @@ export default class CLocalPlayer {
         if (this._dead && !IsEntityDead(this._pedId)) ApplyDamageToPed(this._pedId, 500);
         else SetEntityHealth(this._pedId, this._needs.health);
 
-        DoScreenFadeIn(2000);
-
         this.tick();
-        this.utils();
+        this.thread();
     }
 
     onReady = () => {
+        DoScreenFadeIn(2000);
         PlaySoundFrontend(-1, "CHARACTER_SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
         zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
@@ -538,7 +516,7 @@ export default class CLocalPlayer {
         });
     }
 
-    utils = () => {
+    thread = () => {
         const SCENARIO_TYPES = ["WORLD_VEHICLE_MILITARY_PLANES_SMALL", "WORLD_VEHICLE_MILITARY_PLANES_BIG"];
 	    const SCENARIO_GROUPS = [2017590552, 2141866469, 1409640232, "ng_planes"];
 	    const SUPPRESSED_MODELS = ["BLIMP", "SHAMAL", "LUXOR", "LUXOR2", "JET", "LAZER", "TITAN", "BARRACKS", "BARRACKS2", "CRUSADER", "RHINO", "AIRTUG", "RIPLEY", "MIXER", "FIRETRUK", "duster", "frogger", "maverick", "buzzard", "buzzard2", "polmav", "tanker", "tanker2"];

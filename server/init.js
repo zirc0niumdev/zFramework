@@ -12,7 +12,7 @@ zFramework.Functions.onReady = () => {
 on("playerConnecting", async (_, __, deferrals) => {
 	const playerId = global.source;
 
-	console.log(`[${global.source}] ${GetPlayerName(playerId)} joined!`);
+	zFramework.Functions.Logs(`[${global.source}] ${GetPlayerName(playerId)} joined!`);
 
 	deferrals.defer();
 	
@@ -57,35 +57,32 @@ on("playerConnecting", async (_, __, deferrals) => {
 
 onNet('Server.GeneratePlayer', async () => {
 	const playerId = global.source;
-	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-connected");
+	if (zFramework.Players[playerId]) return DropPlayer(playerId, "Une erreur à été rencontrée lors de votre connexion. Code Erreur: error-player-already-exists");
 
 	const identifiers = zFramework.Functions.GetIdentifiersFromId(playerId);
-	await zFramework.Database.Query('SELECT * FROM players WHERE license = ?', identifiers.license)
+	await zFramework.Database.Query('SELECT * FROM players WHERE rockstar = ?', identifiers.license)
 	.then(async res => {
-		const tempPlayerData = {
+		const tempPlayerData = JSON.stringify({
 			serverId: playerId,
 			pedId: GetPlayerPed(playerId),
-			playerMoney: res[0] && res[0].money || 250,
-			playerDirtyMoney: res[0] && res[0].dirtyMoney || 0,
-			playerBank: res[0] && res[0].bank || 500,
-			playerUUID: res[0] && res[0].uuid || zFramework.Functions.GenerateUUID(),
-			playerName: GetPlayerName(playerId),
+			UUID: res[0] && res[0].uuid || zFramework.Functions.GenerateUUID(),
+			name: GetPlayerName(playerId),
 			spawnLocation: res[0] && JSON.parse(res[0].location) || { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },
-			playerModel: res[0] && res[0].model || "mp_m_freemode_01",
-			playerGroup: res[0] && res[0].group || zFramework.Groups.PLAYER,
-			playerLevel: res[0] && res[0].level || 0,
-			playerRank: res[0] && res[0].rank || zFramework.Ranks.CITIZEN,
-			playerJob: await zFramework.Jobs.GetJobFromId(res[0] && res[0].job || 1),
-			playerJobRank: res[0] && res[0].job_rank || 0,
-			playerInventory: res[0] && JSON.parse(res[0].inventory) || { items: {}, weight: 0, weaponOne: "", weaponTwo: "", weaponThree: "" },
-			playerNeeds: res[0] && JSON.parse(res[0].needs) || { hunger: 100, thirst: 100, health: 200 },
-			licenseId: res[0] && res[0].license || identifiers.license,
-			discordId: res[0] && res[0].discord || identifiers.discord,
+			model: res[0] && res[0].model || "mp_m_freemode_01",
+			money: res[0] && res[0].money || 250,
+			dirtyMoney: res[0] && res[0].dirtyMoney || 0,
+			bank: res[0] && res[0].bank || 500,
+			character: res[0] && JSON.parse(res[0].character) || null,
+			needs: res[0] && JSON.parse(res[0].needs) || { hunger: 100, thirst: 100, health: 200 },
+			inventory: res[0] && JSON.parse(res[0].inventory) || { items: {}, weight: 0, weaponOne: "", weaponTwo: "", weaponThree: "" },
+			licenses: { rockstar: res[0] && res[0].license || identifiers.license, discord: res[0] && res[0].discord || identifiers.discord },
 			dead: res[0] && res[0].dead || false,
-			firstSpawn: !res[0] && true || false,
-			playerSkin: res[0] && JSON.parse(res[0].skin) || null,
-			playerIdentity: res[0] && JSON.parse(res[0].identity) || null
-		}
+			rank: res[0] && res[0].rank || zFramework.Ranks.CITIZEN,
+			group: res[0] && res[0].group || zFramework.Groups.PLAYER,
+			job: await zFramework.Jobs.GetJobFromId(res[0] && res[0].job || 1),
+			jobRank: res[0] && res[0].job_rank || 0,
+			firstSpawn: !res[0] && true || false
+		});
 
 		zFramework.Players[playerId] = new CPlayer(tempPlayerData);	
 	});
@@ -93,7 +90,7 @@ onNet('Server.GeneratePlayer', async () => {
 
 onNet("Server.onPlayerSpawned", async () => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
-	console.log(`[${global.source}] ${player.name} spawned!`);
+	zFramework.Functions.Logs(`[${global.source}] ${player.name} spawned!`);
 
 	player.setLocation(player.spawnLocation);
 
@@ -116,7 +113,7 @@ onNet("Server.onPlayerSpawned", async () => {
 });
 
 on("playerDropped", async reason => {
-	console.log(`[${global.source}] ${GetPlayerName(global.source)} disconnected - Reason: ${reason}`);
+	zFramework.Functions.Logs(`[${global.source}] ${GetPlayerName(global.source)} disconnected - Reason: ${reason}`);
 	
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
 	player.savePlayer().then(() => delete zFramework.Players[player.serverId]);
