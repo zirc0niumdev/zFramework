@@ -32,6 +32,11 @@ zFramework.Functions.GetIdentifiersFromId = (id, minimal = false) => {
 	return identifiersObj;
 }
 
+zFramework.Functions.Logs = (message) => {
+	console.log(message);
+	zFramework.Modules.Discord.SendMessage(message);
+}
+
 zFramework.Functions.CheckIdentifiers = id => {
 	return new Promise((resolve, reject) => {
 		const identifiers = zFramework.Functions.GetIdentifiersFromId(id);
