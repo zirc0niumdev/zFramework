@@ -65,6 +65,14 @@ export default class Vector3 {
         return Math.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
     }
 
+    reverse() {
+        this.x = -this.x;
+        this.y = -this.y;
+        this.z = -this.z;
+
+        return this;
+    }
+
     /**
     * Multiply the given Quaternion with this vector.
     *
