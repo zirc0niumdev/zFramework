@@ -11,7 +11,8 @@ zFramework.Modules.Weather.PickWeather = data => {
 zFramework.Modules.Weather.Initialize = function() {
     new CCommands("freezetime", zFramework.Groups.SUPERADMIN, (player, args) => {
         zFramework.Modules.Weather.Freezed = !zFramework.Modules.Weather.Freezed;
-        player.notify(`~g~Vous~w~ avez ${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"} le temps !`);
+        player && player.notify(`~g~Vous~w~ avez ~b~${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"}~s~ le temps et la météo !`);
+        zFramework.Functions.Logs(`${player.name} à ~b~${zFramework.Modules.Weather.Freezed ? "freeze" : "unfreeze"}~s~ le temps et la météo !`);
     }, {help: "haha"});
     
     new CCommands("time", zFramework.Groups.SUPERADMIN, (player, args) => {
@@ -22,20 +23,22 @@ zFramework.Modules.Weather.Initialize = function() {
         zFramework.Modules.Weather.Time.Minute = Number(args[1]);
     
         emitNet('Client.SetWeather', -1, null, zFramework.Modules.Weather.Time);
-        player.notify(`~g~Vous~w~ avez set le temps à ${args[0]} ${args[1]} !`);
+        player && player.notify(`~g~Vous~w~ avez set le temps à ${args[0]} ${args[1]} !`);
+        zFramework.Functions.Logs(`${player.name} à set le temps à ${args[0]} ${args[1]} !`);
     }, {help: "haha"});
     
     new CCommands("weather", zFramework.Groups.SUPERADMIN, (player, args) => {
         const weatherFound = zFramework.Modules.Weather.List.find(weather => weather.name === args[0]);
-        if (!weatherFound) return;
+        if (!weatherFound) return //weather list;
     
         emitNet('Client.SetWeather', -1, weatherFound.name, null);
-        player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
+        player && player.notify(`~g~Vous~w~ avez set la météo sur ${weatherFound.name} !`);
+        zFramework.Functions.Logs(`${player.name} à set la météo sur ${weatherFound.name} !`);
     }, {help: "haha"});
 
     // Time of Day
     const timeChangeInterval = setInterval(() => {
-        if (this.Freezed == false) return;
+        if (!this.Freezed) return;
 
         this.Time.Minute++;
     
@@ -52,7 +55,7 @@ zFramework.Modules.Weather.Initialize = function() {
     
     // Weather
     const weatherInterval = setInterval(() =>  {
-        if (this.Freezed == false) return;
+        if (!this.Freezed) return;
         emitNet('Client.SetWeather', -1, this.PickWeather(this.List), null);
     }, 3600000);
 
