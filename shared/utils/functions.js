@@ -8,6 +8,12 @@ Capitalize = (s) => typeof s !== "string" ? "" : s.charAt(0).toUpperCase() + s.s
 
 RandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
+NumberToArray = (num) => {
+	let array = [];
+	for (i=0; i <= num; i++) array.push(i);
+	return array;
+}
+
 SecondsToClock = (seconds) => {
 	seconds = parseInt(seconds);
 
