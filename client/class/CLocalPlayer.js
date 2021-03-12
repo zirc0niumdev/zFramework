@@ -10,6 +10,7 @@ export default class CLocalPlayer {
         this._uuid           = data.UUID;
         this._name           = data.name;
         this._model          = data.model;
+        this._sex            = data.sex;
         this._money          = data.money;
         this._dirtyMoney     = data.dirtyMoney;
         this._bank           = data.bank;
@@ -52,6 +53,13 @@ export default class CLocalPlayer {
     set model(name) {
         this._model = name;
         this._pedId = PlayerPedId();
+    }
+
+    /**
+    * @param {Number} num
+    */
+    set sex(num) {
+        this._sex = num;
     }
 
     /**
@@ -276,6 +284,10 @@ export default class CLocalPlayer {
 
     get model() {
         return this._model;
+    }
+
+    get sex() {
+        return this._sex;
     }
 
     get money() {

@@ -10,6 +10,7 @@ export default class CPlayer {
         this._name           = data.name;
         this._spawnLocation  = data.spawnLocation;
         this._model          = data.model;
+        this._sex            = data.sex;
         this._money          = data.money;
         this._dirtyMoney     = data.dirtyMoney;
         this._bank           = data.bank;
@@ -44,7 +45,15 @@ export default class CPlayer {
         this._pedId = GetPlayerPed(this._serverId);
 
         this.clientEvent('Client.UpdateVar', "model", this._model);
-        this.clientEvent('Client.OnPlayerModelChanged', this._model);
+    }
+
+    /**
+    * @param {Number} num
+    */
+    set sex(num) {
+        this._sex = num;
+
+        this.clientEvent('Client.UpdateVar', "sex", this._sex);
     }
 
     /**
@@ -183,6 +192,10 @@ export default class CPlayer {
 
     get model() {
         return this._model;
+    }
+
+    get sex() {
+        return this._sex;
     }
 
     get money() {
@@ -333,11 +346,11 @@ export default class CPlayer {
         if (!this.canSave()) return;
         this._needs.health = GetEntityHealth(this._pedId);
 
-        let query = "UPDATE players SET money = ?, dirtyMoney = ?, bank = ?, model = ?, location = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ?, character = ? WHERE rockstar = ?";
+        let query = "UPDATE players SET money = ?, dirtyMoney = ?, bank = ?, model = ?, sex = ?, location = ?, rank = ?, players.group = ?, dead = ?, job = ?, job_rank = ?, inventory = ?, needs = ?, character = ? WHERE rockstar = ?";
         const playerData = [this._money, this._dirtyMoney, this._bank, this._model, JSON.stringify({x: this.getLocation().x, y: this.getLocation().y, z: this.getLocation().z, heading: this.getHeading()}), this._rank, this._group, this._dead, this._job["id"], this._jobRank, JSON.stringify(this._inventory), JSON.stringify(this._needs), JSON.stringify(this._character), this._licenses.rockstar];
         if (this._firstSpawn) {
             playerData.push(this._licenses.discord, GetPlayerEndpoint(this._serverId), this._uuid);
-            query = "INSERT INTO players (money, dirtyMoney, bank, model, location, rank, players.group, dead, job, job_rank, inventory, needs, character, rockstar, discord, ip, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            query = "INSERT INTO players (money, dirtyMoney, bank, model, sex, location, rank, players.group, dead, job, job_rank, inventory, needs, character, rockstar, discord, ip, uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
         
         return await zFramework.Database.Query(query, playerData)
