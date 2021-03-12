@@ -69,6 +69,7 @@ onNet('Server.GeneratePlayer', async () => {
 			name: GetPlayerName(playerId),
 			spawnLocation: res[0] && JSON.parse(res[0].location) || { x: -1040.5, y: -2742.8, z: 13.9, heading: 0.0 },
 			model: res[0] && res[0].model || "mp_m_freemode_01",
+			sex: res[0] && res[0].sex || 0,
 			money: res[0] && res[0].money || 250,
 			dirtyMoney: res[0] && res[0].dirtyMoney || 0,
 			bank: res[0] && res[0].bank || 500,
