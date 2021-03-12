@@ -13,7 +13,7 @@ on("gameEventTriggered", (name, args) => {
         const victim = args[i++];
         const instigator = args[i++];
   
-        i++; // skip unknown value
+        i++; // skip unknown default boolean value
         i++; // skip unknown 2060 new boolean value
         i++; // skip unknown 2189 new boolean value
   
