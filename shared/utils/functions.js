@@ -2,7 +2,12 @@ const util = require('util');
 
 getDate = () => new Date().toLocaleString("fr-FR", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
 
-Delay = (ms) => new Promise((res) => setTimeout(res, ms));
+Delay = (ms) => new Promise((resolve) => {
+	const timeout = setTimeout(() => {
+		clearTimeout(timeout);
+		return resolve();
+	}, ms);
+});
 
 Capitalize = (s) => typeof s !== "string" ? "" : s.charAt(0).toUpperCase() + s.slice(1);
 
