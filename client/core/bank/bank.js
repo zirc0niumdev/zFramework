@@ -24,7 +24,7 @@ zFramework.Core.Bank.FetchCBFromInv = () => {
     myCardsItem.Index = 0;
 }
 
-const centralMenu = new NativeUI.Menu("Banque centrale", "Menu banque", new NativeUI.Point(50, 50));
+const centralMenu = new NativeUI.Menu("Banque centrale", "Menu principal", new NativeUI.Point(50, 50));
 function registerCentralMenu() {
     const buyCardItem = new NativeUI.UIMenuItem("Demander une nouvelle carte");
 
