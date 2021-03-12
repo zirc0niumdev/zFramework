@@ -1,15 +1,18 @@
 # zFramework
-Roleplay Framework for [FiveM](https://github.com/citizenfx/fivem) made in [Node.js](https://nodejs.org/en/)
-This project was used to be a custom Framework for **SantosRP**.
+A [Node.js](https://nodejs.org/en/) "RolePlay" framework for [FiveM](https://github.com/citizenfx/fivem).
+This project was used to be a personal Framework for **SantosRP**.
+
+## Requirements
+- [Node.js](https://nodejs.org/en/)
 
 ## How to use
-- You need Node.js
-- `npm install` to install modules
-- `npm run build` to compile files
-- Create a .env file with this content (change this with your db settings.)
+- `npm install`
+- `npm run build` | `npm run dev`
+- Create a .env file with this content (change this with your own settings.)
 ```
 DB_HOST=
 DB_USER=
 DB_PASSWORD=
 DB_DATABASE=
+WEBHOOK=
 ```
