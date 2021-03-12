@@ -271,9 +271,21 @@ zFramework.Functions.TopNotify = (message, beep) => {
 };
 onNet('Client.TopNotify', zFramework.Functions.TopNotify);
 
+
+zFramework.Functions.SetModel = async function(model) {
+	await this.RequestModel(model)
+	.then(hasLoaded => {
+		if (hasLoaded) {
+			SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
+			zFramework.LocalPlayer.model = model;
+		}
+	});
+};
+onNet("Client.SetModel", model => zFramework.Functions.SetModel(model));
+
 onNet('Client.ShowId', (type, card) => {
 	const { identity } = card;
-	let data = null;
+	let data;
 
 	switch (type) {
 		// Carte identité
@@ -294,16 +306,3 @@ onNet('Client.ShowId', (type, card) => {
 
 	TriggerEvent('Client.ToggleNui', data);
 });
-
-
-zFramework.Functions.SetModel = async function(model) {
-	await this.RequestModel(model)
-	.then(hasLoaded => {
-		if (hasLoaded) {
-			SetPlayerModel(zFramework.LocalPlayer.playerId, GetHashKey(model));
-			zFramework.LocalPlayer.model = model;
-		}
-	});
-};
-
-onNet("Client.SetModel", model => zFramework.Functions.SetModel(model));
