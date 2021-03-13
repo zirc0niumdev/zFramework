@@ -48,7 +48,7 @@ function transferItem(item, isDrop) {
     if (!item.amount || zFramework.Core.Inventory.GetItemAmount(zFramework.LocalPlayer.inventory, item.name) - item.amount < 0) return zFramework.Functions.Notify(`~r~Vous n'avez pas autant de ${item.name}.`);
 
     if (item.amount && item.amount >= 1) {
-        let items = [];
+        const items = [];
 
         for (let i=0; i < item.amount; i++) {
             if (!zFramework.LocalPlayer.inventory.items[item.name][i]) break;
@@ -193,7 +193,7 @@ zFramework.Core.Inventory.OnUpdated = function() {
 }
 
 function formatInventoryForNUI(inv, money, dirtyMoney) {
-    let items = [], clothes = [];
+    const items = [], clothes = [];
 
     for (const [itemName, itemTbl] of Object.entries(inv)) {
         let itemsTbl = { 0: { keys: [] } };
@@ -361,6 +361,8 @@ zFramework.Core.Inventory.Thread = function() {
 }
 
 function takeWeapon(slot) {
+    if (UpdateOnscreenKeyboard() == 0) return;
+    
     const weapon = zFramework.LocalPlayer.inventory[zFramework.Core.Inventory.WeaponSlot[slot]];
     if (weapon && zFramework.Functions.GetJsonConfig("weapons", weapon) && zFramework.LocalPlayer.inventory.items[weapon])
         inventoryAction(1, { name: weapon, itemKey: [0], amount: 1 });
