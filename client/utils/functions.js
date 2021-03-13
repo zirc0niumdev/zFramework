@@ -22,12 +22,12 @@ zFramework.Functions.GetEntityLocation = (entity) => {
 	return new Vector3(GetEntityCoords(entity)[0].toFixed(2), GetEntityCoords(entity)[1].toFixed(2), GetEntityCoords(entity)[2].toFixed(2));
 }
 
-zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", MaxStringLenght = 60) => {
+zFramework.Functions.KeyboardInput = (title = "Montant", defaultText = "", maxStringLenght = 60) => {
 	const timeout = 0;
 
-	AddTextEntry('FMMC_KEY_TIP8', TextEntry);
-	return new Promise((resolve, reject) => {
-		DisplayOnscreenKeyboard(false, "FMMC_KEY_TIP8", "", DefaultText, "", "", "", MaxStringLenght);
+	AddTextEntry('FMMC_KEY_TIP8', title);
+	return new Promise(resolve => {
+		DisplayOnscreenKeyboard(false, "FMMC_KEY_TIP8", "", defaultText, "", "", "", maxStringLenght);
 		
 		const endTime = Date.now() + timeout;
 		const timer = setInterval(() => {
@@ -35,7 +35,7 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 				ForceCloseTextInputBox()
 
 				clearInterval(timer);
-				resolve(false);
+				resolve(defaultText || false);
 			}
 
 			switch (UpdateOnscreenKeyboard()) {
@@ -45,16 +45,13 @@ zFramework.Functions.KeyboardInput = (TextEntry = "Montant", DefaultText = "", M
 					let result = GetOnscreenKeyboardResult();
 					if (result) result = result.trim();
 
-					if (!result || result.length === 0)resolve(false);
+					if (!result || result.length === 0) resolve(false);
 					else resolve(result);
 					break;
 				case 2:
-					clearInterval(timer);
-					resolve(false);
-					break;
 				case 3:
 					clearInterval(timer);
-					resolve(false);
+					resolve(defaultText || false);
 					break;
 			}
 		}, 100);
