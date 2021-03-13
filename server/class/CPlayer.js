@@ -325,12 +325,12 @@ export default class CPlayer {
 
     setLocation = (location) => {
         SetEntityCoords(this._pedId, location.x, location.y, location.z)
-        if (location.heading || location.h) SetEntityHeading(this._pedId, location.heading);
+        if (location.heading || location.h) SetEntityHeading(this._pedId, location.heading || location.h);
     };
 
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
 
-    getHeading = () => parseFloat(GetEntityHeading(this.pedId).toFixed(2));
+    getHeading = () => parseFloat(GetEntityHeading(this._pedId).toFixed(2));
 
     getIdentifiers = (minimal = false) => zFramework.Functions.GetIdentifiersFromId(this._serverId, minimal);
 
