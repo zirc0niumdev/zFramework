@@ -22,6 +22,7 @@ import InstructionalButton from './modules/InstructionalButton';
 import BigMessage from './modules/BigMessage';
 import MidsizedMessage from './modules/MidsizedMessage';
 import UIMenuDynamicListItem from './items/UIMenuDynamicListItem';
+declare const MenuChange: LiteEvent;
 export default class NativeUI {
     private _visible;
     private _opened;
@@ -87,7 +88,6 @@ export default class NativeUI {
     readonly ItemSelect: LiteEvent;
     readonly MenuOpen: LiteEvent;
     readonly MenuClose: LiteEvent;
-    readonly MenuChange: LiteEvent;
     GetSpriteBanner(): Sprite;
     GetRectangleBanner(): ResRectangle;
     GetTitle(): ResText;
@@ -143,4 +143,4 @@ export default class NativeUI {
     UpdateScaleform(): void;
     private render;
 }
-export { NativeUI as Menu, UIMenuItem, UIMenuListItem, UIMenuAutoListItem, UIMenuDynamicListItem, UIMenuCheckboxItem, UIMenuSliderItem, BadgeStyle, ChangeDirection, Font, Alignment, Control, HudColor, Sprite, ResRectangle, InstructionalButton, Point, Size, Color, ItemsCollection, ListItem, BigMessage, MidsizedMessage };
+export { NativeUI as Menu, UIMenuItem, UIMenuListItem, UIMenuAutoListItem, UIMenuDynamicListItem, UIMenuCheckboxItem, UIMenuSliderItem, BadgeStyle, ChangeDirection, Font, Alignment, Control, HudColor, Sprite, ResRectangle, InstructionalButton, Point, Size, Color, ItemsCollection, ListItem, BigMessage, MidsizedMessage, MenuChange };
