@@ -2,7 +2,7 @@ onNet("Server.Bank.CreateCard", async pin => {
 	const player = await zFramework.Functions.GetPlayerFromId(global.source);
     const data = {
         owner: {
-            name: `${player.identity.lastname} ${player.identity.firstname}`,
+            name: `${player.character.id.lastname} ${player.character.id.firstname}`,
             uuid: player.UUID
         },
         card: {
@@ -54,8 +54,8 @@ onNet("Server.Bank.UpdateSolde", async (type, amount, targetUuid) => {
             if (player.bank - amount < 0) return player.notify("~r~Vous n'avez pas assez d'argent sur votre compte.");
             player.bank -= amount;
             target.bank += amount;
-            player.notify(`Vous avez transféré ~b~$${amount}~s~ sur le compte de ~g~${target.identity.lastname} ${target.identity.firstname}.`);
-            target.notify(`~g~${player.identity.lastname} ${player.identity.firstname}~s~ à transféré ~b~$${amount}~s~ sur votre compte.`);
+            player.notify(`Vous avez transféré ~b~$${amount}~s~ sur le compte de ~g~${target.character.id.lastname} ${target.character.id.firstname}.`);
+            target.notify(`~g~${player.character.id.lastname} ${player.character.id.firstname}~s~ à transféré ~b~$${amount}~s~ sur votre compte.`);
             break;
     }
 });
