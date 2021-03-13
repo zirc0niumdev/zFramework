@@ -14,7 +14,7 @@ Capitalize = (s) => typeof s !== "string" ? "" : s.charAt(0).toUpperCase() + s.s
 RandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 NumberToArray = (num) => {
-	let array = [];
+	const array = [];
 	for (i=0; i <= num; i++) array.push(i);
 	return array;
 }
@@ -23,11 +23,9 @@ SecondsToClock = (seconds) => {
 	seconds = parseInt(seconds);
 
 	if (seconds <= 0) return "00:00";
-	else {
-		const mins = util.format("%d", Math.floor(seconds / 60));
-		const secs = util.format("%d", Math.floor(seconds - mins * 60));
-		return util.format("%s:%s", mins, secs);
-    }
+	const mins = util.format("%d", Math.floor(seconds / 60));
+	const secs = util.format("%d", Math.floor(seconds - mins * 60));
+	return util.format("%s:%s", mins, secs);
 }
 
 UpdateVar = (varName, varValue) => zFramework.LocalPlayer[varName] = varValue;
