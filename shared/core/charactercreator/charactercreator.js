@@ -1,0 +1,1 @@
+zFramework.Core.CharacterCreator = {};

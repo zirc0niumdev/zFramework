@@ -403,13 +403,8 @@ export default class CLocalPlayer {
     }
 
     onInitialized = async () => {
-        //this.applyDefaultOutfit();
-
         if (!this._character) zFramework.Core.CharacterCreator.Open();
-        else {
-            this.loadSkin();
-            /// Load Clothes (PUT ON READY IN LOAD CLOTHES!!!)
-        }
+        else this.loadSkin();
 
         if (this._dead && !IsEntityDead(this._pedId)) ApplyDamageToPed(this._pedId, 500);
         else SetEntityHealth(this._pedId, this._needs.health);
@@ -424,65 +419,26 @@ export default class CLocalPlayer {
         zFramework.Functions.Notify("~p~SantosRP~w~\nBienvenue et bon jeu.");
     }
 
-    isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
-
-    applyDefaultOutfit = () => {
-        SetPedDefaultComponentVariation(this._pedId);
-        SetPedComponentVariation(this._pedId, 3, 15, 0, 2);
-        SetPedComponentVariation(this._pedId, 8, 15, 0, 2);
-        SetPedComponentVariation(this._pedId, 11, 15, 0, 2);
-
-        if (this._model == "mp_m_freemode_01") {
-            SetPedComponentVariation(this._pedId, 4, 21, 0, 2);
-            SetPedComponentVariation(this._pedId, 6, 34, 0, 2);
-        } else if (this._model == "mp_f_freemode_01") {
-            SetPedComponentVariation(this._pedId, 4, 10, 0, 2);
-            SetPedComponentVariation(this._pedId, 6, 35, 0, 2);
-        }
-    }
-
     loadSkin = () => {
-        // Features
-        for (const feature in this._skin.features) SetPedFaceFeature(this._pedId, parseInt(feature), parseFloat(this._skin.features[feature]));
-
-        // Appearance
-        for (const [index, overlay] of Object.entries(this._skin.appearance)) SetPedHeadOverlay(this._pedId, index, overlay.value, overlay.opacity);
-
-        // Parents
-        SetPedHeadBlendData(
-          this._pedId,
-          parseInt(this._skin.parents.mother),
-          parseInt(this._skin.parents.father),
-          0,
-          parseInt(this._skin.parents.mother),
-          parseInt(this._skin.parents.father),
-          0,
-          parseFloat(this._skin.parents.similarity),
-          parseFloat(this._skin.parents.skinSimilarity),
-          0.0,
-          false
-        );
-
-        // Colors
-        SetPedComponentVariation(this._pedId, 2, this._skin.colors.hair, 0, 2);
-        SetPedHairColor(this._pedId, parseInt(this._skin.colors.hairColor), parseInt(this._skin.colors.hairHighlight));
-        SetPedEyeColor(this._pedId, parseInt(this._skin.colors.eyeColor));
-        SetPedHeadOverlayColor(this._pedId, 1, 1, parseInt(this._skin.colors.beardColor), 0);
-        SetPedHeadOverlayColor(this._pedId, 2, 1, parseInt(this._skin.colors.eyebrowColor), 0);
-        SetPedHeadOverlayColor(this._pedId, 5, 2, parseInt(this._skin.colors.blushColor), 0);
-        SetPedHeadOverlayColor(this._pedId, 8, 2, parseInt(this._skin.colors.lipstickColor), 0);
-        SetPedHeadOverlayColor(this._pedId, 10, 1, parseInt(this._skin.colors.chestColor), 0);
-
-        // Clothes
-
         this.onReady();
     }
 
+    setLocation = (location) => {
+        SetEntityCoords(this._pedId, location.x, location.y, location.z)
+        if (location.heading || location.h) SetEntityHeading(this._pedId, location.heading || location.h);
+    };
+
     getLocation = () => new Vector3(GetEntityCoords(this._pedId)[0].toFixed(2), GetEntityCoords(this._pedId)[1].toFixed(2), GetEntityCoords(this._pedId)[2].toFixed(2));
+
+    getHeading = () => parseFloat(GetEntityHeading(this._pedId).toFixed(2));
 
     getForwardVector = () => new Vector3(GetEntityForwardVector(this._pedId)[0].toFixed(2), GetEntityForwardVector(this._pedId)[1].toFixed(2), GetEntityForwardVector(this._pedId)[2].toFixed(2));
 
     getFront = () => this.getLocation().add(this.getForwardVector().multiply(0.5));
+
+    isPed = () => this._sex > 1;
+
+    isInVehicle = () => GetVehiclePedIsIn(this._pedId, false);
 
     can = () => {
         if (this._busy != 0 || this._dead || this._ko) return false;

@@ -11,7 +11,6 @@ zFramework.Modules.List = {
 };
 
 zFramework.Core.List = {
-	CharacterCreator: false,
 	HUD: true,
 	NPC: true,
 	Inventory: true,
@@ -20,7 +19,8 @@ zFramework.Core.List = {
 	Job: true,
 	LSMS: true,
 	Cloth: true,
-	Admin: true
+	Admin: true,
+	CharacterCreator: true,
 };
 
 if (IsDuplicityVersion()) {

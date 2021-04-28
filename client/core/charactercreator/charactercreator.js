@@ -1,508 +1,520 @@
 import * as NativeUI from "../../class/menu/nativeui.js";
-import * as Data from "./data.js";
 
-const Menu = NativeUI.Menu;
-const UIMenuItem = NativeUI.UIMenuItem;
-const UIMenuListItem = NativeUI.UIMenuListItem;
-const Point = NativeUI.Point;
-const ItemsCollection = NativeUI.ItemsCollection;
-const Color = NativeUI.Color;
+let menuData = {};
 
-function updateParents() {
-    SetPedHeadBlendData(zFramework.LocalPlayer.pedId, Data.mothers[motherItem.Index], Data.fathers[fatherItem.Index], 0, Data.mothers[motherItem.Index], Data.fathers[fatherItem.Index], 0, similarityItem.Index * 0.01, skinSimilarityItem.Index * 0.01, 0.0, false);
+const parentsName = [
+    "Benjamin",
+    "Daniel",
+    "Joshua",
+    "Ryry",
+    "Andrew",
+    "Juan",
+    "Alex",
+    "Isaac",
+    "Evan",
+    "Ethan",
+    "Vincent",
+    "Angel",
+    "Diego",
+    "Adrian",
+    "Gabriel",
+    "Michael",
+    "Santiago",
+    "Kevin",
+    "Louis",
+    "Samuel",
+    "Anthony",
+    "Latina",
+    "Audrey",
+    "Jasmine",
+    "Giselle",
+    "Amelia",
+    "Isabella",
+    "Zoe",
+    "Ava",
+    "Camilia",
+    "Violet",
+    "Sophie",
+    "Evelyn",
+    "Nicole",
+    "Ashley",
+    "Grace",
+    "Briana",
+    "Natalie",
+    "Olivia",
+    "Elizabeth",
+    "Charlotte",
+    "Emma",
+    "Claude",
+    "Niko",
+    "John",
+    "Misty"
+];
+
+const outfits = {
+  0: [
+    {
+        name: "Nu",
+        set: {}
+    },
+    {
+      name: "Bronzage",
+      set: {
+        c: { 3: [5], 4: [6, 2], 6: [5], 8: [15], 11: [5, 7] },
+        p: { 1: [7, 3] },
+      },
+    },
+    {
+      name: "Mauvais goût",
+      set: {
+        c: { 3: [5], 4: [12], 6: [6], 8: [15], 11: [5] },
+        p: { 0: [4, 1], 1: [2] },
+      },
+    },
+    {
+      name: "Négligé",
+      set: {
+        c: { 3: [0], 4: [5], 6: [43, 7], 8: [15], 11: [0, 2] },
+        p: { 1: [2] },
+      },
+    },
+    {
+      name: "Ordinaire",
+      set: {
+        c: { 3: [1], 4: [2, 11], 6: [7], 8: [0, 2], 11: [3] },
+        p: { 0: [4, 1], 1: [2] },
+      },
+    },
+    {
+      name: "Couvert",
+      price: 725,
+      set: { c: { 3: [1], 4: [15], 6: [1], 8: [15], 11: [57] } },
+    },
+    {
+      name: "Sportif",
+      set: {
+        c: { 3: [1], 4: [3, 15], 6: [31], 8: [1, 3], 11: [3, 15] },
+        p: { 1: [10, 11] },
+      },
+    },
+    {
+      name: "Skater",
+      set: {
+        c: { 3: [1], 4: [8], 6: [9, 1], 8: [15], 11: [14, 11] },
+        p: { 0: [2, 4], 1: [9, 4] },
+      },
+    },
+    {
+      name: "Rebelle",
+      set: {
+        c: { 3: [1], 4: [1], 6: [15], 8: [2, 2], 11: [6, 1] },
+        p: { 1: [6] },
+      },
+    },
+    {
+      name: "Hipster",
+      set: {
+        c: { 3: [1], 4: [8], 6: [14, 8], 8: [2, 7], 11: [6, 11] },
+        p: { 0: [7, 5], 1: [8] },
+      },
+    },
+    {
+      name: "Noctambule",
+      set: {
+        c: { 3: [1], 4: [4], 6: [14, 15], 8: [0, 4], 11: [4, 2] },
+        p: { 1: [8, 6] },
+      },
+    },
+    {
+      name: "L'icône",
+      set: {
+        c: { 3: [1], 4: [4, 1], 6: [10, 12], 8: [12, 10], 11: [4] },
+        p: { 1: [10, 3] },
+      },
+    },
+    {
+      name: "Homme de main",
+      set: {
+        c: { 3: [1], 4: [10], 6: [21], 7: [23, 7], 8: [10, 10], 11: [-30] },
+      },
+    },
+    {
+      name: "Travailleur",
+      set: { c: { 4: [9], 11: [-32, 3], 6: [25], 3: [11] } },
+    },
+    {
+      name: "Chill",
+      set: { c: { 8: [32], 3: [4], 4: [4, 1], 6: [12, 3], 11: [-43] } },
+    },
+    {
+      name: "Aaron",
+      set: { c: { 8: [10], 3: [8], 4: [4, 1], 6: [14, 15], 11: [-63] } },
+    },
+    { name: "Cli", set: { c: { 4: [4], 11: [-64], 6: [14, 15], 3: [6] } } },
+    {
+      name: "Abdi",
+      set: { c: { 8: [23, 1], 3: [6], 4: [-30], 6: [24], 11: [-66] } },
+    },
+    { name: "Chill 2", set: { c: { 4: [4, 2], 11: [-68], 6: [2], 3: [6] } } },
+  ],
+  1: [
+    { name: "Nue", set: {} },
+    {
+      name: "Couvert",
+      set: { c: { 3: [1], p: [4], c: [8], 8: [23], 11: [65] } },
+    },
+    {
+      name: "1980s",
+      set: { c: { 3: [4], p: [14], c: [19], 8: [34], 11: [115] } },
+    },
+    {
+      name: "Rosie",
+      set: { c: { 3: [0], p: [4], c: [3], 8: [34], 11: [27] } },
+    },
+    {
+      name: "Jogging",
+      set: { c: { 3: [4], p: [10], c: [32], 8: [34], 11: [118] } },
+    },
+    {
+      name: "Style 01",
+      set: { c: { 3: [11], 11: [44], 4: [16], 6: [0, 3], 8: [34] } },
+    },
+    {
+      name: "Style 02",
+      set: { c: { 3: [3], 11: [52], 4: [16], 6: [9], 8: [15] } },
+    },
+    {
+      name: "Style 03",
+      set: { c: { 3: [4], 11: [147, 11], 4: [54, 2], 6: [77, 6], 8: [7] } },
+    },
+    {
+      name: "Style 04",
+      set: { c: { 3: [0], 11: [158], 4: [44], 6: [24], 8: [44, 1] } },
+    },
+    {
+      name: "Baronne",
+      set: { c: { 3: [14], 11: [124], 4: [65], 6: [77], 8: [14], 7: [88] } },
+    },
+  ],
+};
+
+function getModels() {
+    const newModels = [];
+    const models = zFramework.Core.Cloth.Models;
+    models.forEach((name, index) => {
+        newModels.push({
+            name,
+            index
+        });
+    });
+    return newModels;
 }
 
-function updateFaceFeature(index) {
-    SetPedFaceFeature(zFramework.LocalPlayer.pedId, index, parseFloat(featureItems[index].SelectedValue));
-}
+let creatorCam;
+let isCreating = false;
+const creatorCoords = { x: 402.96, y: -996.87, z: -100.0, h: 180.0 };
+const controlsToKeepEnable = [24, 189, 190, 187, 188, 202, 239, 240, 201, 172, 173, 174, 175];
 
-function updateAppearance(overlayID) {
-    let index = (appearanceItems[overlayID].Index == 0) ? 255 : appearanceItems[overlayID].Index - 1;
-    SetPedHeadOverlay(zFramework.LocalPlayer.pedId, overlayID, index, appearanceOpacityItems[overlayID].Index * 0.01);
-}
+/* Creator */
+const creatorMenu = new NativeUI.Menu("Nouveau personnage", "Menu principal", new NativeUI.Point(50, 50), null, null, false);
+const charListItem = new NativeUI.UIMenuItem("Liste des personnages");
+const parentsItem = new NativeUI.UIMenuItem("Héritage");
+const apparenceItem = new NativeUI.UIMenuItem("Apparence");
+const maqItem = new NativeUI.UIMenuItem("Maquillage");
+const traitsItem = new NativeUI.UIMenuItem("Traits du visage");
+const variationsItem = new NativeUI.UIMenuItem("Variations");
+variationsItem.Enabled = false;
+const idItem = new NativeUI.UIMenuItem("Identité");
+const confirmItem = new NativeUI.UIMenuItem("Confirmer");
+confirmItem.BackColor = new NativeUI.Color(0, 200, 0);
+confirmItem.HighlightedBackColor = new NativeUI.Color(0, 160, 0);
+creatorMenu.AddItems([charListItem, parentsItem, apparenceItem, maqItem, traitsItem, variationsItem, idItem, confirmItem]);
 
-function updateHairAndColors() {
-    SetPedHairColor(zFramework.LocalPlayer.pedId, hairColorItem.Index, hairHighlightItem.Index);
-    SetPedEyeColor(zFramework.LocalPlayer.pedId, eyeColorItem.Index);
-    SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 1, 1, beardColorItem.Index, 0);
-    SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 2, 1, eyebrowColorItem.Index, 0);
-    SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 5, 2, blushColorItem.Index, 0);
-    SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 8, 2, lipstickColorItem.Index, 0);
-    SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 10, 1, chestHairColorItem.Index, 0);
-}
+/* Character List */
+const charListMenu = new NativeUI.Menu(creatorMenu.Title, "Liste des personnages", new NativeUI.Point(50, 50));
+creatorMenu.AddSubMenu(charListMenu, charListItem);
 
-function resetParentsMenu(refresh = false) {
-    fatherItem.Index = 0;
-    motherItem.Index = 0;
-    similarityItem.Index = (currentGender == 0) ? 100 : 0;
-    skinSimilarityItem.Index = (currentGender == 0) ? 100 : 0;
+charListMenu.ItemSelect.on(async (selectedItem) => {
+    const { isPed } = zFramework.LocalPlayer;
+    const id = selectedItem.Data;
+    const models = zFramework.Core.Cloth.Models;
+    const model = models[id];
+    const sex = id > 1 && 2 || id;
 
-    updateParents();
-    if (refresh) creatorParentsMenu.RefreshIndex();
-}
+    zFramework.LocalPlayer.sex = sex;
+    menuData.sex = sex;
+    menuData.model = model;
+    variationsMenu.Clear();
 
-function resetFeaturesMenu(refresh = false) {
-    for (let i = 0; i < Data.featureNames.length; i++) {
-        featureItems[i].Index = 100;
-        updateFaceFeature(i);
-    }
-
-    if (refresh) creatorFeaturesMenu.RefreshIndex();
-}
-
-function resetAppearanceMenu(refresh = false) {
-    hairItem.Index = 0;
-    SetPedComponentVariation(zFramework.LocalPlayer.pedId, 2, Data.hairList[currentGender][hairItem.Index].ID, 0, 2);
-    for (let i = 0; i < Data.appearanceNames.length; i++) {
-        appearanceItems[i].Index = 0;
-        appearanceOpacityItems[i].Index = 100;
-        updateAppearance(i);
-    }
-
-    if (refresh) creatorAppearanceMenu.RefreshIndex();
-}
-
-function resetHairAndColorsMenu(refresh = false) {
-    hairColorItem.Index = 0;
-    hairHighlightItem.Index = 0;
-    eyebrowColorItem.Index = 0;
-    beardColorItem.Index = 0;
-    eyeColorItem.Index = 0;
-    blushColorItem.Index = 0;
-    lipstickColorItem.Index = 0;
-    chestHairColorItem.Index = 0;
-    updateHairAndColors();
-
-    if (refresh) creatorHairMenu.RefreshIndex();
-}
-
-let currentGender = 0;
-
-// color arrays
-let hairColors = [];
-for (let i = 0; i < Data.maxHairColor; i++) hairColors.push(i.toString());
-
-let blushColors = [];
-for (let i = 0; i < Data.maxBlushColor; i++) blushColors.push(i.toString());
-
-let lipstickColors = [];
-for (let i = 0; i < Data.maxLipstickColor; i++) lipstickColors.push(i.toString());
-
-// CREATOR MAIN
-const creatorMainMenu = new Menu("Char Creator", "Créer ton personnage", new Point(50, 50));
-creatorMainMenu.SetCloseableByUser(false);
-
-const genderItem = new UIMenuListItem("Genre", "~y~Changer ceci réinitialisera votre personnage", new ItemsCollection(["Homme", "Femme"]));
-const parentsItem = new UIMenuItem("Parents", "Parents de votre personnage");
-const traitsItem = new UIMenuItem("Traits du visage", "Traits de votre personnage");
-const apparenceItem = new UIMenuItem("Apparence", "Apparence de votre personnage");
-const hairColorsItem = new UIMenuItem("Couleurs", "Couleurs de votre personnage");
-const identityItem = new UIMenuItem("Identité", "Identité de votre personnage");
-
-let angles = [];
-for (let i = -180.0; i <= 180.0; i += 15.0) angles.push(i.toFixed(1));
-const angleItem = new UIMenuListItem("Angle", "Angle de vision de votre personnage", new ItemsCollection(angles));
-
-const saveItem = new UIMenuItem("Confirmer", "Confirmer votre personnage et commencer votre aventure");
-saveItem.BackColor = new Color(0, 150, 0);
-saveItem.HighlightedBackColor = new Color(0, 200, 0);
-
-creatorMainMenu.AddItems([genderItem, parentsItem, traitsItem, apparenceItem, hairColorsItem, identityItem, angleItem, saveItem]);
-
-creatorMainMenu.ListChange.on((item, listIndex) => {
-    if (item == genderItem) {
-        currentGender = listIndex;
-        serverEvent("Server.ChangeGender", listIndex);
-        refreshMenu();
-    } else if (item == angleItem) {
-        SetEntityHeading(zFramework.LocalPlayer.pedId, parseFloat(angleItem.SelectedValue));
-        ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
-    }
-});
-
-on('Client.OnPlayerModelChanged', () => {
-    ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
-    refreshMenu();
-
-    creatorHairMenu.Clear();
-    fillHairMenu();
-    creatorHairMenu.RefreshIndex();
-
-    zFramework.LocalPlayer.applyDefaultOutfit();
-});
-
-creatorMainMenu.ItemSelect.on((item, index) => {
-    if (item == saveItem) {
-        let featureData = [];
-        for (let i = 0; i < featureItems.length; i++)
-            featureData.push(parseFloat(featureItems[i].SelectedValue));
-
-        let appearanceData = [];
-        for (let i = 0; i < appearanceItems.length; i++)
-            appearanceData.push({value: ((appearanceItems[i].Index == 0) ? 255 : appearanceItems[i].Index - 1), opacity: appearanceOpacityItems[i].Index * 0.01});
+    await changeModel(model);
+    resetParents();
     
-        const parentsData = {
-            father: Data.fathers[fatherItem.Index],
-            mother: Data.mothers[motherItem.Index],
-            similarity: similarityItem.Index * 0.01,
-            skinSimilarity: skinSimilarityItem.Index * 0.01
-        };
-
-        const colorsData = {
-            hair: Data.hairList[currentGender][hairItem.Index].ID,
-            hairColor: hairColorItem.Index,
-            hairHighlight: hairHighlightItem.Index,
-            eyeColor: eyeColorItem.Index,
-            beardColor: beardColorItem.Index,
-            eyebrowColor: eyebrowColorItem.Index,
-            blushColor: blushColorItem.Index,
-            lipstickColor: lipstickColorItem.Index,
-            chestColor: chestHairColorItem.Index
-        };
-
-        if (!identityFirstname.RightLabel || identityFirstname.RightLabel == "???" && !identityLastname.RightLabel || identityLastname.RightLabel == "???" || !identityBirthplace.RightLabel || identityBirthplace.RightLabel == "???"
-        || identityFirstname.RightLabel.length < 3 || identityFirstname.RightLabel.length > 50 && identityLastname.RightLabel.length < 3 || identityLastname.RightLabel.length > 50)
-            return zFramework.Functions.Notify("~r~Vous n'avez pas rempli les champs d'identité.");
-
-        const identityData = {
-            firstname: identityFirstname.RightLabel,
-            lastname: identityLastname.RightLabel,
-            birthplace: identityBirthplace.RightLabel,
-            birthday: `${identityBirthday.SelectedValue} ${identityBirthmonth.SelectedValue} ${identityBirthyear.SelectedValue}`,
-            sex: currentGender == 0 ? "Homme" : "Femme"
+    if (isPed()) {
+        const { pedId } = zFramework.LocalPlayer;
+        for (let drawable=0; drawable < 12; drawable++) {
+            const maxVariations = GetNumberOfPedDrawableVariations(pedId, drawable) - 1;
+            maxVariations > 0 && variationsMenu.AddItem(new NativeUI.UIMenuSliderItem(`Variation ${drawable + 1}`, NumberToArray(maxVariations), 0, "", true, drawable));
         }
-
-        serverEvent("Server.SaveCharacter", [identityData, {features: featureData, appearance: appearanceData, parents: parentsData, colors: colorsData}]);
-
-        creatorMainMenu.Close();
-        DeleteCamera();
-        
-        zFramework.LocalPlayer.freeze = false;
-        zFramework.LocalPlayer.invincible = false;
-        zFramework.LocalPlayer.blockInput = false;
-        zFramework.LocalPlayer.onReady();
     }
-});
-
-// CREATOR PARENTS
-let similarities = [];
-for (let i = 0; i <= 100; i++) similarities.push(i + "%");
-
-const creatorParentsMenu = new Menu("Parents", parentsItem.Description, new Point(50, 50));
-
-const fatherItem = new UIMenuListItem("Père", "Père de votre personnage", new ItemsCollection(Data.fatherNames));
-const motherItem = new UIMenuListItem("Mère", "Mère de votre personnage", new ItemsCollection(Data.motherNames));
-const similarityItem = new UIMenuListItem("Ressemblance", "Similarité avec les parents\n(bas = féminin, haut = masculin)", new ItemsCollection(similarities));
-const skinSimilarityItem = new UIMenuListItem("Couleur de peau", "Similarité avec la couleur des parents\n(bas = mère, haut = père)", new ItemsCollection(similarities));
-const parentsRandomize = new UIMenuItem("Randomiser", "~b~Randomiser les parents");
-const parentsReset = new UIMenuItem("Réinitialiser", "~r~Réinitialiser les parents");
-
-creatorParentsMenu.AddItems([fatherItem, motherItem, similarityItem, skinSimilarityItem, parentsRandomize, parentsReset]);
-creatorMainMenu.AddSubMenu(creatorParentsMenu, parentsItem);
-
-creatorParentsMenu.ItemSelect.on((item, index) => {
-    if (item == parentsRandomize) {
-        fatherItem.Index = RandomInt(0, Data.fathers.length - 1);
-        motherItem.Index = RandomInt(0, Data.mothers.length - 1);
-        similarityItem.Index = RandomInt(0, 100);
-        skinSimilarityItem.Index = RandomInt(0, 100);
-        updateParents();
-    } else if (item == parentsReset) {
-        resetParentsMenu();
-    }
-});
-
-creatorParentsMenu.ListChange.on((item, listIndex) => {
-    updateParents();
-});
-
-// CREATOR FEATURES
-let featureItems = [];
-let features = [];
-for (let i = -1.0; i <= 1.01; i += 0.01) features.push(i.toFixed(2));
-
-const creatorFeaturesMenu = new Menu("Traits", traitsItem.Description, new Point(50, 50));
-
-for (let i = 0; i < Data.featureNames.length; i++) {
-    const tempFeatureItem = new UIMenuListItem(Data.featureNames[i], "", new ItemsCollection(features));
-    tempFeatureItem.Index = 100;
-    featureItems.push(tempFeatureItem);
-    creatorFeaturesMenu.AddItem(tempFeatureItem);
-}
-
-const featuresRandomize = new UIMenuItem("Randomiser", "~b~Randomiser les traits");
-const featuresReset = new UIMenuItem("Réinitialiser", "~r~Réinitialiser les traits");
-
-creatorFeaturesMenu.AddItems([featuresRandomize, featuresReset]);
-creatorMainMenu.AddSubMenu(creatorFeaturesMenu, traitsItem);
-
-creatorFeaturesMenu.ItemSelect.on((item, index) => {
-    if (item == featuresRandomize) {
-        for (let i = 0; i < Data.featureNames.length; i++) {
-            featureItems[i].Index = RandomInt(0, 200);
-            updateFaceFeature(i);
-        }
-    } else if (item == featuresReset) {
-        resetFeaturesMenu();
-    }
-});
-
-creatorFeaturesMenu.ListChange.on((item, listIndex) => {
-    console.log(featureItems.indexOf(item));
-    updateFaceFeature(featureItems.indexOf(item));
-});
-
-// CREATOR APPEARANCE
-let appearanceItems = [];
-let appearanceOpacityItems = [];
-let opacities = [];
-for (let i = 0; i <= 100; i++) opacities.push(i + "%");
-
-const creatorAppearanceMenu = new Menu("Apparence", apparenceItem.Description, new Point(50, 50));
-const hairItem = new UIMenuListItem("Cheveux", "Cheveux de votre personnage", new ItemsCollection(Data.hairList[currentGender].map(h => h.Name)));
-
-creatorAppearanceMenu.AddItem(hairItem);
-
-for (let i = 0; i < Data.appearanceNames.length; i++) {
-    let items = [];
-    for (let j = 0, max = GetPedHeadOverlayNum(i); j <= max; j++) items.push((Data.appearanceItemNames[i][j] === undefined) ? j.toString() : Data.appearanceItemNames[i][j]);
     
-    const tempAppearanceItem = new UIMenuListItem(Data.appearanceNames[i], "", new ItemsCollection(items));
-    appearanceItems.push(tempAppearanceItem);
-    creatorAppearanceMenu.AddItem(tempAppearanceItem);
-    
-    const tempAppearanceOpacityItem = new UIMenuListItem(Data.appearanceNames[i] + " Opacité", "", new ItemsCollection(opacities));
-    tempAppearanceOpacityItem.Index = 100;
-    appearanceOpacityItems.push(tempAppearanceOpacityItem);
-    creatorAppearanceMenu.AddItem(tempAppearanceOpacityItem);
-}
-
-const appearanceRandomize = new UIMenuItem("Randomiser", "~b~Randomiser l'apparence");
-const appearanceReset = new UIMenuItem("Réinitialiser", "~r~Réinitialiser l'apparence");
-
-creatorAppearanceMenu.AddItems([appearanceRandomize, appearanceReset]);
-creatorMainMenu.AddSubMenu(creatorAppearanceMenu, apparenceItem);
-
-creatorAppearanceMenu.ItemSelect.on((item, index) => {
-    if (item == appearanceRandomize) {
-        hairItem.Index = RandomInt(0, Data.hairList[currentGender].length - 1);
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 2, Data.hairList[currentGender][hairItem.Index].ID, 0, 2);
-        for (let i = 0; i < Data.appearanceNames.length; i++) {
-            appearanceItems[i].Index = RandomInt(0, GetPedHeadOverlayNum(i) - 1);
-            appearanceOpacityItems[i].Index = RandomInt(0, 100);
-            updateAppearance(i);
-        }
-    } else if (item == appearanceReset) {
-        resetAppearanceMenu();
-    }
+    variationsItem.Enabled = isPed() && variationsMenu.MenuItems.length > 0 && true || false;
+    parentsItem.Enabled = !isPed();
+    apparenceItem.Enabled = !isPed();
+    maqItem.Enabled = !isPed();
+    traitsItem.Enabled = !isPed();
 });
 
-creatorAppearanceMenu.ListChange.on((item, listIndex) => {
-    if (item == hairItem) {
-        const hairStyle = Data.hairList[currentGender][listIndex];
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 2, hairStyle.ID, 0, 2);
-    } else {
-        const currentSelection = creatorAppearanceMenu.CurrentSelection - 1;
-        let idx = (currentSelection % 2 == 0) ? (currentSelection / 2) : Math.floor(currentSelection / 2);
-        updateAppearance(idx);
-    }
+/* Parents */
+const parentsMenu = new NativeUI.Menu(creatorMenu.Title, "Héritage", new NativeUI.Point(50, 50));
+const fatherItem = new NativeUI.UIMenuListItem("Parent 1", "", new NativeUI.ItemsCollection(parentsName));
+const motherItem = new NativeUI.UIMenuListItem("Parent 2", "", new NativeUI.ItemsCollection(parentsName), 21);
+const similarityItem = new NativeUI.UIMenuSliderItem("Ressemblance", NumberToArray(100), 0, "", true);
+const skinSimilarityItem = new NativeUI.UIMenuSliderItem("Couleur de peau", NumberToArray(100), 0, "", true);
+parentsMenu.AddItems([fatherItem, motherItem, similarityItem, skinSimilarityItem]);
+creatorMenu.AddSubMenu(parentsMenu, parentsItem);
+
+parentsMenu.SliderChange.on(() => changeParents([fatherItem.Index, motherItem.Index, similarityItem.Index, skinSimilarityItem.Index]));
+parentsMenu.ListChange.on(() => changeParents([fatherItem.Index, motherItem.Index, similarityItem.Index, skinSimilarityItem.Index]));
+
+/* Appaerence */
+const apparenceMenu = new NativeUI.Menu(creatorMenu.Title, "Apparence", new NativeUI.Point(50, 50));
+creatorMenu.AddSubMenu(apparenceMenu, apparenceItem);
+
+/* Variations */
+const variationsMenu = new NativeUI.Menu(creatorMenu.Title, "Variations", new NativeUI.Point(50, 50));
+creatorMenu.AddSubMenu(variationsMenu, variationsItem);
+
+variationsMenu.SliderChange.on((selectedItem, selectedIndex, sliderIndex) => {
+    const { pedId } = zFramework.LocalPlayer;
+    SetPedComponentVariation(pedId, selectedItem.Data, sliderIndex, 0, 2);
 });
 
-// CREATOR HAIR & COLORS
-let hairColorItem;
-let hairHighlightItem;
-let eyebrowColorItem;
-let beardColorItem;
-let eyeColorItem;
-let blushColorItem;
-let lipstickColorItem;
-let chestHairColorItem;
-let hairRandomize;
-let hairReset;
+/* Identity */
+const days = [];
+const years = [];
+for (let day = 1; day <= 31; day++) days.push(day);
+for (let year = 1950; year <= 2003; year++) years.push(year);
 
-function fillHairMenu() {
-    hairColorItem = new UIMenuListItem("Couleur de cheveux", "Couleur de cheveux de votre personnage", new ItemsCollection(hairColors));
-    hairHighlightItem = new UIMenuListItem("Couleur des reflets de cheveux", "Couleur des reflets de votre personnage", new ItemsCollection(hairColors));
-    eyebrowColorItem = new UIMenuListItem("Couleur des sourcils", "Couleur des sourcils de votre personnage", new ItemsCollection(hairColors));
-    beardColorItem = new UIMenuListItem("Couleur de barbe", "Couleur de barbe de votre personnage", new ItemsCollection(hairColors));
-    eyeColorItem = new UIMenuListItem("Couleur des yeux", "Couleur des yeux de votre personnage", new ItemsCollection(Data.eyeColors));
-    blushColorItem = new UIMenuListItem("Couleur des rougeurs des joues", "Couleur des rougeurs de votre personnage", new ItemsCollection(blushColors));
-    lipstickColorItem = new UIMenuListItem("Couleur des lèvres", "Couleur des lèvres de votre personnage", new ItemsCollection(lipstickColors));
-    chestHairColorItem = new UIMenuListItem("Couleur des poils de torse", "Couleur des poils de torse de votre personnage", new ItemsCollection(hairColors));
-    hairRandomize = new UIMenuItem("Randomiser", "~b~Randomiser les couleurs");
-    hairReset = new UIMenuItem("Réinitialiser", "~r~Réinitialiser les couleurs");
-    
-    creatorHairMenu.AddItems([hairColorItem, hairHighlightItem, eyebrowColorItem, beardColorItem, eyeColorItem, blushColorItem, lipstickColorItem, chestHairColorItem, hairRandomize, hairReset]);
-}
+const idMenu = new NativeUI.Menu(creatorMenu.Title, "Identité", new NativeUI.Point(50, 50));
+const firstnameItem = new NativeUI.UIMenuItem("Prénom", "", "???");
+const lastnameItem = new NativeUI.UIMenuItem("Nom", "", "???");
+const birthplaceItem = new NativeUI.UIMenuItem("Lieu de naissance", "", "Los Santos");
+const birthDayItem = new NativeUI.UIMenuListItem("Jour de naissance", "", new NativeUI.ItemsCollection(days));
+const birthMonthItem = new NativeUI.UIMenuListItem("Mois de naisassnce", "",
+    new NativeUI.ItemsCollection([
+        "Janvier",
+        "Fevrier",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Aout",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Decembre",
+    ])
+);
+const birthYearItem = new NativeUI.UIMenuListItem("Année de naissance", "", new NativeUI.ItemsCollection(years));
+idMenu.AddItems([firstnameItem, lastnameItem, birthplaceItem, birthDayItem, birthMonthItem, birthYearItem]);
+creatorMenu.AddSubMenu(idMenu, idItem);
 
-const creatorHairMenu = new Menu("Couleurs", hairColorsItem.Description, new Point(50, 50));
-
-fillHairMenu();
-creatorMainMenu.AddSubMenu(creatorHairMenu, hairColorsItem);
-
-creatorHairMenu.ItemSelect.on((item, index) => {
-    if (item == hairRandomize) {
-        hairColorItem.Index = RandomInt(0, Data.maxHairColor);
-        hairHighlightItem.Index = RandomInt(0, Data.maxHairColor);
-        eyebrowColorItem.Index = RandomInt(0, Data.maxHairColor);
-        beardColorItem.Index = RandomInt(0, Data.maxHairColor);
-        eyeColorItem.Index = RandomInt(0, Data.maxEyeColor);
-        blushColorItem.Index = RandomInt(0, Data.maxBlushColor);
-        lipstickColorItem.Index = RandomInt(0, Data.maxLipstickColor);
-        chestHairColorItem.Index = RandomInt(0, Data.maxHairColor);
-        updateHairAndColors();
-    } else if (item == hairReset) {
-        resetHairAndColorsMenu();
-    }
-});
-
-creatorHairMenu.ListChange.on((item, listIndex) => {
-    //console.log(hairColorItem.Index);
-    switch (creatorHairMenu.CurrentSelection) {
-        case 0: // hair color
-        case 1: // hair highlight color
-            SetPedHairColor(zFramework.LocalPlayer.pedId, hairColorItem.Index, hairHighlightItem.Index);
-        break;
-
-        case 2: // eyebrow color
-            SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 2, 1, listIndex, 0);
-        break;
-
-        case 3: // facial hair color
-            SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 1, 1, listIndex, 0);
-        break;
-
-        case 4: // eye color
-            SetPedEyeColor(zFramework.LocalPlayer.pedId, listIndex);
-        break;
-
-        case 5: // blush color
-            SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 5, 2, listIndex, 0);
-        break;
-
-        case 6: // lipstick color
-            SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 8, 2, listIndex, 0);
-        break;
-
-        case 7: // chest hair color
-            SetPedHeadOverlayColor(zFramework.LocalPlayer.pedId, 10, 1, listIndex, 0);
-        break;
-    }
-});
-
-// CREATOR IDENTITY
-let Days = [];
-let Years = [];
-for (let i = 1; i <= 31; i++) Days.push(i);
-for (let i = 1950; i <= 2003; i++) Years.push(i);
-
-const creatorIdentityMenu = new Menu("Identité", identityItem.Description, new Point(50, 50));
-
-const identityFirstname = new UIMenuItem("Prénom", "", "???"); //ask
-const identityLastname = new UIMenuItem("Nom", "", "???"); //ask
-const identityBirthplace = new UIMenuItem("Lieu de naissance", "", "???"); //ask
-const identityBirthday = new UIMenuListItem("Jour de naissance", "", new ItemsCollection(Days));
-const identityBirthmonth = new UIMenuListItem("Mois de naisassnce", "", new ItemsCollection(["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]));
-const identityBirthyear = new UIMenuListItem("Année de naissance", "", new ItemsCollection(Years));
-
-creatorIdentityMenu.AddItems([identityFirstname, identityLastname, identityBirthplace, identityBirthday, identityBirthmonth, identityBirthyear]);
-creatorMainMenu.AddSubMenu(creatorIdentityMenu, identityItem);
-
-creatorIdentityMenu.ItemSelect.on(async(item, index) => {
-    switch(index) {
+idMenu.ItemSelect.on(async (selectedItem, selectedIndex) => {
+    switch(selectedIndex) {
         case 0:
         case 1:
         case 2:
-            item.SetRightLabel(Capitalize(await zFramework.Functions.KeyboardInput(item.Text)));
+            selectedItem.SetRightLabel(Capitalize(await zFramework.Functions.KeyboardInput(selectedItem.Text, selectedItem.RightLabel, 15)));
+            break;
     }
 });
 
-let creatorCamera = null;
-function CreateCamera() {
-    if (creatorCamera) return;
-
-    if (!creatorCamera) creatorCamera = CreateCam('DEFAULT_SCRIPTED_CAMERA', true);
-
-    SetCamActive(creatorCamera, true);
-    RenderScriptCams(true, true, 500, true, true);
-
-	SetCamRot(creatorCamera, 0.0, 0.0, 270.0, true);
-	
-    SetEntityHeading(zFramework.LocalPlayer.pedId, 90.0);
+const camDefaultPos = { x: 402.96, y: -996.87, z: -99.0, h: 180.0};
+NativeUI.MenuChange.on((newMenu, enteredSubMenu) => {
+    const { pedId } = zFramework.LocalPlayer;
+    const entityOpposite = camDefaultPos.h * Math.PI / 180.0;
     
-    {
-        const zoomOffset = 0.6;
-        const camOffset = 0.65;
-        const coords = zFramework.LocalPlayer.getLocation();
-
-        const angle = angleItem.SelectedValue  * Math.PI / 180.0;
-        const theta = {
-            x: Math.cos(angle),
-            y: Math.sin(angle)
-        };
-
-        const pos = {
-            x: coords.x + (zoomOffset * theta.x),
-            y: coords.y + (zoomOffset * theta.y)
-        };
-
-        let angleToLook = angleItem.SelectedValue - 140.0;
-        if (angleToLook > 360)
-            angleToLook -= 360;
-        else if (angleToLook < 0)
-		    angleToLook += 360;
-
-        angleToLook = angleToLook * Math.PI / 180.0;
-        const thetaToLook = {
-            x: Math.cos(angleToLook),
-            y: Math.sin(angleToLook)
-        };
-
-        const posToLook = {
-            x: coords.x + (zoomOffset * thetaToLook.x),
-            y: coords.y + (zoomOffset * thetaToLook.y)
-        };
-
-        SetCamCoord(creatorCamera, pos.x, pos.y, coords.z + camOffset);
-        PointCamAtCoord(creatorCamera, posToLook.x, posToLook.y, coords.z + camOffset);
-    }
-}
-
-function DeleteCamera() {
-    if (!creatorCamera) return;
-
-    SetCamActive(creatorCamera, false);
-    RenderScriptCams(false, true, 500, true, true);
-    creatorCamera = null;
-}
-
-function refreshMenu() {
-    resetParentsMenu(true);
-    resetFeaturesMenu(true);
-    resetAppearanceMenu(true);
-
-    if (currentGender == 0) {
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 4, 21, 0, 2);
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 6, 34, 0, 2);
-    } else {
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 4, 10, 0, 2);
-        SetPedComponentVariation(zFramework.LocalPlayer.pedId, 6, 35, 0, 2);
-    }
-}
-
-on('Client.OpenCharacterCreator', async () => {
-    if (!creatorMainMenu.Visible) {
-        creatorMainMenu.Open();
-        refreshMenu();
-
-        zFramework.LocalPlayer.invincible = true;
-        zFramework.LocalPlayer.blockInput = true;
-
-        await Delay(1000);
-
-        CreateCamera();
-        
-        ClearPedTasksImmediately(zFramework.LocalPlayer.pedId);
-        zFramework.LocalPlayer.freeze = true;
+    if (newMenu.Id == creatorMenu.Id) {
+        SetCamCoord(creatorCam, camDefaultPos.x - 1.5 * Math.sin(entityOpposite), camDefaultPos.y + 1.5 * Math.cos(entityOpposite), camDefaultPos.z + .5);
+        SetCamRot(creatorCam, .0, .0, 270.0, 2);
+        PointCamAtEntity(creatorCam, pedId, .0, .0, .0, true);
+    } else if (newMenu.Id == parentsMenu.Id) {
+        SetCamCoord(creatorCam, camDefaultPos.x - .4 * Math.sin(entityOpposite), camDefaultPos.y + .4 * Math.cos(entityOpposite), camDefaultPos.z + .68);
+        PointCamAtEntity(creatorCam, pedId, .0, .0, .7, true);
     }
 });
+
+creatorMenu.MenuOpen.on(async () => {
+    const { pedId } = zFramework.LocalPlayer;
+    zFramework.LocalPlayer.cinemaMode = 2;
+    zFramework.LocalPlayer.busy = 2;
+    RequestStreamedTextureDict("pause_menu_pages_char_mom_dad", false);
+    RequestStreamedTextureDict("char_creator_portraits", false);
+    RequestStreamedTextureDict("mpleaderboard", false);
+    RequestStreamedTextureDict("mpinventory", false);
+    await zFramework.Functions.RequestDict("MP_HEAD_IK_OVERRIDE");
+    const intId = GetInteriorAtCoordsWithType(399.9, -998.7, -100.0, "v_mugshot");
+    LoadInterior(intId);
+    RequestInteriorRoomByName(intId, GetHashKey("v_mugshot"));
+    RequestInteriorRoomByName(intId, GetHashKey("V_WinningRoom"));
+    await Delay(1000);
+    DoScreenFadeIn(1000);
+    ForceRoomForEntity(pedId, intId, GetHashKey("v_mugshot"));
+    ForceRoomForEntity(pedId, intId, GetHashKey("V_WinningRoom"));
+    startCreator();
+});
+
+creatorMenu.MenuClose.on(() => {
+    const { pedId } = zFramework.LocalPlayer;
+    SetStreamedTextureDictAsNoLongerNeeded("pause_menu_pages_char_mom_dad", false);
+    SetStreamedTextureDictAsNoLongerNeeded("char_creator_portraits", false);
+    SetStreamedTextureDictAsNoLongerNeeded("mpleaderboard", false);
+    SetStreamedTextureDictAsNoLongerNeeded("pause_menu_pages_char_mom_dad", false);
+    SetStreamedTextureDictAsNoLongerNeeded("mpinventory", false);
+    RemoveAnimDict("MP_HEAD_IK_OVERRIDE");
+    if (DoesCamExist(creatorCam)) {
+        DestroyCam(creatorCam);
+        RenderScriptCams(false, true, 500, false, false);
+    }
+    FreezeEntityPosition(pedId, false);
+    SetBlockingOfNonTemporaryEvents(pedId, false);
+    StopAnimTask(pedId, "MP_HEAD_IK_OVERRIDE", "MP_CREATOR_HEADIK", 4.0);
+    zFramework.LocalPlayer.busy = 0;
+    zFramework.LocalPlayer.cinemaMode = 0;
+    UnpinInterior(GetInteriorAtCoordsWithType(399.9, -998.7, -100.0, "v_mugshot"));
+});
+
+async function startCreator() {
+    isCreating = true;
+    DestroyAllCams();
+    const { pedId } = zFramework.LocalPlayer;
+    SetEntityCoords(pedId, creatorCoords.x, creatorCoords.y, creatorCoords.z);
+    SetEntityHeading(pedId, creatorCoords.h + .0);
+    FreezeEntityPosition(pedId, true);
+    SetBlockingOfNonTemporaryEvents(pedId, true);
+    SetPedKeepTask(pedId, true);
+    zFramework.LocalPlayer.invincible = true;
+    TaskPlayAnim(pedId, "MP_HEAD_IK_OVERRIDE", "MP_CREATOR_HEADIK", 1000.0, -1000.0, -1, 289, 0, 0, 0, 0);
+    await changeModel("mp_m_freemode_01");
+    await Delay(10);
+    creatorCam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true);
+    SetCamRot(creatorCam, .0, .0, 270.0, true);
+    {
+        const { pedId, getLocation } = zFramework.LocalPlayer;
+        const entityHeading = GetEntityHeading(pedId);
+        const entityOpposite = entityHeading * Math.PI / 180.0;
+        SetCamCoord(creatorCam, getLocation().x - 1.5 * Math.sin(entityOpposite), getLocation().y + 1.5 * Math.cos(entityOpposite), getLocation().z + .5);
+        SetCamRot(creatorCam, .0, .0, 270.0, 2);
+        PointCamAtEntity(creatorCam, pedId, .0, .0, .0, true);
+    }
+    SetCamActive(creatorCam, true);
+    RenderScriptCams(1, 0, 500, 1, 0);
+
+    while (isCreating) {
+        await Delay(0);
+
+        DisableAllControlActions(0);
+        for (const control of controlsToKeepEnable) EnableControlAction(0, control, true);
+
+        const { pedId } = zFramework.LocalPlayer;
+        for (const targetId of GetActivePlayers()) {
+            const targetPed = GetPlayerPed(targetId);
+            if (DoesEntityExist(targetPed) && targetPed != pedId) DeletePed(targetPed);
+        }
+
+        SetPedDensityMultiplierThisFrame(.0);
+        SetVehicleDensityMultiplierThisFrame(.0);
+        NetworkSetTalkerProximity(0.01);
+        SetParkedVehicleDensityMultiplierThisFrame(.0);
+    }
+}
+
+async function changeModel(model) {
+    await zFramework.Functions.SetModel(model);
+    const { pedId } = zFramework.LocalPlayer;
+    FreezePedCameraRotation(pedId);
+    TaskSetBlockingOfNonTemporaryEvents(pedId, true);
+    SetPedDefaultComponentVariation(pedId);
+    zFramework.LocalPlayer.invincible = true;
+    changeOutfit(0);
+    zFramework.LocalPlayer.freeze = true;
+    TaskPlayAnim(pedId, "MP_HEAD_IK_OVERRIDE", "MP_CREATOR_HEADIK", 1000.0, -1000.0, -1, 289, 0, 0, 0, 0);
+    menuData.blendData = [];
+}
+
+function resetParents() {
+    fatherItem.Index = 0;
+    motherItem.Index = 21;
+    similarityItem.Index = 0;
+    skinSimilarityItem.Index = 0;
+
+    parentsMenu.RefreshIndex();
+}
+
+function changeOutfit(outfitId) {
+    const { sex } = zFramework.LocalPlayer;
+    const outfit = outfits[sex] && outfits[sex][outfitId];
+    if (!outfit) return;
+    menuData.outfit = outfit;
+    zFramework.Core.Cloth.SetSkin(outfit.set, { bl: true });
+}
+
+function changeParents(parents) {
+    const { pedId } = zFramework.LocalPlayer;
+    const shapeMix = parseFloat(parents[2]), skinMix = parseFloat(parents[3]);
+    let shapeFirstId = parents[0], shapeSecondId = parents[1], shapeThirdId = 0, skinFirstId = 0, skinSecondId = 0, skinThirdId = 0, thirdMix = .0, isParent = false; 
+    skinFirstId = shapeFirstId, skinSecondId = shapeSecondId;
+
+    menuData.blendData = [
+        shapeFirstId || 0,
+        shapeSecondId || 0,
+        shapeThirdId || 0,
+        skinFirstId || 0,
+        skinSecondId || 0,
+        skinThirdId || 0,
+        shapeMix || .0,
+        skinMix || .0,
+        thirdMix || .0,
+    ];
+
+    SetPedHeadBlendData(
+        pedId,
+        shapeFirstId || 0,
+        shapeSecondId || 0,
+        shapeThirdId || 0,
+        skinFirstId || 0,
+        skinSecondId || 0,
+        skinThirdId || 0,
+        shapeMix || .0,
+        skinMix || .0,
+        thirdMix || .0,
+        isParent
+    );
+}
+
+zFramework.Core.CharacterCreator.Open = () => !creatorMenu.Opened && creatorMenu.Open();
+
+zFramework.Core.CharacterCreator.Initialize = () => {
+    // Register Models
+    getModels().map(model => charListMenu.AddItem(new NativeUI.UIMenuItem(model.name, "", "", model.index)));
+    
+    // Register Appearance 
+    const hairItem = new NativeUI.UIMenuListItem("Cheveux", "", new NativeUI.ItemsCollection(zFramework.Core.Cloth.Hairs[0].map(h => h.name)), null, { c: 2 });
+    // const eyebrowsItem = new NativeUI.UIMenuListItem("Sourcils", "", new NativeUI.ItemsCollection(), null, { h: 2 });
+    apparenceMenu.AddItems([hairItem]);
+    
+    apparenceMenu.ListChange.on(() => changeParents([fatherItem.Index, motherItem.Index, similarityItem.Index, skinSimilarityItem.Index]));
+}
+
+zFramework.Core.CharacterCreator.Think = () => {    
+    if (UpdateOnscreenKeyboard() == 0) return;
+
+    if (creatorMenu.Opened) {
+        const leftButton = IsDisabledControlPressed(1, 44), rightButton = IsDisabledControlPressed(1, 51);
+        if (leftButton || rightButton) {
+        const { pedId } = zFramework.LocalPlayer;
+            SetEntityHeading(pedId, leftButton && GetEntityHeading(pedId) - 1.0 || rightButton && GetEntityHeading(pedId) + 1.0);
+        }
+    }
+}
